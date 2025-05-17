@@ -13,16 +13,17 @@ if (isset($_POST['login_btn'])) {
     $stmt->store_result();
 
     if ($stmt->num_rows() == 1) {
-        $stmt->bind_result($admin_id, $admin_name);
-        $stmt->fetch();
-        $_SESSION['admin_id'] = $admin_id;
-        $_SESSION['admin_name'] = $admin_name;
-        header("Location: index.php");
-        exit;
-    } else {
-        header("Location: login.php?error=Email atau password salah.");
-        exit;
-    }
+    $stmt->bind_result($admin_id, $admin_name);
+    $stmt->fetch();
+
+    $_SESSION['admin_id'] = $admin_id;
+    $_SESSION['admin_name'] = $admin_name;
+    $_SESSION['admin_logged_in'] = true;
+
+    header("Location: index.php");
+    exit;
+}
+
 }
 ?>
 <!DOCTYPE html>
