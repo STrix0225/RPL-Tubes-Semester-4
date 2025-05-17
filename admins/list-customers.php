@@ -19,7 +19,7 @@ $result = $conn->query($sql);
 <body>
 
 <h2>Daftar Customers</h2>
-
+<p><a href="index.php">Dashboard</a> > Customers</p>
 <table border="1" cellpadding="5" cellspacing="0">
     <tr>
         <th>ID</th>

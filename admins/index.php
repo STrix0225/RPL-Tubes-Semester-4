@@ -6,7 +6,7 @@
     <title>Beranda Admin</title>
 </head>
 <body>
-
+    
     <h2>Selamat datang di Beranda Admin</h2>
 
     <form method="GET" action="./create-product.php" style="margin-bottom: 10px;">
