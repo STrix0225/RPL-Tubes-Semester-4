@@ -54,39 +54,52 @@ if (isset($_POST['change_password'])) {
 }
 
 // Get orders for the customer
+// Get orders for the customer
+$customer_orders = []; // Initialize empty array
+
 if (isset($_SESSION['logged_in'])) {
     $customer_id = $_SESSION['customer_id'];
-    $customer_orders = []; // Initialize empty array
-    
-    // First check what customer reference column exists in orders table
-    $check_columns = $conn->query("SHOW COLUMNS FROM orders LIKE 'customer_id'");
-    if ($check_columns->num_rows === 0) {
-        // If customer_id doesn't exist, check for user_id (common alternative)
-        $check_columns = $conn->query("SHOW COLUMNS FROM orders LIKE 'user_id'");
-        if ($check_columns->num_rows > 0) {
-            $customer_column = 'user_id';
+
+    // Cek apakah tabel 'orders' ada
+    $result = $conn->query("SHOW TABLES LIKE 'orders'");
+    if ($result && $result->num_rows > 0) {
+
+        // Tabel ada, cek kolom relasi customer
+        $check_columns = $conn->query("SHOW COLUMNS FROM orders LIKE 'customer_id'");
+        if ($check_columns && $check_columns->num_rows > 0) {
+            $customer_column = 'customer_id';
         } else {
-            die("Error: No customer reference column found in orders table");
+            $check_columns = $conn->query("SHOW COLUMNS FROM orders LIKE 'user_id'");
+            if ($check_columns && $check_columns->num_rows > 0) {
+                $customer_column = 'user_id';
+            } else {
+                $customer_column = null;
+            }
+        }
+
+        if ($customer_column) {
+            $query = "SELECT * FROM orders WHERE $customer_column = ? ORDER BY order_date DESC";
+            $stmt = $conn->prepare($query);
+
+            if ($stmt) {
+                $stmt->bind_param('i', $customer_id);
+                if ($stmt->execute()) {
+                    $customer_orders = $stmt->get_result();
+                } else {
+                    die("Execute failed: " . htmlspecialchars($stmt->error));
+                }
+            } else {
+                die("Prepare failed: " . htmlspecialchars($conn->error));
+            }
+        } else {
+            // Kolom relasi ke customer tidak ditemukan
+            echo "<div class='alert alert-warning'>Orders table does not have a customer reference column.</div>";
         }
     } else {
-        $customer_column = 'customer_id';
-    }
-    
-    $query = "SELECT * FROM orders WHERE $customer_column = ? ORDER BY order_date DESC";
-    $stmt = $conn->prepare($query);
-    
-    if ($stmt === false) {
-        die("Prepare failed: " . htmlspecialchars($conn->error));
-    }
-    
-    $stmt->bind_param('i', $customer_id);
-    
-    if ($stmt->execute()) {
-        $customer_orders = $stmt->get_result();
-    } else {
-        die("Execute failed: " . htmlspecialchars($stmt->error));
+        echo "<div class='alert alert-warning'>Orders table not found in the database.</div>";
     }
 }
+
 
 // Check for total payment in session
 if (isset($_SESSION['total'])) {

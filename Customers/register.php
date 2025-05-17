@@ -31,7 +31,7 @@ if (isset($_POST['register'])) {
         }
         
         $photo_name = str_replace(' ', '_', $name) . ".jpg";
-        move_uploaded_file($photo, "img/profile/" . $photo_name);
+        move_uploaded_file($photo, "../img/" . $photo_name);
     } else {
         $photo_name = 'default.jpg'; // Default image if none uploaded
     }

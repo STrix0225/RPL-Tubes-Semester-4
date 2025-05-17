@@ -17,6 +17,10 @@
         <input type="submit" value="Lihat Daftar Produk">
     </form>
 
+    <form method="GET" action="./list-customers.php" style="margin-bottom: 10px;">
+        <input type="submit" value="List customers">
+    </form>
+
     <form method="POST" action="./logout.php">
         <input type="submit" name="logout_btn" value="Logout">
     </form>
