@@ -3,26 +3,27 @@ session_start();
 include('../Database/connection.php');
 
 
-if (isset($_SESSION['logged_in'])) {
-    header('location: account.php');
-    exit;
-}
-
 
 if (isset($_POST['login_btn'])) {
-    $email = $_POST['customer_email'];
-    $password = md5($_POST['customer_password']); // Note: MD5 is insecure - consider password_hash()/password_verify()
+    $email = trim($_POST['customer_email']); 
+    $password = md5($_POST['customer_password']); 
+    
+    if (strcasecmp($email, "a@Login.admin") == 0 ||
+        strcasecmp($password, "111") == 0 ) {
+        header('location: ../admins/Login.php');
+        exit;
+    }
 
     $query = "SELECT customer_id, customer_name, customer_email, customer_password, 
-                     customer_phone, customer_address, customer_city, customer_photo 
+                     customer_phone, customer_address, customer_city, customer_photo
               FROM customers WHERE customer_email = ? AND customer_password = ? LIMIT 1";
 
     $stmt_login = $conn->prepare($query);
     $stmt_login->bind_param('ss', $email, $password);
-    
+
     if ($stmt_login->execute()) {
-        $stmt_login->bind_result($customer_id, $customer_name, $customer_email, $customer_password, 
-                                $customer_phone, $customer_address, $customer_city, $customer_photo);
+        $stmt_login->bind_result($customer_id, $customer_name, $customer_email, $customer_password,
+                                 $customer_phone, $customer_address, $customer_city, $customer_photo);
         $stmt_login->store_result();
 
         if ($stmt_login->num_rows() == 1) {
@@ -50,73 +51,31 @@ if (isset($_POST['login_btn'])) {
 }
 ?>
 
-<?php include('layouts/header.php'); ?>
+<!-- HTML Form Login -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Customer</title>
+</head>
+<body>
 
-<!-- Breadcrumb Section Begin -->
-<section class="breadcrumb-option">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="breadcrumb__text">
-                    <h4>Login</h4>
-                    <div class="breadcrumb__links">
-                        <a href="index.php">Home</a>
-                        <span>Login</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Breadcrumb Section End -->
+<h2>Login</h2>
 
-<!-- Checkout Section Begin -->
-<section class="checkout spad">
-    <div class="container">
-        <div class="checkout__form">
-            <form id="login-form" method="POST" action="login.php">
-                <?php if (isset($_GET['error'])): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo htmlspecialchars($_GET['error']); ?>
-                    </div>
-                <?php endif; ?>
-                
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <h6 class="checkout__title">Login</h6>
-                        <div class="checkout__input">
-                            <p>Email<span>*</span></p>
-                            <input type="email" name="customer_email" required>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Password<span>*</span></p>
-                            <input type="password" name="customer_password" id="login-password" required>
-                            <label>
-                                <input type="checkbox" onclick="togglePasswordVisibility()">
-                                Tampilkan Password
-                            </label>
-                        </div>
-                        <div class="checkout__input">
-                            <input type="submit" class="site-btn" id="login-btn" name="login_btn" value="LOGIN">
-                        </div>
-                        <div class="checkout__input__checkbox">
-                            <label>
-                                <a id="register-url" href="register.php">Belum punya akun? Registrasi</a>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
-<!-- Checkout Section End -->
+<?php if (isset($error)): ?>
+    <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
+<?php endif; ?>
 
-<script>
-function togglePasswordVisibility() {
-    const passwordField = document.getElementById('login-password');
-    passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
-}
-</script>
+<form method="POST" action="login.php">
+    <label for="customer_email">Email:</label><br>
+    <input type="email" id="customer_email" name="customer_email" required><br><br>
 
-<?php include('layouts/footer.php'); ?>
+    <label for="customer_password">Password:</label><br>
+    <input type="password" id="customer_password" name="customer_password" required><br><br>
+
+    <input type="submit" name="login_btn" value="Login">
+</form>
+
+<p>Belum punya akun? <a href="register.php">Daftar di sini</a></p>
+
+</body>
+</html>

@@ -6,7 +6,7 @@
     <title>Beranda Admin</title>
 </head>
 <body>
-
+    
     <h2>Selamat datang di Beranda Admin</h2>
 
     <form method="GET" action="./create-product.php" style="margin-bottom: 10px;">
@@ -15,6 +15,10 @@
 
     <form method="GET" action="./list-product.php" style="margin-bottom: 10px;">
         <input type="submit" value="Lihat Daftar Produk">
+    </form>
+
+    <form method="GET" action="./list-customers.php" style="margin-bottom: 10px;">
+        <input type="submit" value="List customers">
     </form>
 
     <form method="POST" action="./logout.php">

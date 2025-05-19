@@ -2,13 +2,13 @@
 session_start();
 include('../Database/connection.php');
 
+/*
 
-    if (isset($_SESSION['logged_in'])) {
-        header('location: account.php');
-        exit;
-    }
-
-
+if (isset($_SESSION['logged_in'])) {
+    header('location: account.php');
+    exit;
+}
+*/
 
 if (isset($_POST['register'])) {
     $name = $_POST['name'];
@@ -19,7 +19,6 @@ if (isset($_POST['register'])) {
     $city = $_POST['city'];
     $address = $_POST['address'];
 
-    // Image file validation
     if ($_FILES['photo']['error'] === UPLOAD_ERR_OK) {
         $photo = $_FILES['photo']['tmp_name'];
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
@@ -31,9 +30,9 @@ if (isset($_POST['register'])) {
         }
         
         $photo_name = str_replace(' ', '_', $name) . ".jpg";
-        move_uploaded_file($photo, "img/profile/" . $photo_name);
+        move_uploaded_file($photo, "../img/" . $photo_name);
     } else {
-        $photo_name = 'default.jpg'; // Default image if none uploaded
+        $photo_name = 'default.jpg';
     }
 
     if ($password !== $confirm_password) {
@@ -59,7 +58,7 @@ if (isset($_POST['register'])) {
                                   VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             $stmt_save_customer = $conn->prepare($query_save_customer);
-            $hashed_password = md5($password); // Consider using password_hash() instead
+            $hashed_password = md5($password); // Gunakan password_hash() jika memungkinkan
             $stmt_save_customer->bind_param('sssssss', $name, $email, $hashed_password, $phone, $address, $city, $photo_name);
 
             if ($stmt_save_customer->execute()) {
@@ -87,78 +86,41 @@ if (isset($_POST['register'])) {
 
 <?php include('layouts/header.php'); ?>
 
-<!-- Register Section Begin -->
-<section class="checkout spad">
-    <div class="container">
-        <div class="checkout__form">
-            <form id="checkout-form" method="POST" action="register.php" enctype="multipart/form-data">
-                <?php if (isset($_GET['error'])): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo htmlspecialchars($_GET['error']); ?>
-                    </div>
-                <?php endif; ?>
-                
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <h6 class="checkout__title">Registration</h6>
-                        <div class="checkout__input">
-                            <p>Name<span>*</span></p>
-                            <input type="text" id="registered-name" name="name" placeholder="Masukan Nama" required>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Email<span>*</span></p>
-                            <input id="registered-email" type="email" name="email" placeholder="Masukan Email" required>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Password<span>*</span></p>
-                                    <input id="registered-password" type="password" name="password" placeholder="Masukan Password" required>
-                                    <label>
-                                        <input type="checkbox" onclick="document.getElementById('registered-password').type = this.checked ? 'text' : 'password'">
-                                        Show Password
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Confirm Password<span>*</span></p>
-                                    <input id="registered-confirm-password" type="password" name="confirm_password" placeholder="Konfimasi Password" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Nomor Telepon<span>*</span></p>
-                            <input type="text" name="phone" placeholder="Masukan Nomor Telepon" required>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Kota<span>*</span></p>
-                            <input type="text" name="city" placeholder="Masukan Kota" required>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Alamat<span>*</span></p>
-                            <input type="text" name="address" placeholder="Masukan Alamat" class="checkout__input__add" required>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Photo</p>
-                            <div class="custom-file">
-                                <input type="file" id="photo" name="photo" accept="image/*">
-                            </div>
-                        </div>
-                        <div class="checkout__input">
-                            <input type="submit" class="site-btn" id="register-btn" name="register" value="REGISTER">
-                        </div>
-                        <div class="checkout__input__checkbox">
-                            <label for="acc">
-                                <a id="login-url" href="login.php">Sudah punya akun? Login</a>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
-<!-- Register Section End -->
+<!-- Form Registrasi -->
+<h2>Registrasi</h2>
+<form method="POST" action="register.php" enctype="multipart/form-data">
+    <?php if (isset($_GET['error'])): ?>
+        <p style="color:red;"><?php echo htmlspecialchars($_GET['error']); ?></p>
+    <?php endif; ?>
+
+    <label>Nama *</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Email *</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Password *</label><br>
+    <input type="password" id="registered-password" name="password" required><br>
+    <input type="checkbox" onclick="document.getElementById('registered-password').type = this.checked ? 'text' : 'password'"> Tampilkan Password<br><br>
+
+    <label>Konfirmasi Password *</label><br>
+    <input type="password" name="confirm_password" required><br><br>
+
+    <label>No. Telepon *</label><br>
+    <input type="text" name="phone" required><br><br>
+
+    <label>Kota *</label><br>
+    <input type="text" name="city" required><br><br>
+
+    <label>Alamat *</label><br>
+    <input type="text" name="address" required><br><br>
+
+    <label>Foto</label><br>
+    <input type="file" name="photo" accept="image/*"><br><br>
+
+    <input type="submit" name="register" value="REGISTER"><br><br>
+
+    <p><a href="login.php">Sudah punya akun? Login</a></p>
+</form>
 
 <?php include('layouts/footer.php'); ?>
