@@ -2,33 +2,33 @@
 session_start();
 include('../Database/connection.php');
 
-// Redirect jika sudah login
-if (isset($_SESSION['logged_in'])) {
-    header('Location: account.php');
-    exit();
-}
 
-// Proses login saat form disubmit
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_btn'])) {
-    $email = $_POST['customer_email'];
-    $password = md5($_POST['customer_password']); // Disarankan ganti dengan password_hash/password_verify
+
+if (isset($_POST['login_btn'])) {
+    $email = trim($_POST['customer_email']); 
+    $password = md5($_POST['customer_password']); 
+    
+    if (strcasecmp($email, "a@Login.admin") == 0 ||
+        strcasecmp($password, "111") == 0 ) {
+        header('location: ../admins/Login.php');
+        exit;
+    }
 
     $query = "SELECT customer_id, customer_name, customer_email, customer_password, 
-                     customer_phone, customer_address, customer_city, customer_photo 
+                     customer_phone, customer_address, customer_city, customer_photo
               FROM customers WHERE customer_email = ? AND customer_password = ? LIMIT 1";
 
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $email, $password);
+    $stmt_login = $conn->prepare($query);
+    $stmt_login->bind_param('ss', $email, $password);
 
-    if ($stmt->execute()) {
-        $stmt->store_result();
+    if ($stmt_login->execute()) {
+        $stmt_login->bind_result($customer_id, $customer_name, $customer_email, $customer_password,
+                                 $customer_phone, $customer_address, $customer_city, $customer_photo);
+        $stmt_login->store_result();
 
-        if ($stmt->num_rows === 1) {
-            $stmt->bind_result($customer_id, $customer_name, $customer_email, $customer_password,
-                $customer_phone, $customer_address, $customer_city, $customer_photo);
-            $stmt->fetch();
+        if ($stmt_login->num_rows() == 1) {
+            $stmt_login->fetch();
 
-            // Simpan data ke sesi
             $_SESSION['customer_id'] = $customer_id;
             $_SESSION['customer_name'] = $customer_name;
             $_SESSION['customer_email'] = $customer_email;
@@ -38,16 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_btn'])) {
             $_SESSION['customer_photo'] = $customer_photo;
             $_SESSION['logged_in'] = true;
 
-            header("Location: account.php");
-            exit();
+            header('location: account.php?message=Logged in successfully');
+            exit;
         } else {
-            $error = "Email atau password salah.";
+            header('location: login.php?error=Could not verify your account');
+            exit;
         }
     } else {
-        $error = "Terjadi kesalahan saat login.";
+        header('location: login.php?error=Something went wrong!');
+        exit;
     }
-
-    $stmt->close();
 }
 ?>
 
