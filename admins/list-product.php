@@ -65,6 +65,8 @@ foreach ($alerts as $alert) {
             <td><?php echo $product['product_id']; ?></td>
             <td>
                 <img src="<?php echo '../PictureProducts/' . $product['product_photo1']; ?>" width="80" height="80" alt="gambar produk">
+                <img src="<?php echo '../PictureProducts/' . $product['product_photo2']; ?>" width="80" height="80" alt="gambar produk">
+                <img src="<?php echo '../PictureProducts/' . $product['product_photo3']; ?>" width="80" height="80" alt="gambar produk">
             </td>
             <td><?php echo $product['product_name']; ?></td>
             <td><?php echo $product['product_brand']; ?></td>

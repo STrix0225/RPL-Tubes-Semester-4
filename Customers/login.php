@@ -38,7 +38,7 @@ if (isset($_POST['login_btn'])) {
             $_SESSION['customer_photo'] = $customer_photo;
             $_SESSION['logged_in'] = true;
 
-            header('location: account.php?message=Logged in successfully');
+            header('location: Dashbroad.php?message=Logged in successfully');
             exit;
         } else {
             header('location: login.php?error=Could not verify your account');
