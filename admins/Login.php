@@ -60,6 +60,7 @@ if (isset($_POST['login_btn'])) {
     <p><strong><a href="./forgot-password.php">Lupa Password?</a></strong></p>
 
     <p>Belum punya akun? <a href="./register.php">Daftar di sini</a>.</p>
+    <p><a href="../Customers/login.php">Kembali ke Login Customers</a>.</p>
 
 </body>
 </html>
