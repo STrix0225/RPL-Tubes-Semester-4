@@ -1,8 +1,17 @@
+<?php
+session_start();
+include('../Database/connection.php');
+if (!isset($_SESSION['admin_logged_in'])) {
+    header("Location: template/pages/samples/login.php");
+    exit();
+}
+if (!isset($_SESSION['admin_logged_in'])) {
+    header("Location: login.php");
+     exit();
+ }
+?>
 
-
-
-
-<!DOCTYPE html>
+<!DOCTYPE html/
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -24,14 +33,15 @@
               </span>
               <span class="menu-title">Dashboard</span>
             </a>
+        </li>
   <body>
     <div class="container-scroller">
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
           <h1> GEMS </h1>
-          <!--<a class="sidebar-brand brand-logo" href="index.html"><img src="assets/images/logo.svg" alt="logo" /></a>-->
-          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+          <!--<a class="sidebar-brand brand-logo" href="index.php"><img src="assets/images/logo.svg" alt="logo" /></a>-->
+          <a class="sidebar-brand brand-logo-mini" href="index.php"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
@@ -43,7 +53,7 @@
                 </div>
                 <div class="profile-name">
                   <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
-                  <span>Gold Member</span>
+                  <span>GEMS Admin </span>
                 </div>
               </div>
               <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
@@ -87,7 +97,7 @@
             <span class="nav-link">Navigation</span>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="index.php">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
@@ -152,21 +162,15 @@
             </a>
             <div class="collapse" id="auth">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
+                <li class="nav-item"> <a class="nav-link" href="pages/Admins/blank-page.html"> Blank Page </a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/Admins/error-404.html"> 404 </a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/Admins/error-500.html"> 500 </a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/Admins/login.php"> Login </a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/Admins/register.html"> Register </a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/Customers/login.php"> Login </a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/Customers/register.html"> Register </a></li>
               </ul>
             </div>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
-              <span class="menu-icon">
-                <i class="mdi mdi-file-document-box"></i>
-              </span>
-              <span class="menu-title">Documentation</span>
-            </a>
           </li>
         </ul>
       </nav>
@@ -175,7 +179,7 @@
         <!-- partial:partials/_navbar.html -->
         <nav class="navbar p-0 fixed-top d-flex flex-row">
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+            <a class="navbar-brand brand-logo-mini" href="index.php"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
           </div>
           <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -344,17 +348,26 @@
                       <p class="preview-subject mb-1">Settings</p>
                     </div>
                   </a>
+                  
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item preview-item">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-logout text-danger"></i>
                       </div>
-                    </div>
+                    </div> 
                     <div class="preview-item-content">
                       <p class="preview-subject mb-1">Log out</p>
                     </div>
                   </a>
+                  <?php
+session_start();
+session_unset();
+session_destroy();
+
+header('Location: login.php?message=Logout berhasil');
+exit;
+?>
                   <div class="dropdown-divider"></div>
                   <p class="p-3 mb-0 text-center">Advanced settings</p>
                 </div>
