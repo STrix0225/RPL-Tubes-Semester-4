@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
+    header("Location: ../UI/gems-login/login.php");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -339,9 +349,7 @@
                     <div class="preview-item-content">
                       <p class="preview-subject mb-1">Settings</p>
                     </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
+                    <a class="dropdown-item preview-item" href="Logout.php">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-logout text-danger"></i>
@@ -350,7 +358,7 @@
                     <div class="preview-item-content">
                       <p class="preview-subject mb-1">Log out</p>
                     </div>
-                  </a>
+                    </a>
                   <div class="dropdown-divider"></div>
                   <p class="p-3 mb-0 text-center">Advanced settings</p>
                 </div>
