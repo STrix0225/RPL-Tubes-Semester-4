@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
     header("Location: ../UI/gems-login/login.php");
@@ -44,11 +46,11 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
             <div class="profile-desc">
               <div class="profile-pic">
                 <div class="count-indicator">
-                  <img class="img-xs rounded-circle " src="assets/images/faces/face15.jpg" alt="">
+                  <img class="img-xs rounded-circle " src="assets/images/faces/muka.jpg" alt="">
                   <span class="count bg-success"></span>
                 </div>
                 <div class="profile-name">
-                  <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
+                  <h5 class="mb-0 font-weight-normal">Haikal</h5>
                   <span>Gold Member</span>
                 </div>
               </div>
@@ -93,7 +95,7 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
             <span class="nav-link">Navigation</span>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="dashboard-Admin.php">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
@@ -332,8 +334,8 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
               <li class="nav-item dropdown">
                 <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                   <div class="navbar-profile">
-                    <img class="img-xs rounded-circle" src="assets/images/faces/face15.jpg" alt="">
-                    <p class="mb-0 d-none d-sm-block navbar-profile-name">Henry Klein</p>
+                    <img class="img-xs rounded-circle" src="assets/images/faces/muka.jpg" alt="">
+                    <p class="mb-0 d-none d-sm-block navbar-profile-name">Haikal</p>
                     <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                   </div>
                 </a>
@@ -384,80 +386,78 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
                     <div class="row">
                       <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$12.34</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                          <h3 class="mb-0">
+                            <?php include('./logic/total-product.php'); ?>
+                          </h3>
                         </div>
                       </div>
                       <div class="col-3">
-                        <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
+                        <div class="icon icon-box-info">
+                          <span class="mdi mdi-package-variant icon-item"></span>
                         </div>
                       </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Potential growth</h6>
+                    <h6 class="text-muted font-weight-normal">Total Produk</h6>
                   </div>
                 </div>
               </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
                     <div class="row">
                       <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$17.34</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+11%</p>
+                          <h3 class="mb-0"><?php include('./logic/total-brand.php'); ?></h3>
                         </div>
                       </div>
                       <div class="col-3">
-                        <div class="icon icon-box-success">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
+                        <div class="icon icon-box-info">
+                          <span class="mdi mdi-tag icon-item"></span>
                         </div>
                       </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Revenue current</h6>
+                    <h6 class="text-muted font-weight-normal">Total Brand</h6>
                   </div>
                 </div>
               </div>
               <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$12.34</h3>
-                          <p class="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-danger">
-                          <span class="mdi mdi-arrow-bottom-left icon-item"></span>
-                        </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-9">
+                      <div class="d-flex align-items-center align-self-start">
+                        <h3 class="mb-0"><?php include('./logic/total-order.php'); ?></h3>
                       </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Daily Income</h6>
+                    <div class="col-3">
+                      <div class="icon icon-box-danger">
+                        <span class="mdi mdi-cart icon-item"></span>
+                      </div>
+                    </div>
                   </div>
+                  <h6 class="text-muted font-weight-normal">Total Order</h6>
                 </div>
+              </div>
               </div>
               <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$31.53</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-9">
+                      <div class="d-flex align-items-center align-self-start">
+                        <h3 class="mb-0"><?php include('./logic/total-customers.php'); ?></h3>
                       </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Expense current</h6>
+                    <div class="col-3">
+                      <div class="icon icon-box-success">
+                        <span class="mdi mdi-account icon-item"></span>
+                      </div>
+                    </div>
                   </div>
+                  <h6 class="text-muted font-weight-normal">Total Customers</h6>
                 </div>
               </div>
+            </div>
             </div>
             <div class="row">
               <div class="col-md-4 grid-margin stretch-card">
@@ -682,8 +682,8 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
                               </div>
                             </td>
                             <td>
-                              <img src="assets/images/faces/face1.jpg" alt="image" />
-                              <span class="pl-2">Henry Klein</span>
+                              <img src="assets/images/faces/muka.jpg" alt="image" />
+                              <span class="pl-2">Haikal</span>
                             </td>
                             <td> 02312 </td>
                             <td> $14,500 </td>
