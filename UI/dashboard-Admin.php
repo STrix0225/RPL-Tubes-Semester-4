@@ -10,6 +10,8 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
 ?>
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -663,16 +665,17 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
                                 </label>
                               </div>
                             </th>
-                            <th> Client Name </th>
-                            <th> Order No </th>
+                            <th> Nama Client </th>
+                            <th> Order ID </th>
                             <th> Product Cost </th>
-                            <th> Project </th>
-                            <th> Payment Mode </th>
-                            <th> Start Date </th>
-                            <th> Payment Status </th>
+                            <th> City </th>
+                            <th> Phone </th>
+                            <th> Order Date </th>
+                            <th> Order Status </th>
                           </tr>
                         </thead>
                         <tbody>
+                          <?php include('./logic/view-table-order.php'); while($row = mysqli_fetch_assoc($result)): ?>
                           <tr>
                             <td>
                               <div class="form-check form-check-muted m-0">
@@ -682,102 +685,28 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
                               </div>
                             </td>
                             <td>
-                              <img src="assets/images/faces/muka.jpg" alt="image" />
-                              <span class="pl-2">Haikal</span>
+                              <img src="assets/images/faces/<?= htmlspecialchars($row['customer_photo'] ?? 'default.jpg') ?>" alt="image" />
+                              <span class="pl-2"><?= htmlspecialchars($row['customer_name']) ?></span>
                             </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Dashboard </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
+                            <td> <?= htmlspecialchars($row['order_id']) ?> </td>
+                            <td> $<?= number_format($row['order_cost'], 2) ?> </td>
+                            <td> <?= htmlspecialchars($row['customer_city']) ?> </td>
+                            <td> <?= htmlspecialchars($row['customer_phone']) ?> </td>
+                            <td> <?= date("d M Y", strtotime($row['order_date'])) ?> </td>
                             <td>
-                              <div class="badge badge-outline-success">Approved</div>
+                              <?php
+
+                                $status = strtolower($row['order_status']);
+                                $badgeClass = 'badge-outline-secondary';
+                                if ($status == 'approved') $badgeClass = 'badge-outline-success';
+                                elseif ($status == 'pending') $badgeClass = 'badge-outline-warning';
+                                elseif ($status == 'rejected') $badgeClass = 'badge-outline-danger';
+                                elseif ($status == 'missing') $badgeClass = 'badge-outline-info';
+                              ?>
+                              <div class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></div>
                             </td>
                           </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face2.jpg" alt="image" />
-                              <span class="pl-2">Estella Bryan</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Website </td>
-                            <td> Cash on delivered </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-warning">Pending</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face5.jpg" alt="image" />
-                              <span class="pl-2">Lucy Abbott</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> App design </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-danger">Rejected</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face3.jpg" alt="image" />
-                              <span class="pl-2">Peter Gill</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Development </td>
-                            <td> Online Payment </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face4.jpg" alt="image" />
-                              <span class="pl-2">Sallie Reyes</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Website </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr>
+                          <?php endwhile; ?>
                         </tbody>
                       </table>
                     </div>
