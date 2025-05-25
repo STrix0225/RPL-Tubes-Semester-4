@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_num_rows($query_customer) > 0) {
         $_SESSION['login_type'] = 'customer';
         $_SESSION['user'] = mysqli_fetch_assoc($query_customer);
-        header("Location: ../dashboard-customers.php");
+        header("Location: ../gems-customer-pages/dashboard.php");
         exit;
     }
 

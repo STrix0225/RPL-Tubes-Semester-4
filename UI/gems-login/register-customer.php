@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_bind_param($stmt, 'sssssss', $name, $email, $password, $phone, $address, $city, $path);
     
     if (mysqli_stmt_execute($stmt)) {
-        echo "<script>alert('Registration successful!'); window.location='login.php';</script>";
+        echo "<script>alert('Registration successful!'); window.location='login-customer.php';</script>";
     } else {
         error_log("Database error: " . mysqli_error($conn));
         echo "<script>alert('Registration failed. Please try again.'); window.location='register_customer.php';</script>";
@@ -148,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary btn-block enter-btn">Register</button>
                   </div>
-                  <p class="sign-up text-center mt-3">Already have an Account?<a href="login.php"> Login</a></p>
+                  <p class="sign-up text-center mt-3">Already have an Account?<a href="login-customer.php"> Login</a></p>
                 </form>
               </div>
             </div>
