@@ -59,6 +59,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <button type="submit">Login</button>
 
+      <p class="sign-up">
+  Don't have an Account?
+  <a href="register-customer.php" style="color: cyan;"> Sign Up</a>
+</p>
+
       <?php if ($error): ?>
         <p class="error"><?= $error; ?></p>
       <?php endif; ?>

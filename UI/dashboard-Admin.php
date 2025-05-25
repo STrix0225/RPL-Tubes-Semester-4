@@ -695,7 +695,6 @@ if (!isset($_SESSION['login_type']) || $_SESSION['login_type'] !== 'admin') {
                             <td> <?= date("d M Y", strtotime($row['order_date'])) ?> </td>
                             <td>
                               <?php
-
                                 $status = strtolower($row['order_status']);
                                 $badgeClass = 'badge-outline-secondary';
                                 if ($status == 'approved') $badgeClass = 'badge-outline-success';

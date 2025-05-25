@@ -1,7 +1,10 @@
 body {
+      background-image: url("background.jpg") ;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
       margin: 0;
       padding: 0;
-      background: #0f172a;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
@@ -20,13 +23,36 @@ body {
     }
 
     .login-form h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 
     .input-group {
-      margin-bottom: 15px;
-    }
+  margin-bottom: 15px;
+  padding-right: 20px;
+
+}
+
+.checkbox-group {
+  margin-bottom: 15px;
+}
+
+button[type="submit"] {
+  margin-top: 10px; /* jarak dari checkbox ke tombol */
+}
+
+.sign-up {
+  margin-top: 20px; /* jarak dari tombol ke teks sign-up */
+  text-align: center;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
 
     .input-group label {
       display: block;
