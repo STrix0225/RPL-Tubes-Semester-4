@@ -1,3 +1,35 @@
+<?php
+session_start();
+include '../Database/connection.php';
+
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = md5($_POST['password']); // Sesuaikan jika DB pakai md5
+
+    // Cek di tabel admins
+    $query_admin = mysqli_query($conn, "SELECT * FROM admins WHERE admin_email='$email' AND admin_password='$password'");
+    if (mysqli_num_rows($query_admin) > 0) {
+        $_SESSION['login_type'] = 'admin';
+        $_SESSION['user'] = mysqli_fetch_assoc($query_admin);
+        header("Location: ../dashboard-Admin.php");
+        exit;
+    }
+
+    // Cek di tabel customers
+    $query_customer = mysqli_query($conn, "SELECT * FROM customers WHERE customer_email='$email' AND customer_password='$password'");
+    if (mysqli_num_rows($query_customer) > 0) {
+        $_SESSION['login_type'] = 'customer';
+        $_SESSION['user'] = mysqli_fetch_assoc($query_customer);
+        header("Location: ../dashboard-customers.php");
+        exit;
+    }
+
+    $error = "Email atau password salah!";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,17 +38,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Corona Admin</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="../assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
   </head>
   <body>
     <div class="container-scroller">
@@ -46,12 +78,8 @@
                     <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
                   </div>
                   <div class="d-flex">
-                    <button class="btn btn-facebook mr-2 col">
-                      <i class="mdi mdi-facebook"></i> Facebook </button>
-                    <button class="btn btn-google col">
-                      <i class="mdi mdi-google-plus"></i> Google plus </button>
                   </div>
-                  <p class="sign-up">Don't have an Account?<a href="#"> Sign Up</a></p>
+                  <p class="sign-up">Don't have an Account?<a href="register-customer.php"> Sign Up</a></p>
                 </form>
               </div>
             </div>
