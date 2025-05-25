@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include __DIR__ . '/../Database/connection.php';
 
-$sql = "SELECT COUNT(*) AS total FROM product";
+$sql = "SELECT COUNT(*) AS total FROM products";
 $result = mysqli_query($conn, $sql);
 
 if ($result && $row = mysqli_fetch_assoc($result)) {
