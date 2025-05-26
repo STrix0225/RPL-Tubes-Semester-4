@@ -92,10 +92,7 @@
 						<nav class="navbar">
 							<ul class="navbar_menu">
 								<li><a href="dashboard.php">home</a></li>
-								<li><a href="#">shop</a></li>
-								<li><a href="#">promotion</a></li>
-								<li><a href="#">pages</a></li>
-								<li><a href="#">blog</a></li>
+								<li><a href="shop.php">shop</a></li>
 								<li><a href="contact.php">contact</a></li>
 							</ul>
 							<ul class="navbar_user">
