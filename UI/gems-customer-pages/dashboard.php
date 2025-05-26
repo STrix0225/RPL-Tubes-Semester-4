@@ -188,7 +188,7 @@
 				<div class="col-md-4">
 					<div class="banner_item align-items-center" style="background-image:url(images/IP1.webp)">
 						<div class="banner_category">
-							<a href="shop.php">women's</a>
+							<a href="shop.php">Handphone's</a>
 						</div>
 					</div>
 				</div>
@@ -202,7 +202,7 @@
 				<div class="col-md-4">
 					<div class="banner_item align-items-center" style="background-image:url(images/background2.jpg)">
 						<div class="banner_category">
-							<a href="shop.php">men's</a>
+							<a href="shop.php">Laptop's</a>
 						</div>
 					</div>
 				</div>
