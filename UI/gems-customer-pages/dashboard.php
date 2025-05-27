@@ -65,35 +65,12 @@ $best_sellers = getBestSellers($conn);
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6">
-						<div class="top_nav_left">free shipping on all country orders over $50</div>
+						<div class="top_nav_left">free shipping around the world orders over $50</div>
 					</div>
 					<div class="col-md-6 text-right">
 						<div class="top_nav_right">
 							<ul class="top_nav_menu">
-								<!-- Currency / Language / My Account -->
-								<li class="currency">
-									<a href="#">
-										idr
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="currency_selection">
-										<li><a href="#">usd</a></li>
-										<li><a href="#">eur</a></li>
-									</ul>
-								</li>
-								<li class="language">
-									<a href="#">
-										English
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="language_selection">
-										<li><a href="#">French</a></li>
-										<li><a href="#">Italian</a></li>
-										<li><a href="#">German</a></li>
-										<li><a href="#">Spanish</a></li>
-										<li><a href="#">Indonesia</a></li>
-									</ul>
-								</li>
+								<!--  My Account -->						
 								<li class="account">
 									<a href="#">
 										My Account
@@ -271,7 +248,14 @@ $best_sellers = getBestSellers($conn);
 			<div class="row">
 				<div class="col">
 					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
-
+						<?php while ($product = $products->fetch_assoc()): 
+							// Hitung diskon
+							$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+							$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount']/100) : $product['product_price'];
+							$discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
+							$category_class = strtolower(str_replace(' ', '-', $product['product_category']));
+						?>
+						<div class="product-item <?php echo htmlspecialchars($category_class); ?>">
 							<div class="product discount product_filter">
 								<div class="product_image">
 									<img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>" 
@@ -303,11 +287,13 @@ $best_sellers = getBestSellers($conn);
 								<a href="shop-detail.php?id=<?php echo $product['product_id']; ?>">add to cart</a>
 							</div>
 						</div>
+						<?php endwhile; ?>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
 
 	<!-- Deal of the week -->
 	<div class="deal_ofthe_week">
@@ -329,7 +315,6 @@ $best_sellers = getBestSellers($conn);
 						<div class="section_title">
 							<h2>Deal Of The Week</h2>
 						</div>
-						<h3><?php echo htmlspecialchars($deal_product['product_name']); ?></h3>
 						<ul class="timer">
 							<li class="d-inline-flex flex-column justify-content-center align-items-center">
 								<div id="day" class="timer_num">03</div>

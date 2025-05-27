@@ -51,7 +51,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6">
-						<div class="top_nav_left">free shipping on all u.s orders over $50</div>
+						<div class="top_nav_left">free shipping around the world orders over $50</div>
 					</div>
 					<div class="col-md-6 text-right">
 						<div class="top_nav_right">
@@ -78,6 +78,7 @@
 
 		<!-- Main Navigation -->
 
+		<!-- Main Navigation -->
 		<div class="main_nav_container">
 			<div class="container">
 				<div class="row">
@@ -88,22 +89,25 @@
 						<nav class="navbar">
 							<ul class="navbar_menu">
 								<li><a href="dashboard.php">home</a></li>
-								<li><a href="shop.php">shop</a></li>							
+								<li><a href="shop.php">shop</a></li>															
 								<li><a href="contact.php">contact</a></li>
+							</ul>
 							<ul class="navbar_user">
-								<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
-								<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								<li class="checkout">
-									<a href="#">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										<span id="checkout_items" class="checkout_items">2</span>
-									</a>
-								</li>
-								<li>
-									<a href="#" id="dark-mode-toggle">
-										<i class="fa fa-moon-o" aria-hidden="true"></i>
-									</a>
-								</li>
+									<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+									<li class="checkout">
+										<a href="#">
+											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
+											<span id="checkout_items" class="checkout_items">2</span>
+										</a>
+									</li>
+									<li>
+										<a href="#" id="dark-mode-toggle">
+											<i class="fa fa-moon-o" aria-hidden="true"></i>
+										</a>
+									</li>
+								</ul>
+								
 							</ul>
 							<div class="hamburger_container">
 								<i class="fa fa-bars" aria-hidden="true"></i>
@@ -206,42 +210,7 @@
 						<div class="filter_button"><span>filter</span></div>
 					</div>
 
-					<!-- Sizes -->
-					<div class="sidebar_section">
-						<div class="sidebar_title">
-							<h5>Sizes</h5>
-						</div>
-						<ul class="checkboxes">
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>S</span></li>
-							<li class="active"><i class="fa fa-square" aria-hidden="true"></i><span>M</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>L</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>XL</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>XXL</span></li>
-						</ul>
-					</div>
-
-					<!-- Color -->
-					<div class="sidebar_section">
-						<div class="sidebar_title">
-							<h5>Color</h5>
-						</div>
-						<ul class="checkboxes">
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Black</span></li>
-							<li class="active"><i class="fa fa-square" aria-hidden="true"></i><span>Pink</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>White</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Blue</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Orange</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>White</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Blue</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Orange</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>White</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Blue</span></li>
-							<li><i class="fa fa-square-o" aria-hidden="true"></i><span>Orange</span></li>
-						</ul>
-						<div class="show_more">
-							<span><span>+</span>Show More</span>
-						</div>
-					</div>
+					
 
 				</div>
 

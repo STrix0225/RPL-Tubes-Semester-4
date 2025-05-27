@@ -153,7 +153,7 @@ jQuery(document).ready(function($)
 
 	function initGoogleMap()
 	{
-		var myLatlng = new google.maps.LatLng(42.373122,-71.112387);
+		var myLatlng = new google.maps.LatLng(-6.897123484051902, 107.63575098680583);
     	var mapOptions = 
     	{
     		center: myLatlng,
@@ -341,7 +341,7 @@ jQuery(document).ready(function($)
 		var image = 'images/map_marker.png';
 		var marker = new google.maps.Marker(
 		{
-			position: new google.maps.LatLng(42.373122,-71.112387),
+			position: new google.maps.LatLng(-6.897123484051902, 107.63575098680583),
 			map: map,
 			icon: image
 		});

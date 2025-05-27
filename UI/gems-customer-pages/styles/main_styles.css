@@ -1718,7 +1718,6 @@ body.dark-mode {
 .dark-mode .product_price,
 .dark-mode .product_info,
 .dark-mode .section_title h2,
-.dark-mode .deal_ofthe_week_content h3,
 .dark-mode .newsletter_text h4,
 .dark-mode .newsletter_text p,
 .dark-mode .footer,
@@ -1728,6 +1727,10 @@ body.dark-mode {
 .dark-mode .menu_top_nav li a,
 .dark-mode .menu_selection li a {
     color: #f5f5f5 !important;
+}
+
+.dark-mode .deal_ofthe_week_content h3{
+	color: #1b1a1a !important;
 }
 
 .dark-mode .footer {
@@ -1761,7 +1764,7 @@ body.dark-mode {
 
 .dark-mode .timer_num,
 .dark-mode .timer_unit {
-    color: #f5f5f5;
+    color: #1a1919;
 }
 
 .dark-mode .hamburger_menu {
@@ -1800,3 +1803,4 @@ body.dark-mode {
 .dark-mode .favorite.active {
     background-color: #cf6679;
 }
+
