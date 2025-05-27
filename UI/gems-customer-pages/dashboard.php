@@ -51,6 +51,7 @@ $best_sellers = getBestSellers($conn);
 <link rel="stylesheet" type="text/css" href="plugins/OwlCarousel2-2.2.1/animate.css">
 <link rel="stylesheet" type="text/css" href="styles/main_styles.css">
 <link rel="stylesheet" type="text/css" href="styles/responsive.css">
+<link href="plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -125,14 +126,21 @@ $best_sellers = getBestSellers($conn);
 								<li><a href="contact.php">contact</a></li>
 							</ul>
 							<ul class="navbar_user">
-								<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
-								<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								<li class="checkout">
-									<a href="#">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										<span id="checkout_items" class="checkout_items">2</span>
-									</a>
-								</li>
+									<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+									<li class="checkout">
+										<a href="#">
+											<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+											<span id="checkout_items" class="checkout_items">2</span>
+										</a>
+									</li>
+									<li>
+										<a href="#" id="dark-mode-toggle">
+											<i class="fa fa-moon-o" aria-hidden="true"></i>
+										</a>
+									</li>
+								</ul>
+								
 							</ul>
 							<div class="hamburger_container">
 								<i class="fa fa-bars" aria-hidden="true"></i>
@@ -568,6 +576,36 @@ $best_sellers = getBestSellers($conn);
 <script src="plugins/easing/easing.js"></script>
 <script src="js/custom.js"></script>
 <script>
+
+// Dark Mode Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeIcon = darkModeToggle.querySelector('i');
+    
+    // Check for saved user preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeIcon.classList.remove('fa-moon-o');
+        darkModeIcon.classList.add('fa-sun-o');
+    }
+    
+    // Toggle dark mode
+    darkModeToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.classList.toggle('dark-mode');
+        
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+            darkModeIcon.classList.remove('fa-moon-o');
+            darkModeIcon.classList.add('fa-sun-o');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+            darkModeIcon.classList.remove('fa-sun-o');
+            darkModeIcon.classList.add('fa-moon-o');
+        }
+    });
+});
+
 // Inisialisasi Isotope
 $(document).ready(function() {
     var $grid = $('.product-grid').isotope({
@@ -607,5 +645,8 @@ $(document).ready(function() {
     });
 });
 </script>
+
+
+
 </body>
 </html>

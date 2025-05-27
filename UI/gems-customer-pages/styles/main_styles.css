@@ -1686,3 +1686,115 @@ section
 {
 	color: #fe4c50;
 }
+/* Improved Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #f5f5f5; /* Lebih terang dari sebelumnya */
+}
+
+.dark-mode .header,
+.dark-mode .main_nav_container,
+.dark-mode .top_nav {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    border-bottom: 1px solid #333;
+}
+
+.dark-mode .navbar_menu li a,
+.dark-mode .navbar_user li a,
+.dark-mode .account_selection a {
+    color: #f5f5f5 !important;
+}
+
+.dark-mode .product {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    border: 1px solid #333;
+}
+
+.dark-mode .product_name a,
+.dark-mode .product_price,
+.dark-mode .product_info,
+.dark-mode .section_title h2,
+.dark-mode .deal_ofthe_week_content h3,
+.dark-mode .newsletter_text h4,
+.dark-mode .newsletter_text p,
+.dark-mode .footer,
+.dark-mode .footer_nav_container,
+.dark-mode .footer_nav a,
+.dark-mode .cr,
+.dark-mode .menu_top_nav li a,
+.dark-mode .menu_selection li a {
+    color: #f5f5f5 !important;
+}
+
+.dark-mode .footer {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+.dark-mode .newsletter {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+.dark-mode .benefit {
+    background-color: #1a1a1a;
+}
+
+.dark-mode input#newsletter_email {
+    background-color: #333;
+    color: #f5f5f5;
+    border: 1px solid #444;
+}
+
+.dark-mode .red_button {
+    background-color: #bb86fc;
+    color: #121212 !important;
+}
+
+.dark-mode .red_button:hover {
+    background-color: #9b51e0;
+}
+
+.dark-mode .timer_num,
+.dark-mode .timer_unit {
+    color: #252525;
+}
+
+.dark-mode .hamburger_menu {
+    background-color: #1e1e1e;
+}
+
+.dark-mode .fs_menu_overlay {
+    background: rgba(49, 49, 49, 0.192);
+}
+
+/* Tambahan untuk elemen spesifik yang mungkin tidak terlihat */
+.dark-mode .top_nav_left,
+.dark-mode .top_nav_right ul li a {
+    color: #f5f5f5 !important;
+}
+
+.dark-mode .arrivals_grid_sorting li {
+    color: #4d4b4b;
+    border: 1px solid #444;
+}
+
+.dark-mode .arrivals_grid_sorting li.is-checked {
+    background-color: #bb86fc;
+    color: #121212 !important;
+}
+
+.dark-mode .product_bubble_red {
+    background-color: #cf6679;
+    color: #121212;
+}
+
+.dark-mode .favorite {
+    background-color: rgba(245, 245, 245, 0.2);
+}
+
+.dark-mode .favorite.active {
+    background-color: #cf6679;
+}

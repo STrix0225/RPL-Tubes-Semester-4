@@ -99,6 +99,11 @@
 										<span id="checkout_items" class="checkout_items">2</span>
 									</a>
 								</li>
+								<li>
+									<a href="#" id="dark-mode-toggle">
+										<i class="fa fa-moon-o" aria-hidden="true"></i>
+									</a>
+								</li>
 							</ul>
 							<div class="hamburger_container">
 								<i class="fa fa-bars" aria-hidden="true"></i>

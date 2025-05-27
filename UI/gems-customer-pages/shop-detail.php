@@ -71,16 +71,21 @@
 								<li><a href="shop.php">shop</a></li>								
 								<li><a href="contact.php">contact</a></li>
 							</ul>
-							<ul class="navbar_user">
-								<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
-								<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								<li class="checkout">
-									<a href="#">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										<span id="checkout_items" class="checkout_items">2</span>
-									</a>
-								</li>
-							</ul>
+							<<ul class="navbar_user">
+    <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+    <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+    <li class="checkout">
+        <a href="#">
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            <span id="checkout_items" class="checkout_items">2</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" id="dark-mode-toggle">
+            <i class="fa fa-moon-o" aria-hidden="true"></i>
+        </a>
+    </li>
+</ul>
 							<div class="hamburger_container">
 								<i class="fa fa-bars" aria-hidden="true"></i>
 							</div>
