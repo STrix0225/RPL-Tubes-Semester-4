@@ -158,7 +158,7 @@
 				<li class="menu_item"><a href="#">shop</a></li>
 				<li class="menu_item"><a href="#">promotion</a></li>
 				<li class="menu_item"><a href="#">pages</a></li>
-				<li class="menu_item"><a href="#">blog</a></li>
+				<li class="menu_item"><a href="#">blog</a></li>	
 				<li class="menu_item"><a href="#">contact</a></li>
 			</ul>
 		</div>
@@ -166,7 +166,7 @@
 
 	<!-- Slider -->
 
-	<div class="main_slider" style="background-image:url(images/slider_1.jpg)">
+	<div class="main_slider" style="background-image:url(images/Background5.avif)">
 		<div class="container fill_height">
 			<div class="row align-items-center fill_height">
 				<div class="col">
@@ -186,23 +186,23 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-4">
-					<div class="banner_item align-items-center" style="background-image:url(images/banner_1.jpg)">
+					<div class="banner_item align-items-center" style="background-image:url(images/IP1.webp)">
 						<div class="banner_category">
-							<a href="shop.php">women's</a>
+							<a href="shop.php">Handphone's</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="banner_item align-items-center" style="background-image:url(images/banner_2.jpg)">
+					<div class="banner_item align-items-center" style="background-image:url(images/Headphone4.jpg)">
 						<div class="banner_category">
 							<a href="shop.php">accessories's</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="banner_item align-items-center" style="background-image:url(images/banner_3.jpg)">
+					<div class="banner_item align-items-center" style="background-image:url(images/background2.jpg)">
 						<div class="banner_category">
-							<a href="shop.php">men's</a>
+							<a href="shop.php">Laptop's</a>
 						</div>
 					</div>
 				</div>
@@ -242,7 +242,7 @@
 						<div class="product-item men">
 							<div class="product discount product_filter">
 								<div class="product_image">
-									<img src="images/product_1.png" alt="">
+									<img src="images/ROG1.jpeg" alt="">
 								</div>
 								<div class="favorite favorite_left"></div>
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
