@@ -212,29 +212,30 @@ $best_sellers = getBestSellers($conn);
 	<div class="banner">
 		<div class="container">
 			<div class="row">
-				<?php
-				// Ambil kategori unik untuk banner
-				$categories_query = "SELECT DISTINCT product_category FROM products LIMIT 3";
-				$categories_result = $conn->query($categories_query);
-				
-				while($category = $categories_result->fetch_assoc()):
-					$category_name = $category['product_category'];
-					// Ambil satu produk dari kategori ini untuk gambar
-					$product_query = "SELECT product_image1 FROM products WHERE product_category = ? LIMIT 1";
-					$stmt = $conn->prepare($product_query);
-					$stmt->bind_param('s', $category_name);
-					$stmt->execute();
-					$product = $stmt->get_result()->fetch_assoc();
-				?>
 				<div class="col-md-4">
-
+					<div class="banner_item align-items-center" style="background-image:url(images/IP1.webp)">
+						<div class="banner_category">
+							<a href="shop.php">Handphone's</a>
 						</div>
 					</div>
 				</div>
-				<?php endwhile; ?>
+				<div class="col-md-4">
+					<div class="banner_item align-items-center" style="background-image:url(images/Headphone4.jpg)">
+						<div class="banner_category">
+							<a href="shop.php">accessories's</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="banner_item align-items-center" style="background-image:url(images/background2.jpg)">
+						<div class="banner_category">
+							<a href="shop.php">Laptop's</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
+	</div>>
 
 	<!-- New Arrivals -->
 	<div class="new_arrivals">
@@ -293,7 +294,6 @@ $best_sellers = getBestSellers($conn);
 								<a href="shop-detail.php?id=<?php echo $product['product_id']; ?>">add to cart</a>
 							</div>
 						</div>
-						<?php endwhile; ?>
 					</div>
 				</div>
 			</div>
