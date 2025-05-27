@@ -187,14 +187,14 @@ $best_sellers = getBestSellers($conn);
 				<li class="menu_item"><a href="#">shop</a></li>
 				<li class="menu_item"><a href="#">promotion</a></li>
 				<li class="menu_item"><a href="#">pages</a></li>
-				<li class="menu_item"><a href="#">blog</a></li>
+				<li class="menu_item"><a href="#">blog</a></li>	
 				<li class="menu_item"><a href="#">contact</a></li>
 			</ul>
 		</div>
 	</div>
 
 	<!-- Slider -->
-	<div class="main_slider" style="background-image:url(images/slide1.png)">
+
 		<div class="container fill_height">
 			<div class="row align-items-center fill_height">
 				<div class="col">
@@ -227,11 +227,7 @@ $best_sellers = getBestSellers($conn);
 					$product = $stmt->get_result()->fetch_assoc();
 				?>
 				<div class="col-md-4">
-					<div class="banner_item align-items-center" style="background-image:url(images/<?php echo htmlspecialchars($product['product_image1']); ?>)">
-						<div class="banner_category">
-							<a href="shop.php?category=<?php echo urlencode($category_name); ?>">
-								<?php echo htmlspecialchars($category_name); ?>
-							</a>
+
 						</div>
 					</div>
 				</div>
@@ -265,14 +261,7 @@ $best_sellers = getBestSellers($conn);
 			<div class="row">
 				<div class="col">
 					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
-						<?php while ($product = $products->fetch_assoc()): 
-							// Hitung diskon
-							$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-							$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount']/100) : $product['product_price'];
-							$discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
-							$category_class = strtolower(str_replace(' ', '-', $product['product_category']));
-						?>
-						<div class="product-item <?php echo htmlspecialchars($category_class); ?>">
+
 							<div class="product discount product_filter">
 								<div class="product_image">
 									<img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>" 
