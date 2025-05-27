@@ -1719,10 +1719,6 @@ body.dark-mode {
 .dark-mode .product_info,
 .dark-mode .section_title h2,
 .dark-mode .deal_ofthe_week_content h3,
-.dark-mode .benefit_content h6,
-.dark-mode .benefit_content p,
-.dark-mode .blog_title,
-.dark-mode .blog_meta,
 .dark-mode .newsletter_text h4,
 .dark-mode .newsletter_text p,
 .dark-mode .footer,
@@ -1773,7 +1769,7 @@ body.dark-mode {
 }
 
 .dark-mode .fs_menu_overlay {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(29, 29, 29, 0.301);
 }
 
 /* Tambahan untuk elemen spesifik yang mungkin tidak terlihat */
@@ -1783,7 +1779,7 @@ body.dark-mode {
 }
 
 .dark-mode .arrivals_grid_sorting li {
-    color: #f5f5f5;
+    color: #252525;
     border: 1px solid #444;
 }
 
