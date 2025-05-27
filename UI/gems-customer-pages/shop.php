@@ -1,3 +1,24 @@
+<?php
+    include('../Database/connection.php');
+
+    if (isset($_POST['search']) && isset($_POST['product_category'])) {
+        //Get all products by category
+        $category = $_POST['product_category'];
+        $query_products = "SELECT * FROM products WHERE product_category = ?";
+        $stmt_products = $conn->prepare($query_products);
+        $stmt_products->bind_param('s', $category);
+        $stmt_products->execute();
+        $products = $stmt_products->get_result();
+    } else {
+        //Get all products
+        $query_products = "SELECT * FROM products";
+        $stmt_products = $conn->prepare($query_products);
+        $stmt_products->execute();
+        $products = $stmt_products->get_result();
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,38 +59,14 @@
 
 								<!-- Currency / Language / My Account -->
 
-								<li class="currency">
-									<a href="#">
-										usd
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="currency_selection">
-										<li><a href="#">cad</a></li>
-										<li><a href="#">aud</a></li>
-										<li><a href="#">eur</a></li>
-										<li><a href="#">gbp</a></li>
-									</ul>
-								</li>
-								<li class="language">
-									<a href="#">
-										English
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="language_selection">
-										<li><a href="#">French</a></li>
-										<li><a href="#">Italian</a></li>
-										<li><a href="#">German</a></li>
-										<li><a href="#">Spanish</a></li>
-									</ul>
-								</li>
 								<li class="account">
 									<a href="#">
 										My Account
 										<i class="fa fa-angle-down"></i>
 									</a>
 									<ul class="account_selection">
-										<li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-										<li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+										<li><a href="../gems-login/login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+										<li><a href="../gems-login/register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -86,7 +83,7 @@
 				<div class="row">
 					<div class="col-lg-12 text-right">
 						<div class="logo_container">
-							<a href="#">colo<span>shop</span></a>
+							<a href="#">Gadget<span>MS</span></a>
 						</div>
 						<nav class="navbar">
 							<ul class="navbar_menu">
@@ -174,8 +171,8 @@
 
 				<div class="breadcrumbs d-flex flex-row align-items-center">
 					<ul>
-						<li><a href="index.html">Home</a></li>
-						<li class="active"><a href="index.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Men's</a></li>
+						<li><a href="dashboard.php">Home</a></li>
+						<li><a href="shop.php"><i></i>shop</a></li>
 					</ul>
 				</div>
 
@@ -187,13 +184,9 @@
 							<h5>Product Category</h5>
 						</div>
 						<ul class="sidebar_categories">
-							<li><a href="#">Men</a></li>
-							<li class="active"><a href="#"><span><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>Women</a></li>
+							<li><a href="#">Laptop</a></li>
+							<li class="active"><a href="#"><span><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>Handphone</a></li>
 							<li><a href="#">Accessories</a></li>
-							<li><a href="#">New Arrivals</a></li>
-							<li><a href="#">Collection</a></li>
-							<li><a href="#">Shop</a></li>
-						</ul>
 					</div>
 
 					<!-- Price Range Filtering -->
@@ -297,239 +290,47 @@
 								</div>
 
 								<!-- Product Grid -->
-
-								<div class="product-grid">
-
-									<!-- Product 1 -->
-
-									<div class="product-item men">
-										<div class="product discount product_filter">
-											<div class="product_image">
-												<img src="images/product_1.png" alt="">
-											</div>
-											<div class="favorite favorite_left"></div>
-											<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-												<div class="product_price">$520.00<span>$590.00</span></div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 2 -->
-
-									<div class="product-item women">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_2.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center"><span>new</span></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Samsung CF591 Series Curved 27-Inch FHD Monitor</a></h6>
-												<div class="product_price">$610.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 3 -->
-
-									<div class="product-item women">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_3.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Blue Yeti USB Microphone Blackout Edition</a></h6>
-												<div class="product_price">$120.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 4 -->
-
-									<div class="product-item accessories">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_4.png" alt="">
-											</div>
-											<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
-											<div class="favorite favorite_left"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">DYMO LabelWriter 450 Turbo Thermal Label Printer</a></h6>
-												<div class="product_price">$410.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 5 -->
-
-									<div class="product-item women men">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_5.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-												<div class="product_price">$180.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 6 -->
-
-									<div class="product-item accessories">
-										<div class="product discount product_filter">
-											<div class="product_image">
-												<img src="images/product_6.png" alt="">
-											</div>
-											<div class="favorite favorite_left"></div>
-											<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-												<div class="product_price">$520.00<span>$590.00</span></div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 7 -->
-
-									<div class="product-item women">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_7.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Samsung CF591 Series Curved 27-Inch FHD Monitor</a></h6>
-												<div class="product_price">$610.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 8 -->
-
-									<div class="product-item accessories">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_8.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Blue Yeti USB Microphone Blackout Edition</a></h6>
-												<div class="product_price">$120.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 9 -->
-
-									<div class="product-item men">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_9.png" alt="">
-											</div>
-											<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
-											<div class="favorite favorite_left"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">DYMO LabelWriter 450 Turbo Thermal Label Printer</a></h6>
-												<div class="product_price">$410.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 10 -->
-
-									<div class="product-item men">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_10.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-												<div class="product_price">$180.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 11 -->
-
-									<div class="product-item women men">
-										<div class="product product_filter">
-											<div class="product_image">
-												<img src="images/product_5.png" alt="">
-											</div>
-											<div class="favorite"></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-												<div class="product_price">$180.00</div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-
-									<!-- Product 12 -->
-
-									<div class="product-item accessories">
-										<div class="product discount product_filter">
-											<div class="product_image">
-												<img src="images/product_6.png" alt="">
-											</div>
-											<div class="favorite favorite_left"></div>
-											<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-											<div class="product_info">
-												<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-												<div class="product_price">$520.00<span>$590.00</span></div>
-											</div>
-										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
-								</div>
-
-								<!-- Product Sorting -->
-
-								<div class="product_sorting_container product_sorting_container_bottom clearfix">
-									<ul class="product_sorting">
-										<li>
-											<span>Show:</span>
-											<span class="num_sorting_text">04</span>
-											<i class="fa fa-angle-down"></i>
-											<ul class="sorting_num">
-												<li class="num_sorting_btn"><span>01</span></li>
-												<li class="num_sorting_btn"><span>02</span></li>
-												<li class="num_sorting_btn"><span>03</span></li>
-												<li class="num_sorting_btn"><span>04</span></li>
-											</ul>
-										</li>
-									</ul>
-									<span class="showing_results">Showing 1–3 of 12 results</span>
-									<div class="pages d-flex flex-row align-items-center">
-										<div class="page_current">
-											<span>1</span>
-											<ul class="page_selection">
-												<li><a href="#">1</a></li>
-												<li><a href="#">2</a></li>
-												<li><a href="#">3</a></li>
-											</ul>
-										</div>
-										<div class="page_total"><span>of</span> 3</div>
-										<div id="next_page_1" class="page_next"><a href="#"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a></div>
-									</div>
-
-								</div>
+<div class="product-grid">
+    <?php while ($product = $products->fetch_assoc()): 
+        // Calculate discount if exists
+        $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+        $discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount']/100) : $product['product_price'];
+        $discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
+    ?>
+    <div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'])); ?>">
+        <div class="product discount product_filter">
+            <div class="product_image">
+                <img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>" 
+                     alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+            </div>
+            <div class="favorite favorite_left"></div>
+            
+            <?php if ($has_discount): ?>
+            <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+                <span>-$<?php echo number_format($discount_amount, 0); ?></span>
+            </div>
+            <?php endif; ?>
+            
+            <div class="product_info">
+                <h6 class="product_name">
+                    <a href="single.php?id=<?php echo $product['product_id']; ?>">
+                        <?php echo htmlspecialchars($product['product_name']); ?>
+                    </a>
+                </h6>
+                <div class="product_price">
+                    $<?php echo number_format($discounted_price, 2); ?>
+                    <?php if ($has_discount): ?>
+                        <span>$<?php echo number_format($product['product_price'], 2); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <div class="red_button add_to_cart_button">
+            <a href="shop-detail.php">add to cart</a>
+        </div>
+    </div>
+    <?php endwhile; ?>
+</div>
 
 							</div>
 						</div>
