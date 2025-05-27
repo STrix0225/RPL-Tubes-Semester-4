@@ -195,6 +195,7 @@ $best_sellers = getBestSellers($conn);
 
 	<!-- Slider -->
 
+		<div class="main_slider" style="background-image:url(images/Background5.avif)">
 		<div class="container fill_height">
 			<div class="row align-items-center fill_height">
 				<div class="col">
