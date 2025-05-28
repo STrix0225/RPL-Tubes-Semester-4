@@ -118,10 +118,10 @@ if(isset($_GET['id'])) {
         </a>
     </li>
     <li>
-        <a href="#" id="dark-mode-toggle">
-            <i class="fa fa-moon-o" aria-hidden="true"></i>
-        </a>
-    </li>
+    <a href="#" id="dark-mode-toggle" title="Toggle Dark Mode">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+    </a>
+</li>
 </ul>
 							<div class="hamburger_container">
 								<i class="fa fa-bars" aria-hidden="true"></i>
@@ -539,6 +539,58 @@ if(isset($_GET['id'])) {
 <script src="plugins/easing/easing.js"></script>
 <script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 <script src="js/single_custom.js"></script>
+<script>
+// Dark Mode Toggle
+document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.body.classList.toggle('dark-mode');
+    
+    // Save preference to localStorage
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+        this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
+    }
+});
+
+// Check for saved dark mode preference
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+}
+
+// Quantity selector
+document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
+    var quantity = document.getElementById('quantity_value');
+    quantity.textContent = parseInt(quantity.textContent) + 1;
+});
+
+document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
+    var quantity = document.getElementById('quantity_value');
+    if (parseInt(quantity.textContent) > 1) {
+        quantity.textContent = parseInt(quantity.textContent) - 1;
+    }
+});
+
+// Image thumbnail click handler
+document.querySelectorAll('.single_product_thumbnails li').forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.single_product_thumbnails li').forEach(function(item) {
+            item.classList.remove('active');
+        });
+        
+        // Add active class to clicked thumbnail
+        this.classList.add('active');
+        
+        // Change main image
+        var newImage = this.querySelector('img').getAttribute('data-image');
+        document.querySelector('.single_product_image_background').style.backgroundImage = 'url(' + newImage + ')';
+    });
+});
+</script>
 </body>
 
 </html>

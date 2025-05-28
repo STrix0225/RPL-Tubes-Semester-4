@@ -1302,3 +1302,191 @@ textarea:hover
 {
 	color: #fe4c50;
 }
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .header,
+.dark-mode .top_nav,
+.dark-mode .main_nav_container,
+.dark-mode .footer,
+.dark-mode .tabs_section_container,
+.dark-mode .benefit,
+.dark-mode .newsletter,
+.dark-mode .hamburger_menu {
+    background-color: #1e1e1e;
+    color: #fcf2f2;
+}
+
+
+
+.dark-mode .header,
+.dark-mode .top_nav {
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #333;
+}
+
+.dark-mode .logo_container a {
+    color: #ffffff;
+}
+
+.dark-mode .logo_container a span {
+    color: #ff0000;
+}
+
+.dark-mode .top_nav_left,
+.dark-mode .account a {
+    color: #ffffff;
+}
+
+.dark-mode .account_selection {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+}
+
+.dark-mode .account_selection li a {
+    color: #e0e0e0;
+}
+
+.dark-mode .account_selection li a:hover {
+    background-color: #333;
+}
+
+.dark-mode .hamburger_menu {
+    background-color: #1e1e1e;
+}
+
+.dark-mode .menu_top_nav li a {
+    color: #e0e0e0;
+}
+
+.dark-mode .contact_container,
+.dark-mode .breadcrumbs ul li a,
+.dark-mode .contact_contents,
+.dark-mode .get_in_touch_contents {
+    color: #e0e0e0;
+}
+
+.dark-mode .form_input,
+.dark-mode .input_ph,
+.dark-mode .input_message,
+.dark-mode #newsletter_email {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+.dark-mode .red_button {
+    background-color: #ff4e4e;
+    color: white;
+}
+
+.dark-mode .red_button:hover {
+    background-color: #e04f0b;
+}
+
+.dark-mode .newsletter {
+    background-color: #1e1e1e;
+}
+
+.dark-mode .footer {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+.dark-mode .footer a {
+    color: #e0e0e0;
+}
+
+.dark-mode .footer_social ul li a {
+    color: #e0e0e0;
+}
+
+.dark-mode .follow_us_contents h1,
+.dark-mode .contact_contents h1,
+.dark-mode .get_in_touch_contents h1 {
+    color: #ffffff;
+}
+
+/* Dark mode toggle icon */
+.dark-mode #dark-mode-toggle i.fa-moon-o::before {
+    content: "\f185"; /* Sun icon */
+    color: #ffffff;
+}
+
+/* Navbar Dark Mode Fixes */
+
+.dark-mode .navbar_user li a,
+.dark-mode .navbar_user li i,
+.dark-mode .hamburger_container i,
+.dark-mode .hamburger_close i,
+.dark-mode .top_nav_left,
+.dark-mode .top_nav_right a,
+.dark-mode .account a,
+.dark-mode .logo_container a {
+    color: #e0e0e0 !important;
+}
+
+.dark-mode .navbar_user li a:hover,
+.dark-mode .navbar_menu ul li a:hover {
+    color: #eb0303 !important;
+}
+
+/* Shopping cart icon specifically */
+.dark-mode #dark-mode-cart {
+    color: #000000 !important;
+}
+
+/* Hamburger menu lines */
+.dark-mode .hamburger_container i.fa-bars {
+    color: #e0e0e0 !important;
+}
+
+/* Search and user icons */
+.dark-mode .fa-search,
+.dark-mode .fa-user {
+    color: #e0e0e0 !important;
+}
+
+/* Checkout items counter */
+.dark-mode .checkout_items {
+    background-color: #f30808;
+    color: rgb(255, 255, 255) !important;
+}
+
+/* Dropdown menu fixes */
+.dark-mode .account_selection {
+    background-color: #2d2d2d !important;
+    border: 1px solid #444 !important;
+}
+
+.dark-mode .account_selection li a {
+    color: #e0e0e0 !important;
+}
+
+.dark-mode .account_selection li a:hover {
+    background-color: #3d3d3d !important;
+}
+
+/* Dark Mode Navbar Menu Fixes */
+.dark-mode .navbar {
+    background-color: #1e1e1e; /* Ensure navbar has a dark background */
+}
+
+.dark-mode .navbar_menu li a {
+    color: #e0e0e0; /* Light color for text */
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.dark-mode .navbar_menu li a:hover {
+    color: #ff6347; /* Change color on hover for better visibility */
+}
+
+/* Adjusting user icons in dark mode */
+.dark-mode .navbar_user li a {
+    color: #e0e0e0; /* Light color for user icons */
+}
+

@@ -303,6 +303,50 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCIwF204lFZg1y4kPSIhKaHEXMLYxxuMhA"></script>
 <script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 <script src="js/contact_custom.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const body = document.body;
+    const cartIcon = document.getElementById('dark-mode-cart');
+    
+    // Check for saved user preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        body.classList.add('dark-mode');
+    }
+    
+    // Toggle dark mode
+    darkModeToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        body.classList.toggle('dark-mode');
+        
+        // Update cart icon color
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+            cartIcon.style.color = '#e0e0e0';
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+            cartIcon.style.color = '';
+        }
+    });
+    
+    // System preference detection
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (prefersDarkScheme.matches && !localStorage.getItem('darkMode')) {
+        body.classList.add('dark-mode');
+        cartIcon.style.color = '#e0e0e0';
+    }
+    
+    prefersDarkScheme.addEventListener('change', e => {
+        if (e.matches && !localStorage.getItem('darkMode')) {
+            body.classList.add('dark-mode');
+            cartIcon.style.color = '#e0e0e0';
+        } else if (!localStorage.getItem('darkMode')) {
+            body.classList.remove('dark-mode');
+            cartIcon.style.color = '';
+        }
+    });
+});
+</script>
 </body>
 
 </html>

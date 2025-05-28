@@ -1598,3 +1598,111 @@ section
 {
 	color: #fe4c50;
 }
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .header,
+.dark-mode .top_nav,
+.dark-mode .main_nav_container,
+.dark-mode .footer,
+.dark-mode .tabs_section_container,
+.dark-mode .benefit,
+.dark-mode .newsletter,
+.dark-mode .hamburger_menu {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.dark-mode .product_details_title h2,
+.dark-mode .product_details_title p,
+.dark-mode .breadcrumbs ul li a,
+.dark-mode .breadcrumbs ul li.active a,
+.dark-mode .navbar_menu li a,
+.dark-mode .navbar_user li a,
+.dark-mode .account_selection a,
+.dark-mode .top_nav_left,
+.dark-mode .logo_container a,
+.dark-mode .menu_top_nav li a,
+.dark-mode .benefit_content h6,
+.dark-mode .benefit_content p,
+.dark-mode .newsletter_text h4,
+.dark-mode .newsletter_text p,
+.dark-mode .cr,
+.dark-mode .cr a,
+.dark-mode .tab_title h4,
+.dark-mode .tab_text_block h2,
+.dark-mode .tab_text_block p,
+.dark-mode .additional_info_title h4,
+.dark-mode .additional_info_col p,
+.dark-mode .reviews_title h4,
+.dark-mode .user_name,
+.dark-mode .review_date,
+.dark-mode .review p,
+.dark-mode .add_review h1,
+.dark-mode .free_delivery span {
+    color: #e0e0e0;
+}
+
+.dark-mode .product_details,
+.dark-mode .tabs_container,
+.dark-mode .tab_container,
+.dark-mode .user_review_container,
+.dark-mode .add_review {
+    background-color: #2d2d2d;
+    border-color: #444;
+}
+
+.dark-mode .tabs_container .tab {
+    color: #e0e0e0;
+}
+
+.dark-mode .tabs_container .tab.active {
+    color: #f6931f;
+}
+
+.dark-mode .product_price {
+    color: #f6931f;
+}
+
+.dark-mode .original_price {
+    color: #aaa;
+    text-decoration: line-through;
+}
+
+.dark-mode #newsletter_email,
+.dark-mode .form_input,
+.dark-mode .input_review {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+.dark-mode #dark-mode-cart {
+    color: #e0e0e0;
+}
+
+/* Transition effects */
+body, .header, .product_details, .tab_container {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@media only screen and (max-width: 991px) {
+    .dark-mode .hamburger_menu {
+        background-color: #1e1e1e;
+    }
+    
+    .dark-mode .menu_top_nav li a {
+        color: #e0e0e0;
+    }
+    
+    .dark-mode .hamburger_menu .menu_selection li a {
+        color: #e0e0e0;
+    }
+}
+
+.dark-mode #dark-mode-cart {
+    color: #222222;
+}
