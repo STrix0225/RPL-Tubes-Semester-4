@@ -39,7 +39,7 @@ $best_sellers = getBestSellers($conn);
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<title>Gems</title>
+<title>Gadget MS</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Colo Shop Template">
@@ -52,6 +52,7 @@ $best_sellers = getBestSellers($conn);
 <link rel="stylesheet" type="text/css" href="styles/main_styles.css">
 <link rel="stylesheet" type="text/css" href="styles/responsive.css">
 <link href="plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
 </head>
 
 <body>
@@ -334,7 +335,7 @@ $best_sellers = getBestSellers($conn);
 							</li>
 						</ul>
 						<div class="red_button deal_ofthe_week_button">
-							<a href="single.php?id=<?php echo $deal_product['product_id']; ?>">shop now</a>
+							<a href="shop-detail.php?id=<?php echo $deal_product['product_id']; ?>">shop now</a>
 						</div>
 					</div>
 				</div>
@@ -545,7 +546,7 @@ $best_sellers = getBestSellers($conn);
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="footer_nav_container">
-						<div class="cr">©2025 All Rights Reserverd. Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#">gems</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
+						<div class="cr">©2025 All Rights Reserverd. by <a href="#">GadgetMs</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
 					</div>
 				</div>
 			</div>

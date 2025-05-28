@@ -22,7 +22,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Colo Shop Categories</title>
+<title>Gadget MS</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Colo Shop Template">
@@ -35,6 +35,7 @@
 <link rel="stylesheet" type="text/css" href="plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="styles/categories_styles.css">
 <link rel="stylesheet" type="text/css" href="styles/categories_responsive.css">
+<link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
 </head>
 
 <body>
@@ -57,7 +58,7 @@
 						<div class="top_nav_right">
 							<ul class="top_nav_menu">
 
-								<!-- Currency / Language / My Account -->
+								<!-- My Account -->
 
 								<li class="account">
 									<a href="#">
@@ -194,7 +195,7 @@
 						</div>
 						<ul class="sidebar_categories">
 							<li><a href="#">Laptop</a></li>
-							<li class="active"><a href="#"><span><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>Handphone</a></li>
+							<li><a href="#">Handphone</a></li>
 							<li><a href="#">Accessories</a></li>
 					</div>
 
@@ -300,7 +301,7 @@
             </div>
         </div>
         <div class="red_button add_to_cart_button">
-            <a href="shop-detail.php">add to cart</a>
+            <a href="shop-detail.php?id=<?php echo $product['product_id']; ?>">add to cart</a>
         </div>
     </div>
     <?php endwhile; ?>
@@ -409,7 +410,7 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="footer_nav_container">
-						<div class="cr">©2018 All Rights Reserverd. Template by <a href="#">Colorlib</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
+												<div class="cr">©2025 All Rights Reserverd. by <a href="#">GadgetMs</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
 					</div>
 				</div>
 			</div>
@@ -417,6 +418,7 @@
 	</footer>
 
 </div>
+
 
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="styles/bootstrap4/popper.js"></script>
@@ -426,6 +428,54 @@
 <script src="plugins/easing/easing.js"></script>
 <script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 <script src="js/categories_custom.js"></script>
+<script>
+// Tambahkan script ini di bagian bawah file
+$(document).ready(function() {
+    // Filter by Category
+    $('.sidebar_categories li').click(function(e) {
+        e.preventDefault();
+        let category = $(this).text().trim();
+        
+        $.ajax({
+            url: 'filter_products.php',
+            type: 'POST',
+            data: { 
+                action: 'filter_category',
+                category: category 
+            },
+            success: function(response) {
+                $('.product-grid').html(response);
+            }
+        });
+    });
+
+    // Filter by Price Range
+    $('#slider-range').slider({
+        range: true,
+        min: 0,
+        max: 1000,
+        values: [0, 1000],
+        slide: function(event, ui) {
+            $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+        },
+        stop: function(event, ui) {
+            $.ajax({
+                url: 'filter_products.php',
+                type: 'POST',
+                data: { 
+                    action: 'filter_price',
+                    min_price: ui.values[0],
+                    max_price: ui.values[1] 
+                },
+                success: function(response) {
+                    $('.product-grid').html(response);
+                }
+            });
+        }
+    });
+});
+</script>
 </body>
 
 </html>
+

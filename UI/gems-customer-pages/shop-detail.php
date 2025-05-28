@@ -1,7 +1,44 @@
+<?php
+include('../Database/connection.php');
+
+// Get product ID from URL
+if(isset($_GET['id'])) {
+    $product_id = $_GET['id'];
+    $query = "SELECT * FROM products WHERE product_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $product_id);
+    $stmt->execute();
+    $product = $stmt->get_result()->fetch_assoc();
+    
+    if(!$product) {
+        header("Location: shop.php");
+        exit();
+    }
+
+	    $product_images = [
+        $product['product_image1'],
+        $product['product_image2'],
+        $product['product_image3'],
+        $product['product_image4']
+    ];
+
+
+
+    
+    // Calculate discount
+    $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+    $discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount']/100) : $product['product_price'];
+    $discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
+} else {
+    header("Location: shop.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Single Product</title>
+<title>Gadget MS</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Colo Shop Template">
@@ -15,6 +52,7 @@
 <link rel="stylesheet" type="text/css" href="plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="styles/single_styles.css">
 <link rel="stylesheet" type="text/css" href="styles/single_responsive.css">
+<link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
 </head>
 
 <body>
@@ -104,47 +142,20 @@
 	<div class="hamburger_menu">
 		<div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
 		<div class="hamburger_menu_content text-right">
-			<ul class="menu_top_nav">
-				<li class="menu_item has-children">
-					<a href="#">
-						usd
-						<i class="fa fa-angle-down"></i>
-					</a>
-					<ul class="menu_selection">
-						<li><a href="#">cad</a></li>
-						<li><a href="#">aud</a></li>
-						<li><a href="#">eur</a></li>
-						<li><a href="#">gbp</a></li>
-					</ul>
-				</li>
-				<li class="menu_item has-children">
-					<a href="#">
-						English
-						<i class="fa fa-angle-down"></i>
-					</a>
-					<ul class="menu_selection">
-						<li><a href="#">French</a></li>
-						<li><a href="#">Italian</a></li>
-						<li><a href="#">German</a></li>
-						<li><a href="#">Spanish</a></li>
-					</ul>
-				</li>
+			<ul class="menu_top_nav">			
 				<li class="menu_item has-children">
 					<a href="#">
 						My Account
 						<i class="fa fa-angle-down"></i>
 					</a>
 					<ul class="menu_selection">
-						<li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-						<li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+						<li><a href="../gems-login/login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+						<li><a href="../gems-login/register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
 					</ul>
 				</li>
-				<li class="menu_item"><a href="#">home</a></li>
-				<li class="menu_item"><a href="#">shop</a></li>
-				<li class="menu_item"><a href="#">promotion</a></li>
-				<li class="menu_item"><a href="#">pages</a></li>
-				<li class="menu_item"><a href="#">blog</a></li>
-				<li class="menu_item"><a href="#">contact</a></li>
+				<li class="menu_item"><a href="dashboard.php">home</a></li>
+				<li class="menu_item"><a href="shop.php">shop</a></li>
+				<li class="menu_item"><a href="contact.php">contact</a></li>
 			</ul>
 		</div>
 	</div>
@@ -157,9 +168,9 @@
 
 				<div class="breadcrumbs d-flex flex-row align-items-center">
 					<ul>
-						<li><a href="index.html">Home</a></li>
-						<li><a href="categories.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Men's</a></li>
-						<li class="active"><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i>Single Product</a></li>
+						<li><a href="dashboard.php">Home</a></li>
+						<li><a href="shop.php"><i class="fa fa-angle-right" aria-hidden="true"></i>shop</a></li>
+						<li class="active"><a href="shop-detail.php"><i class="fa fa-angle-right" aria-hidden="true"></i>Product</a></li>
 					</ul>
 				</div>
 
@@ -169,35 +180,49 @@
 		<div class="row">
 			<div class="col-lg-7">
 				<div class="single_product_pics">
-					<div class="row">
-						<div class="col-lg-3 thumbnails_col order-lg-1 order-2">
-							<div class="single_product_thumbnails">
-								<ul>
-									<li><img src="images/single_1_thumb.jpg" alt="" data-image="images/single_1.jpg"></li>
-									<li class="active"><img src="images/single_2_thumb.jpg" alt="" data-image="images/single_2.jpg"></li>
-									<li><img src="images/single_3_thumb.jpg" alt="" data-image="images/single_3.jpg"></li>
-								</ul>
-							</div>
-						</div>
-						<div class="col-lg-9 image_col order-lg-2 order-1">
-							<div class="single_product_image">
-								<div class="single_product_image_background" style="background-image:url(images/single_2.jpg)"></div>
-							</div>
-						</div>
-					</div>
-				</div>
+    <div class="row">
+        <!-- Thumbnail -->
+        <div class="col-lg-3 thumbnails_col order-lg-1 order-2">
+            <div class="single_product_thumbnails">
+                <ul>
+                    <?php foreach($product_images as $index => $image): ?>
+                        <li class="<?php echo $index === 0 ? 'active' : ''; ?>">
+                            <img src="images/<?php echo htmlspecialchars($image); ?>" 
+                                 alt="Thumbnail <?php echo $index + 1; ?>"
+                                 data-image="images/<?php echo htmlspecialchars($image); ?>">
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Gambar Utama -->
+        <div class="col-lg-9 image_col order-lg-2 order-1">
+            <div class="single_product_image">
+                <?php if(!empty($product_images)): ?>
+                    <div class="single_product_image_background" 
+                         style="background-image:url(images/<?php echo htmlspecialchars($product_images[0]); ?>)"></div>
+                <?php else: ?>
+                    <div class="single_product_image_background" 
+                         style="background-image:url(images/default_product.jpg)"></div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
 			</div>
 			<div class="col-lg-5">
 				<div class="product_details">
 					<div class="product_details_title">
-						<h2>Pocket cotton sweatshirt</h2>
-						<p>Nam tempus turpis at metus scelerisque placerat nulla deumantos solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis ut...</p>
+						<h2><?php echo htmlspecialchars($product['product_name']); ?></h2>
+						<p><?php echo htmlspecialchars($product['product_description']); ?></p>
 					</div>
 					<div class="free_delivery d-flex flex-row align-items-center justify-content-center">
 						<span class="ti-truck"></span><span>free delivery</span>
 					</div>
-					<div class="original_price">$629.99</div>
-					<div class="product_price">$495.00</div>
+					
+					<div class="original_price">$<?php echo number_format($product['product_price'], 2); ?></div>
+					<div class="product_price">$<?php echo number_format($discounted_price, 2); ?></div>
 					<ul class="star_rating">
 						<li><i class="fa fa-star" aria-hidden="true"></i></li>
 						<li><i class="fa fa-star" aria-hidden="true"></i></li>
@@ -490,7 +515,7 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="footer_nav_container">
-						<div class="cr">©2018 All Rights Reserverd. This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#">Colorlib</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
+												<div class="cr">©2025 All Rights Reserverd. by <a href="#">GadgetMs</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
 					</div>
 				</div>
 			</div>

@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = "Email atau password salah!";
 }
 ?>
->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="../assets/vendors/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.base.css">
   <link rel="stylesheet" href="../assets/css/style.css">
-  <link rel="shortcut icon" href="../assets/images/favicon.png" />
+  <link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
   <style>
   
     .error-message {
