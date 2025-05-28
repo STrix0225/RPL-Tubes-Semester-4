@@ -113,7 +113,7 @@ if(isset($_GET['id'])) {
     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
     <li class="checkout">
         <a href="#">
-            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            <i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
             <span id="checkout_items" class="checkout_items">2</span>
         </a>
     </li>

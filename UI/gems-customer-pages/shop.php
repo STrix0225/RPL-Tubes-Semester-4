@@ -104,7 +104,7 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 										</a>
 									</li>
 									<li>
-										<a href="#" id="dark-mode-toggle">
+										<a href="#" id="dark-mode-toggle" title="Toggle Dark Mode">
 											<i class="fa fa-moon-o" aria-hidden="true"></i>
 										</a>
 									</li>
@@ -450,6 +450,28 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 				}
 			});
 		});
+	</script>
+	<script>
+		// Dark Mode Toggle
+document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.body.classList.toggle('dark-mode');
+    
+    // Save preference to localStorage
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+        this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
+    }
+});
+
+// Check for saved dark mode preference
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+}
 	</script>
 </body>
 

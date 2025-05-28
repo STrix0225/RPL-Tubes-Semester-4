@@ -1804,3 +1804,6 @@ body.dark-mode {
     background-color: #cf6679;
 }
 
+.dark-mode #dark-mode-cart {
+    color: #222222;
+}
