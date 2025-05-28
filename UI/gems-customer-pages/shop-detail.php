@@ -18,8 +18,7 @@ if(isset($_GET['id'])) {
 	    $product_images = [
         $product['product_image1'],
         $product['product_image2'],
-        $product['product_image3'],
-        $product['product_image4']
+        $product['product_image3']
     ];
 
 
@@ -184,16 +183,24 @@ if(isset($_GET['id'])) {
         <!-- Thumbnail -->
         <div class="col-lg-3 thumbnails_col order-lg-1 order-2">
             <div class="single_product_thumbnails">
-                <ul>
-                    <?php foreach($product_images as $index => $image): ?>
-                        <li class="<?php echo $index === 0 ? 'active' : ''; ?>">
-                            <img src="images/<?php echo htmlspecialchars($image); ?>" 
-                                 alt="Thumbnail <?php echo $index + 1; ?>"
-                                 data-image="images/<?php echo htmlspecialchars($image); ?>">
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
+    <ul>
+        <?php if(!empty($product_images)): ?>
+            <?php foreach($product_images as $index => $image): ?>
+                <li class="<?php echo $index === 0 ? 'active' : ''; ?>">
+                    <img src="images/<?php echo htmlspecialchars($image); ?>" 
+                         alt="Thumbnail <?php echo $index + 1; ?>"
+                         data-image="images/<?php echo htmlspecialchars($image); ?>">
+                </li>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <li class="active">
+                <img src="images/default_product.jpg" 
+                     alt="Default Product"
+                     data-image="images/default_product.jpg">
+            </li>
+        <?php endif; ?>
+    </ul>
+</div>
         </div>
         
         <!-- Gambar Utama -->
