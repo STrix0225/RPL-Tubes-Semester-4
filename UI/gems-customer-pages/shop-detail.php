@@ -32,6 +32,95 @@ if (isset($_GET['id'])) {
 	header("Location: shop.php");
 	exit();
 }
+
+// Initialize cart if not exists
+if (!isset($_SESSION['cart'])) {
+	$_SESSION['cart'] = [];
+}
+
+// Handle remove item action
+if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
+	unset($_SESSION['cart'][$_GET['remove']]);
+	header("Location: cart.php");
+	exit();
+}
+
+// Handle quantity update
+if (isset($_POST['update_quantity'])) {
+	foreach ($_POST['quantity'] as $id => $quantity) {
+		if (isset($_SESSION['cart'][$id])) {
+			$_SESSION['cart'][$id] = [
+				'product_id' => $id,
+				'quantity' => max(1, (int)$quantity)
+			];
+		}
+	}
+	header("Location: cart.php");
+	exit();
+}
+
+// Calculate totals
+$subtotal = 0;
+$cart_items = [];
+
+if (!empty($_SESSION['cart'])) {
+	$placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+	$ids = array_column($_SESSION['cart'], 'product_id');
+	$stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
+	$stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
+	$stmt->execute();
+	$products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+	foreach ($products as $product) {
+		$cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
+		$cart_item = $_SESSION['cart'][$cart_item_key];
+
+		// Hitung harga dengan diskon
+		$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+		$price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
+		$total = $price * $cart_item['quantity'];
+
+		$cart_items[] = [
+			'id' => $product['product_id'],
+			'name' => $product['product_name'],
+			'image' => $product['product_image1'],
+			'price' => $product['product_price'],
+			'discounted_price' => $price,
+			'quantity' => $cart_item['product_quantity'],
+			'total' => $total,
+			'has_discount' => $has_discount,
+			'discount' => $product['product_discount']
+		];
+
+		$subtotal += $total;
+	}
+}
+
+// Handle add to cart action
+if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
+	$product_id = $_POST['product_id'];
+	$quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
+
+	// Initialize cart if not exists
+	if (!isset($_SESSION['cart'])) {
+		$_SESSION['cart'] = [];
+	}
+
+	// Add or update item in cart
+	if (isset($_SESSION['cart'][$product_id])) {
+		$_SESSION['cart'][$product_id]['quantity'] += $quantity;
+	} else {
+		$_SESSION['cart'][$product_id] = [
+			'product_id' => $product_id,
+			'quantity' => $quantity
+		];
+	}
+
+	// Redirect to cart page
+	header("Location: cart.php");
+	exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -110,12 +199,11 @@ if (isset($_GET['id'])) {
 									<li><a href="contact.php">contact</a></li>
 								</ul>
 								<<ul class="navbar_user">
-									<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
 									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
 									<li class="checkout">
-										<a href="#">
+										<a href="cart.php">
 											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
-											<span id="checkout_items" class="checkout_items">2</span>
+											<span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
 										</a>
 									</li>
 									<li>
@@ -248,16 +336,18 @@ if (isset($_GET['id'])) {
 								<li style="background: #60b3f3"></li>
 							</ul>
 						</div>
-						<div class="quantity d-flex flex-column flex-sm-row align-items-sm-center">
+						<!-- Replace the quantity div and add to cart button with this form -->
+						<form method="post" action="cart.php" class="d-flex flex-column flex-sm-row align-items-sm-center">
 							<span>Quantity:</span>
 							<div class="quantity_selector">
 								<span class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
 								<span id="quantity_value">1</span>
+								<input type="hidden" name="quantity" id="quantity_input" value="1">
 								<span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
 							</div>
-							<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-							<div class="product_favorite d-flex flex-column align-items-center justify-content-center"></div>
-						</div>
+							<input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+							<button type="submit" name="add_to_cart" class="red_button add_to_cart_button">add to cart</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -543,57 +633,118 @@ if (isset($_GET['id'])) {
 	<script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 	<script src="js/single_custom.js"></script>
 	<script>
-// Thumbnail image click handler
-document.querySelectorAll('.single_product_thumbnails li img').forEach(img => {
-    img.addEventListener('click', function() {
-        // Remove active class from all thumbnails
-        document.querySelectorAll('.single_product_thumbnails li').forEach(li => {
-            li.classList.remove('active');
-        });
-        
-        // Add active class to clicked thumbnail
-        this.parentElement.classList.add('active');
-        
-        // Change main image
-        const mainImage = document.querySelector('.single_product_image_background');
-        mainImage.style.backgroundImage = `url(${this.dataset.image})`;
-    });
-});
+		// Thumbnail image click handler
+		document.querySelectorAll('.single_product_thumbnails li img').forEach(img => {
+			img.addEventListener('click', function() {
+				// Remove active class from all thumbnails
+				document.querySelectorAll('.single_product_thumbnails li').forEach(li => {
+					li.classList.remove('active');
+				});
 
-// Dark Mode Toggle
-document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.body.classList.toggle('dark-mode');
+				// Add active class to clicked thumbnail
+				this.parentElement.classList.add('active');
 
-    // Save preference to localStorage
-    if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('darkMode', 'enabled');
-        this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-    } else {
-        localStorage.setItem('darkMode', 'disabled');
-        this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
-    }
-});
+				// Change main image
+				const mainImage = document.querySelector('.single_product_image_background');
+				mainImage.style.backgroundImage = `url(${this.dataset.image})`;
+			});
+		});
 
-// Check for saved dark mode preference
-if (localStorage.getItem('darkMode') === 'enabled') {
-    document.body.classList.add('dark-mode');
-    document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-}
+		// Dark Mode Toggle
+		document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
+			e.preventDefault();
+			document.body.classList.toggle('dark-mode');
 
-// Quantity selector
-document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
-    var quantity = document.getElementById('quantity_value');
-    quantity.textContent = parseInt(quantity.textContent) + 1;
-});
+			// Save preference to localStorage
+			if (document.body.classList.contains('dark-mode')) {
+				localStorage.setItem('darkMode', 'enabled');
+				this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+			} else {
+				localStorage.setItem('darkMode', 'disabled');
+				this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
+			}
+		});
 
-document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
-    var quantity = document.getElementById('quantity_value');
-    if (parseInt(quantity.textContent) > 1) {
-        quantity.textContent = parseInt(quantity.textContent) - 1;
-    }
-});
-</script>
+		// Check for saved dark mode preference
+		if (localStorage.getItem('darkMode') === 'enabled') {
+			document.body.classList.add('dark-mode');
+			document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+		}
+
+		// Quantity selector
+		document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			quantity.textContent = parseInt(quantity.textContent) + 1;
+		});
+
+		document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			if (parseInt(quantity.textContent) > 1) {
+				quantity.textContent = parseInt(quantity.textContent) - 1;
+			}
+		});
+	</script>
+
+	<script>
+		// Quantity selector
+		document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			var quantityInput = document.getElementById('quantity_input');
+			var newQty = parseInt(quantity.textContent) + 1;
+			quantity.textContent = newQty;
+			quantityInput.value = newQty;
+		});
+
+		document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			var quantityInput = document.getElementById('quantity_input');
+			if (parseInt(quantity.textContent) > 1) {
+				var newQty = parseInt(quantity.textContent) - 1;
+				quantity.textContent = newQty;
+				quantityInput.value = newQty;
+			}
+		});
+
+		// Add to cart functionality
+		document.getElementById('add_to_cart').addEventListener('click', function(e) {
+			e.preventDefault();
+
+			const productId = <?php echo $product_id; ?>;
+			const quantity = parseInt(document.getElementById('quantity_value').textContent);
+
+			// Create form dynamically
+			const form = document.createElement('form');
+			form.method = 'post';
+			form.action = 'cart.php';
+
+			// Add product_id input
+			const productIdInput = document.createElement('input');
+			productIdInput.type = 'hidden';
+			productIdInput.name = 'product_id';
+			productIdInput.value = productId;
+			form.appendChild(productIdInput);
+
+			// Add quantity input
+			const quantityInput = document.createElement('input');
+			quantityInput.type = 'hidden';
+			quantityInput.name = 'quantity';
+			quantityInput.value = quantity;
+			form.appendChild(quantityInput);
+
+			// Add to cart action
+			const actionInput = document.createElement('input');
+			actionInput.type = 'hidden';
+			actionInput.name = 'add_to_cart';
+			actionInput.value = '1';
+			form.appendChild(actionInput);
+
+			// Submit form
+			document.body.appendChild(form);
+			form.submit();
+		});
+	</script>
+
+
 </body>
 
 </html>

@@ -317,3 +317,22 @@ jQuery(document).ready(function($)
 		}
 	}
 });
+
+// After the form submission code in the click handler
+// You can add a notification
+const notification = document.createElement('div');
+notification.style.position = 'fixed';
+notification.style.bottom = '20px';
+notification.style.right = '20px';
+notification.style.backgroundColor = '#4CAF50';
+notification.style.color = 'white';
+notification.style.padding = '15px';
+notification.style.borderRadius = '5px';
+notification.style.zIndex = '1000';
+notification.textContent = 'Product added to cart!';
+document.body.appendChild(notification);
+
+// Remove notification after 3 seconds
+setTimeout(() => {
+    notification.remove();
+}, 3000);
