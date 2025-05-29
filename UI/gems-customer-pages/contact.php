@@ -1,3 +1,72 @@
+<?php
+include('../Database/connection.php');
+session_start();
+
+// Initialize cart if not exists
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// Handle remove item action
+if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
+    unset($_SESSION['cart'][$_GET['remove']]);
+    header("Location: cart.php");
+    exit();
+}
+
+// Handle quantity update
+if (isset($_POST['update_quantity'])) {
+    foreach ($_POST['quantity'] as $id => $quantity) {
+        if (isset($_SESSION['cart'][$id])) {
+            $_SESSION['cart'][$id] = [
+                'product_id' => $id,
+                'quantity' => max(1, (int)$quantity)
+            ];
+        }
+    }
+    header("Location: cart.php");
+    exit();
+}
+
+// Calculate totals
+$subtotal = 0;
+$cart_items = [];
+
+if (!empty($_SESSION['cart'])) {
+    $placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+    $ids = array_column($_SESSION['cart'], 'product_id');
+    $stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
+    $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
+    $stmt->execute();
+    $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    foreach ($products as $product) {
+        $cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
+        $cart_item = $_SESSION['cart'][$cart_item_key];
+        
+        // Hitung harga dengan diskon
+        $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+        $price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
+        $total = $price * $cart_item['quantity'];
+        
+        $cart_items[] = [
+            'id' => $product['product_id'],
+            'name' => $product['product_name'],
+            'image' => $product['product_image1'],
+            'price' => $product['product_price'],
+            'discounted_price' => $price,
+            'quantity' => $cart_item['quantity'],
+            'total' => $total,
+            'has_discount' => $has_discount,
+            'discount' => $product['product_discount']
+        ];
+        
+        $subtotal += $total;
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,9 +143,9 @@
 									<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
 									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
 									<li class="checkout">
-										<a href="#">
+										<a href="cart.php">
 											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
-											<span id="checkout_items" class="checkout_items">2</span>
+											<span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
 										</a>
 									</li>
 									<li>

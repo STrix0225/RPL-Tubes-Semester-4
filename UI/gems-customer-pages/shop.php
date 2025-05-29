@@ -16,6 +16,71 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 	$stmt_products->execute();
 	$products = $stmt_products->get_result();
 }
+
+
+// Initialize cart if not exists
+if (!isset($_SESSION['cart'])) {
+	$_SESSION['cart'] = [];
+}
+
+// Handle remove item action
+if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
+	unset($_SESSION['cart'][$_GET['remove']]);
+	header("Location: cart.php");
+	exit();
+}
+
+// Handle quantity update
+if (isset($_POST['update_quantity'])) {
+	foreach ($_POST['quantity'] as $id => $quantity) {
+		if (isset($_SESSION['cart'][$id])) {
+			$_SESSION['cart'][$id] = [
+				'product_id' => $id,
+				'quantity' => max(1, (int)$quantity)
+			];
+		}
+	}
+	header("Location: cart.php");
+	exit();
+}
+
+// Calculate totals
+$subtotal = 0;
+$cart_items = [];
+
+if (!empty($_SESSION['cart'])) {
+	$placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+	$ids = array_column($_SESSION['cart'], 'product_id');
+	$stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
+	$stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
+	$stmt->execute();
+	$products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+	foreach ($products as $product) {
+		$cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
+		$cart_item = $_SESSION['cart'][$cart_item_key];
+
+		// Hitung harga dengan diskon
+		$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+		$price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
+		$total = $price * $cart_item['quantity'];
+
+		$cart_items[] = [
+			'id' => $product['product_id'],
+			'name' => $product['product_name'],
+			'image' => $product['product_image1'],
+			'price' => $product['product_price'],
+			'discounted_price' => $price,
+			'quantity' => $cart_item['quantity'],
+			'total' => $total,
+			'has_discount' => $has_discount,
+			'discount' => $product['product_discount']
+		];
+
+		$subtotal += $total;
+	}
+}
+
 ?>
 
 
@@ -95,12 +160,17 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 									<li><a href="contact.php">contact</a></li>
 								</ul>
 								<ul class="navbar_user">
-									<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+									<li>
+										<div class="search-box">
+											<input type="text" id="search-input" placeholder="Search products..." aria-label="Search products">
+											<button id="search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+										</div>
+									</li>
 									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
 									<li class="checkout">
-										<a href="#">
+										<a href="cart.php">
 											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
-											<span id="checkout_items" class="checkout_items">2</span>
+											<span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
 										</a>
 									</li>
 									<li>
@@ -453,26 +523,91 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 	</script>
 	<script>
 		// Dark Mode Toggle
-document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.body.classList.toggle('dark-mode');
-    
-    // Save preference to localStorage
-    if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('darkMode', 'enabled');
-        this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-    } else {
-        localStorage.setItem('darkMode', 'disabled');
-        this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
-    }
-});
+		document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
+			e.preventDefault();
+			document.body.classList.toggle('dark-mode');
 
-// Check for saved dark mode preference
-if (localStorage.getItem('darkMode') === 'enabled') {
-    document.body.classList.add('dark-mode');
-    document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-}
+			// Save preference to localStorage
+			if (document.body.classList.contains('dark-mode')) {
+				localStorage.setItem('darkMode', 'enabled');
+				this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+			} else {
+				localStorage.setItem('darkMode', 'disabled');
+				this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
+			}
+		});
+
+		// Check for saved dark mode preference
+		if (localStorage.getItem('darkMode') === 'enabled') {
+			document.body.classList.add('dark-mode');
+			document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+		}
 	</script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const productItems = document.querySelectorAll('.product-item');
+    const productGrid = document.querySelector('.product-grid');
+    
+    // Create feedback element
+    const feedbackEl = document.createElement('div');
+    feedbackEl.className = 'search-feedback';
+    productGrid.parentNode.insertBefore(feedbackEl, productGrid);
+    
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        
+        productItems.forEach(item => {
+            const productName = item.querySelector('.product_name').textContent.toLowerCase();
+            const productDesc = item.querySelector('.product_desc')?.textContent.toLowerCase() || '';
+            const productCategory = item.classList.contains('laptop') ? 'laptop' : 
+                                  item.classList.contains('handphone') ? 'handphone' : 
+                                  item.classList.contains('accessories') ? 'accessories' : '';
+            
+            const isMatch = productName.includes(searchTerm) || 
+                          productDesc.includes(searchTerm) || 
+                          productCategory.includes(searchTerm);
+            
+            if (searchTerm === '' || isMatch) {
+                item.classList.remove('hidden');
+                item.classList.add('visible');
+                visibleCount++;
+            } else {
+                item.classList.remove('visible');
+                item.classList.add('hidden');
+            }
+        });
+        
+        // Show feedback
+        if (searchTerm && visibleCount === 0) {
+            feedbackEl.textContent = `No products found for "${searchTerm}"`;
+            feedbackEl.style.display = 'block';
+        } else if (searchTerm) {
+            feedbackEl.textContent = `Showing ${visibleCount} results for "${searchTerm}"`;
+            feedbackEl.style.display = 'block';
+        } else {
+            feedbackEl.style.display = 'none';
+        }
+    }
+    
+    // Event listeners
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') performSearch();
+    });
+    searchInput.addEventListener('input', performSearch);
+    
+    // Clear search when filter is cleared
+    document.querySelector('.filter_button')?.addEventListener('click', function() {
+        searchInput.value = '';
+        performSearch();
+    });
+});
+</script>	
+
 </body>
 
 </html>
