@@ -1788,3 +1788,108 @@ body.dark-mode {
 .dark-mode #dark-mode-cart {
     color: #222222;
 }
+
+/* Search Box Styles */
+.search-box {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+#search-input {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px 0 0 20px;
+    height: 36px;
+    width: 180px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #333;
+    background-color: #f8f8f8;
+}
+
+#search-input:focus {
+    width: 220px;
+    outline: none;
+    border-color: #fe4c50;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(254, 76, 80, 0.3);
+}
+
+#search-button {
+    background: #fe4c50;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 0 20px 20px 0;
+    height: 36px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#search-button:hover {
+    background: #e84545;
+}
+
+/* Dark Mode Compatibility */
+.dark-mode #search-input {
+    background-color: #2d2d2d;
+    border-color: #444;
+    color: #eee;
+}
+
+.dark-mode #search-input:focus {
+    background-color: #333;
+    border-color: #fe4c50;
+}
+
+/* Search Results Feedback */
+.search-feedback {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    text-align: center;
+    display: none;
+}
+
+.dark-mode .search-feedback {
+    background-color: #2d2d2d;
+    color: #eee;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .search-box {
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    #search-input {
+        width: calc(100% - 44px);
+    }
+    
+    #search-input:focus {
+        width: calc(100% - 44px);
+    }
+}
+
+/* Animation for Search Results */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.product-item {
+    transition: all 0.3s ease;
+}
+
+.product-item.hidden {
+    display: none;
+    animation: fadeIn 0.3s reverse;
+}
+
+.product-item.visible {
+    display: block;
+    animation: fadeIn 0.3s forwards;
+}
