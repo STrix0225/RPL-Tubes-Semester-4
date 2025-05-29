@@ -1524,3 +1524,13 @@ body, .cart_section, .cart_container, .cart_item {
     color: #222222;
 }
 
+.dark-mode input#newsletter_email {
+    background-color: #333;
+    color: #f5f5f5;
+    border: 1px solid #444;
+}
+
+.dark-mode .red_button {
+    background-color: #bb86fc;
+    color: #121212 !important;
+}
