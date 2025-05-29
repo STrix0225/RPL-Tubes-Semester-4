@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('../Database/connection.php');
 session_start();
 
@@ -28,6 +29,16 @@ if (isset($_POST['update_quantity'])) {
     exit();
 }
 
+// After the add to cart handling
+if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
+    // ... existing code ...
+
+    // Add success message
+    $_SESSION['message'] = 'Product added to cart successfully!';
+    header("Location: cart.php");
+    exit();
+}
+
 // Calculate totals
 $subtotal = 0;
 $cart_items = [];
@@ -43,12 +54,12 @@ if (!empty($_SESSION['cart'])) {
     foreach ($products as $product) {
         $cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
         $cart_item = $_SESSION['cart'][$cart_item_key];
-        
+
         // Hitung harga dengan diskon
         $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
         $price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
         $total = $price * $cart_item['quantity'];
-        
+
         $cart_items[] = [
             'id' => $product['product_id'],
             'name' => $product['product_name'],
@@ -60,7 +71,7 @@ if (!empty($_SESSION['cart'])) {
             'has_discount' => $has_discount,
             'discount' => $product['product_discount']
         ];
-        
+
         $subtotal += $total;
     }
 }
@@ -186,6 +197,10 @@ $total = $subtotal + $shipping;
         </div>
 
         <!-- Cart -->
+         <br>
+         <br>
+         <br>
+         <br>
         <div class="cart_section">
             <div class="container">
                 <div class="row">
@@ -245,7 +260,12 @@ $total = $subtotal + $shipping;
                                         <?php endif; ?>
                                     </ul>
                                 </div>
-                                
+                                <?php if (isset($_SESSION['message'])): ?>
+                                    <div class="alert alert-success">
+                                        <?php echo $_SESSION['message'];
+                                        unset($_SESSION['message']); ?>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (!empty($cart_items)): ?>
                                     <div class="order_total">
                                         <div class="order_total_content text-md-right">
@@ -408,4 +428,5 @@ $total = $subtotal + $shipping;
         }
     </script>
 </body>
+
 </html>

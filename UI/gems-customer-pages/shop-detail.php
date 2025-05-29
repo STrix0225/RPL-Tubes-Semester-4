@@ -86,7 +86,7 @@ if (!empty($_SESSION['cart'])) {
 			'image' => $product['product_image1'],
 			'price' => $product['product_price'],
 			'discounted_price' => $price,
-			'quantity' => $cart_item['quantity'],
+			'quantity' => $cart_item['product_quantity'],
 			'total' => $total,
 			'has_discount' => $has_discount,
 			'discount' => $product['product_discount']
@@ -94,6 +94,31 @@ if (!empty($_SESSION['cart'])) {
 
 		$subtotal += $total;
 	}
+}
+
+// Handle add to cart action
+if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
+	$product_id = $_POST['product_id'];
+	$quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
+
+	// Initialize cart if not exists
+	if (!isset($_SESSION['cart'])) {
+		$_SESSION['cart'] = [];
+	}
+
+	// Add or update item in cart
+	if (isset($_SESSION['cart'][$product_id])) {
+		$_SESSION['cart'][$product_id]['quantity'] += $quantity;
+	} else {
+		$_SESSION['cart'][$product_id] = [
+			'product_id' => $product_id,
+			'quantity' => $quantity
+		];
+	}
+
+	// Redirect to cart page
+	header("Location: cart.php");
+	exit();
 }
 
 ?>
@@ -311,16 +336,18 @@ if (!empty($_SESSION['cart'])) {
 								<li style="background: #60b3f3"></li>
 							</ul>
 						</div>
-						<div class="quantity d-flex flex-column flex-sm-row align-items-sm-center">
+						<!-- Replace the quantity div and add to cart button with this form -->
+						<form method="post" action="cart.php" class="d-flex flex-column flex-sm-row align-items-sm-center">
 							<span>Quantity:</span>
 							<div class="quantity_selector">
 								<span class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
 								<span id="quantity_value">1</span>
+								<input type="hidden" name="quantity" id="quantity_input" value="1">
 								<span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
 							</div>
-							<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-							<div class="product_favorite d-flex flex-column align-items-center justify-content-center"></div>
-						</div>
+							<input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+							<button type="submit" name="add_to_cart" class="red_button add_to_cart_button">add to cart</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -606,57 +633,118 @@ if (!empty($_SESSION['cart'])) {
 	<script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 	<script src="js/single_custom.js"></script>
 	<script>
-// Thumbnail image click handler
-document.querySelectorAll('.single_product_thumbnails li img').forEach(img => {
-    img.addEventListener('click', function() {
-        // Remove active class from all thumbnails
-        document.querySelectorAll('.single_product_thumbnails li').forEach(li => {
-            li.classList.remove('active');
-        });
-        
-        // Add active class to clicked thumbnail
-        this.parentElement.classList.add('active');
-        
-        // Change main image
-        const mainImage = document.querySelector('.single_product_image_background');
-        mainImage.style.backgroundImage = `url(${this.dataset.image})`;
-    });
-});
+		// Thumbnail image click handler
+		document.querySelectorAll('.single_product_thumbnails li img').forEach(img => {
+			img.addEventListener('click', function() {
+				// Remove active class from all thumbnails
+				document.querySelectorAll('.single_product_thumbnails li').forEach(li => {
+					li.classList.remove('active');
+				});
 
-// Dark Mode Toggle
-document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.body.classList.toggle('dark-mode');
+				// Add active class to clicked thumbnail
+				this.parentElement.classList.add('active');
 
-    // Save preference to localStorage
-    if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('darkMode', 'enabled');
-        this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-    } else {
-        localStorage.setItem('darkMode', 'disabled');
-        this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
-    }
-});
+				// Change main image
+				const mainImage = document.querySelector('.single_product_image_background');
+				mainImage.style.backgroundImage = `url(${this.dataset.image})`;
+			});
+		});
 
-// Check for saved dark mode preference
-if (localStorage.getItem('darkMode') === 'enabled') {
-    document.body.classList.add('dark-mode');
-    document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-}
+		// Dark Mode Toggle
+		document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
+			e.preventDefault();
+			document.body.classList.toggle('dark-mode');
 
-// Quantity selector
-document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
-    var quantity = document.getElementById('quantity_value');
-    quantity.textContent = parseInt(quantity.textContent) + 1;
-});
+			// Save preference to localStorage
+			if (document.body.classList.contains('dark-mode')) {
+				localStorage.setItem('darkMode', 'enabled');
+				this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+			} else {
+				localStorage.setItem('darkMode', 'disabled');
+				this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
+			}
+		});
 
-document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
-    var quantity = document.getElementById('quantity_value');
-    if (parseInt(quantity.textContent) > 1) {
-        quantity.textContent = parseInt(quantity.textContent) - 1;
-    }
-});
-</script>
+		// Check for saved dark mode preference
+		if (localStorage.getItem('darkMode') === 'enabled') {
+			document.body.classList.add('dark-mode');
+			document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+		}
+
+		// Quantity selector
+		document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			quantity.textContent = parseInt(quantity.textContent) + 1;
+		});
+
+		document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			if (parseInt(quantity.textContent) > 1) {
+				quantity.textContent = parseInt(quantity.textContent) - 1;
+			}
+		});
+	</script>
+
+	<script>
+		// Quantity selector
+		document.querySelector('.quantity_selector .plus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			var quantityInput = document.getElementById('quantity_input');
+			var newQty = parseInt(quantity.textContent) + 1;
+			quantity.textContent = newQty;
+			quantityInput.value = newQty;
+		});
+
+		document.querySelector('.quantity_selector .minus').addEventListener('click', function() {
+			var quantity = document.getElementById('quantity_value');
+			var quantityInput = document.getElementById('quantity_input');
+			if (parseInt(quantity.textContent) > 1) {
+				var newQty = parseInt(quantity.textContent) - 1;
+				quantity.textContent = newQty;
+				quantityInput.value = newQty;
+			}
+		});
+
+		// Add to cart functionality
+		document.getElementById('add_to_cart').addEventListener('click', function(e) {
+			e.preventDefault();
+
+			const productId = <?php echo $product_id; ?>;
+			const quantity = parseInt(document.getElementById('quantity_value').textContent);
+
+			// Create form dynamically
+			const form = document.createElement('form');
+			form.method = 'post';
+			form.action = 'cart.php';
+
+			// Add product_id input
+			const productIdInput = document.createElement('input');
+			productIdInput.type = 'hidden';
+			productIdInput.name = 'product_id';
+			productIdInput.value = productId;
+			form.appendChild(productIdInput);
+
+			// Add quantity input
+			const quantityInput = document.createElement('input');
+			quantityInput.type = 'hidden';
+			quantityInput.name = 'quantity';
+			quantityInput.value = quantity;
+			form.appendChild(quantityInput);
+
+			// Add to cart action
+			const actionInput = document.createElement('input');
+			actionInput.type = 'hidden';
+			actionInput.name = 'add_to_cart';
+			actionInput.value = '1';
+			form.appendChild(actionInput);
+
+			// Submit form
+			document.body.appendChild(form);
+			form.submit();
+		});
+	</script>
+
+
 </body>
 
 </html>
