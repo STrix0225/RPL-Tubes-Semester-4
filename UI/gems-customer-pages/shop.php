@@ -317,6 +317,7 @@ if (!empty($_SESSION['cart'])) {
 											$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
 											$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
 											$discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
+											$is_new = empty($product['product_sold']) || $product['product_sold'] == 0;
 										?>
 											<div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'])); ?>">
 												<div class="product discount product_filter">
@@ -329,6 +330,12 @@ if (!empty($_SESSION['cart'])) {
 													<?php if ($has_discount): ?>
 														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
 															<span>-$<?php echo number_format($discount_amount, 0); ?></span>
+														</div>
+													<?php endif; ?>
+
+													<?php if ($is_new): ?>
+														<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center">
+															<span>new</span>
 														</div>
 													<?php endif; ?>
 
@@ -544,69 +551,69 @@ if (!empty($_SESSION['cart'])) {
 		}
 	</script>
 
-<script>
-	document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    const searchButton = document.getElementById('search-button');
-    const productItems = document.querySelectorAll('.product-item');
-    const productGrid = document.querySelector('.product-grid');
-    
-    // Create feedback element
-    const feedbackEl = document.createElement('div');
-    feedbackEl.className = 'search-feedback';
-    productGrid.parentNode.insertBefore(feedbackEl, productGrid);
-    
-    function performSearch() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        let visibleCount = 0;
-        
-        productItems.forEach(item => {
-            const productName = item.querySelector('.product_name').textContent.toLowerCase();
-            const productDesc = item.querySelector('.product_desc')?.textContent.toLowerCase() || '';
-            const productCategory = item.classList.contains('laptop') ? 'laptop' : 
-                                  item.classList.contains('handphone') ? 'handphone' : 
-                                  item.classList.contains('accessories') ? 'accessories' : '';
-            
-            const isMatch = productName.includes(searchTerm) || 
-                          productDesc.includes(searchTerm) || 
-                          productCategory.includes(searchTerm);
-            
-            if (searchTerm === '' || isMatch) {
-                item.classList.remove('hidden');
-                item.classList.add('visible');
-                visibleCount++;
-            } else {
-                item.classList.remove('visible');
-                item.classList.add('hidden');
-            }
-        });
-        
-        // Show feedback
-        if (searchTerm && visibleCount === 0) {
-            feedbackEl.textContent = `No products found for "${searchTerm}"`;
-            feedbackEl.style.display = 'block';
-        } else if (searchTerm) {
-            feedbackEl.textContent = `Showing ${visibleCount} results for "${searchTerm}"`;
-            feedbackEl.style.display = 'block';
-        } else {
-            feedbackEl.style.display = 'none';
-        }
-    }
-    
-    // Event listeners
-    searchButton.addEventListener('click', performSearch);
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') performSearch();
-    });
-    searchInput.addEventListener('input', performSearch);
-    
-    // Clear search when filter is cleared
-    document.querySelector('.filter_button')?.addEventListener('click', function() {
-        searchInput.value = '';
-        performSearch();
-    });
-});
-</script>	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const searchInput = document.getElementById('search-input');
+			const searchButton = document.getElementById('search-button');
+			const productItems = document.querySelectorAll('.product-item');
+			const productGrid = document.querySelector('.product-grid');
+
+			// Create feedback element
+			const feedbackEl = document.createElement('div');
+			feedbackEl.className = 'search-feedback';
+			productGrid.parentNode.insertBefore(feedbackEl, productGrid);
+
+			function performSearch() {
+				const searchTerm = searchInput.value.toLowerCase().trim();
+				let visibleCount = 0;
+
+				productItems.forEach(item => {
+					const productName = item.querySelector('.product_name').textContent.toLowerCase();
+					const productDesc = item.querySelector('.product_desc')?.textContent.toLowerCase() || '';
+					const productCategory = item.classList.contains('laptop') ? 'laptop' :
+						item.classList.contains('handphone') ? 'handphone' :
+						item.classList.contains('accessories') ? 'accessories' : '';
+
+					const isMatch = productName.includes(searchTerm) ||
+						productDesc.includes(searchTerm) ||
+						productCategory.includes(searchTerm);
+
+					if (searchTerm === '' || isMatch) {
+						item.classList.remove('hidden');
+						item.classList.add('visible');
+						visibleCount++;
+					} else {
+						item.classList.remove('visible');
+						item.classList.add('hidden');
+					}
+				});
+
+				// Show feedback
+				if (searchTerm && visibleCount === 0) {
+					feedbackEl.textContent = `No products found for "${searchTerm}"`;
+					feedbackEl.style.display = 'block';
+				} else if (searchTerm) {
+					feedbackEl.textContent = `Showing ${visibleCount} results for "${searchTerm}"`;
+					feedbackEl.style.display = 'block';
+				} else {
+					feedbackEl.style.display = 'none';
+				}
+			}
+
+			// Event listeners
+			searchButton.addEventListener('click', performSearch);
+			searchInput.addEventListener('keypress', function(e) {
+				if (e.key === 'Enter') performSearch();
+			});
+			searchInput.addEventListener('input', performSearch);
+
+			// Clear search when filter is cleared
+			document.querySelector('.filter_button')?.addEventListener('click', function() {
+				searchInput.value = '';
+				performSearch();
+			});
+		});
+	</script>
 
 </body>
 
