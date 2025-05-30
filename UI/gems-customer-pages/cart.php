@@ -1,7 +1,6 @@
 <?php
 session_start();
 include('../Database/connection.php');
-session_start();
 
 // Initialize cart if not exists
 if (!isset($_SESSION['cart'])) {
@@ -19,21 +18,27 @@ if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
 if (isset($_POST['update_quantity'])) {
     foreach ($_POST['quantity'] as $id => $quantity) {
         if (isset($_SESSION['cart'][$id])) {
-            $_SESSION['cart'][$id] = [
-                'product_id' => $id,
-                'quantity' => max(1, (int)$quantity)
-            ];
+            $_SESSION['cart'][$id]['quantity'] = max(1, (int)$quantity);
         }
     }
     header("Location: cart.php");
     exit();
 }
 
-// After the add to cart handling
+// Handle add to cart
 if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
-    // ... existing code ...
+    $product_id = (int)$_POST['product_id'];
+    $quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
 
-    // Add success message
+    if (isset($_SESSION['cart'][$product_id])) {
+        $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+    } else {
+        $_SESSION['cart'][$product_id] = [
+            'product_id' => $product_id,
+            'quantity' => $quantity
+        ];
+    }
+
     $_SESSION['message'] = 'Product added to cart successfully!';
     header("Location: cart.php");
     exit();
@@ -44,24 +49,24 @@ $subtotal = 0;
 $cart_items = [];
 
 if (!empty($_SESSION['cart'])) {
-    $placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
-    $ids = array_column($_SESSION['cart'], 'product_id');
+    $product_ids = array_keys($_SESSION['cart']);
+    $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
+    
     $stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-    $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
+    $stmt->bind_param(str_repeat('i', count($product_ids)), ...$product_ids);
     $stmt->execute();
     $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     foreach ($products as $product) {
-        $cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
-        $cart_item = $_SESSION['cart'][$cart_item_key];
-
-        // Hitung harga dengan diskon
+        $product_id = $product['product_id'];
+        $cart_item = $_SESSION['cart'][$product_id];
+        
         $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
         $price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
         $total = $price * $cart_item['quantity'];
 
         $cart_items[] = [
-            'id' => $product['product_id'],
+            'id' => $product_id,
             'name' => $product['product_name'],
             'image' => $product['product_image1'],
             'price' => $product['product_price'],
@@ -76,7 +81,7 @@ if (!empty($_SESSION['cart'])) {
     }
 }
 
-$shipping = $subtotal > 50 ? 0 : 10; // Free shipping for orders over $50
+$shipping = $subtotal > 50 ? 0 : 10;
 $total = $subtotal + $shipping;
 ?>
 <!DOCTYPE html>

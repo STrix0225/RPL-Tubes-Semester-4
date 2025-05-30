@@ -35,7 +35,6 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 // Ambil data produk terlaris
 $best_sellers = getBestSellers($conn);
 
-
 // Initialize cart if not exists
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
@@ -60,43 +59,6 @@ if (isset($_POST['update_quantity'])) {
     }
     header("Location: cart.php");
     exit();
-}
-
-// Calculate totals
-$subtotal = 0;
-$cart_items = [];
-
-if (!empty($_SESSION['cart'])) {
-    $placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
-    $ids = array_column($_SESSION['cart'], 'product_id');
-    $stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-    $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
-    $stmt->execute();
-    $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    foreach ($products as $product) {
-        $cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
-        $cart_item = $_SESSION['cart'][$cart_item_key];
-        
-        // Hitung harga dengan diskon
-        $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-        $price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
-        $total = $price * $cart_item['quantity'];
-        
-        $cart_items[] = [
-            'id' => $product['product_id'],
-            'name' => $product['product_name'],
-            'image' => $product['product_image1'],
-            'price' => $product['product_price'],
-            'discounted_price' => $price,
-            'quantity' => $cart_item['quantity'],
-            'total' => $total,
-            'has_discount' => $has_discount,
-            'discount' => $product['product_discount']
-        ];
-        
-        $subtotal += $total;
-    }
 }
 
 ?>

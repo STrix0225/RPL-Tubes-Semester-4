@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('../Database/connection.php');
 
 // Get product ID from URL
@@ -38,63 +39,7 @@ if (!isset($_SESSION['cart'])) {
 	$_SESSION['cart'] = [];
 }
 
-// Handle remove item action
-if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
-	unset($_SESSION['cart'][$_GET['remove']]);
-	header("Location: cart.php");
-	exit();
-}
 
-// Handle quantity update
-if (isset($_POST['update_quantity'])) {
-	foreach ($_POST['quantity'] as $id => $quantity) {
-		if (isset($_SESSION['cart'][$id])) {
-			$_SESSION['cart'][$id] = [
-				'product_id' => $id,
-				'quantity' => max(1, (int)$quantity)
-			];
-		}
-	}
-	header("Location: cart.php");
-	exit();
-}
-
-// Calculate totals
-$subtotal = 0;
-$cart_items = [];
-
-if (!empty($_SESSION['cart'])) {
-	$placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
-	$ids = array_column($_SESSION['cart'], 'product_id');
-	$stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-	$stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
-	$stmt->execute();
-	$products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-	foreach ($products as $product) {
-		$cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
-		$cart_item = $_SESSION['cart'][$cart_item_key];
-
-		// Hitung harga dengan diskon
-		$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-		$price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
-		$total = $price * $cart_item['quantity'];
-
-		$cart_items[] = [
-			'id' => $product['product_id'],
-			'name' => $product['product_name'],
-			'image' => $product['product_image1'],
-			'price' => $product['product_price'],
-			'discounted_price' => $price,
-			'quantity' => $cart_item['product_quantity'],
-			'total' => $total,
-			'has_discount' => $has_discount,
-			'discount' => $product['product_discount']
-		];
-
-		$subtotal += $total;
-	}
-}
 
 // Handle add to cart action
 if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
@@ -337,16 +282,17 @@ if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
 							</ul>
 						</div>
 						<!-- Replace the quantity div and add to cart button with this form -->
-						<form method="post" action="cart.php" class="d-flex flex-column flex-sm-row align-items-sm-center">
-							<span>Quantity:</span>
-							<div class="quantity_selector">
-								<span class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-								<span id="quantity_value">1</span>
-								<input type="hidden" name="quantity" id="quantity_input" value="1">
-								<span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
+						<form method="POST" action="cart.php">
+							<input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+							<input type="hidden" name="add_to_cart" value="1">
+							<div class="quantity">
+								<div class="pro-qty">
+									<input type="number" name="quantity" value="1" min="1">
+								</div>
 							</div>
-							<input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-							<button type="submit" name="add_to_cart" class="red_button add_to_cart_button">add to cart</button>
+							<button type="submit" name="add_to_cart" class="primary-btn">
+								<i class="fa fa-shopping-cart fa-2x"></i> add to cart
+							</button>
 						</form>
 					</div>
 				</div>
