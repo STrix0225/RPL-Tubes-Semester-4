@@ -4,6 +4,12 @@ include '../Database/connection.php';
 
 $error = "";
 
+// Handle redirect parameter
+$redirect_url = 'dashboard.php'; // default ke dashboard
+if (isset($_GET['redirect'])) {
+    $redirect_url = urldecode($_GET['redirect']);
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password_input = $_POST['password'];
@@ -18,7 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password_input, $data['customer_password'])) {
             $_SESSION['login_type'] = 'customer';
             $_SESSION['user'] = $data;
-            header("Location: ../gems-customer-pages/dashboard.php");
+            
+            // Redirect ke URL yang diminta atau default
+            header("Location: $redirect_url");
             exit;
         }
     }
@@ -27,7 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = "Email atau password salah!";
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,16 +47,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
   <style>
-  
     .error-message {
-  color: #ff4c4c;
-  font-weight: 500;
-  margin-top: 5px;
-  padding: 10px 5px;
-  border-radius: 5px;
-  text-align: center;
+        color: #ff4c4c;
+        font-weight: 500;
+        margin-top: 5px;
+        padding: 10px 5px;
+        border-radius: 5px;
+        text-align: center;
     }
-
   </style>
 </head>
 <body>
@@ -61,35 +66,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="card-body px-5 py-5">
               <h3 class="card-title text-left mb-3">Login</h3>
               <form method="POST">
-  <div class="form-group">
-    <label>Email *</label>
-    <input type="text" name="email" class="form-control p_input" required>
-  </div>
-  <div class="form-group">
-    <label>Password *</label>
-    <input type="password" name="password" id="password" class="form-control p_input" required>
-  </div>
-  <div class="form-group d-flex align-items-center justify-content-between">
-    <div class="form-check">
-  <input type="checkbox" class="form-check-input" id="showPassword" onclick="togglePassword()">
-  <label class="form-check-label" for="showPassword">Tampilkan Password</label>
-</div>
+                <!-- Tambahkan CSRF token untuk keamanan -->
+                <?php
+                // Generate CSRF token if not exists
+                if (empty($_SESSION['csrf_token'])) {
+                    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                }
+                ?>
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                
+                <div class="form-group">
+                  <label>Email *</label>
+                  <input type="text" name="email" class="form-control p_input" required>
+                </div>
+                <div class="form-group">
+                  <label>Password *</label>
+                  <input type="password" name="password" id="password" class="form-control p_input" required>
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-between">
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="showPassword" onclick="togglePassword()">
+                    <label class="form-check-label" for="showPassword">Tampilkan Password</label>
+                  </div>
+                  <a href="forgot-password.php" class="forgot-pass">Lupa password?</a>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                </div>
+                <p class="sign-up text-center">Don't have an account? <a href="register-customer.php">Sign Up</a></p>
+              </form>
 
-  </div>
-  <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
-  </div>
-  <p class="sign-up text-center">Don't have an account? <a href="register-customer.php">Sign Up</a></p>
-</form>
-
-
-
-<!-- Error message pindah ke bawah form -->
-<?php if ($error): ?>
-  <div class="error-message text-center mt-2"><?= $error; ?></div>
-<?php endif; ?>
-
-
+              <?php if ($error): ?>
+                <div class="error-message text-center mt-2"><?= $error; ?></div>
+              <?php endif; ?>
             </div>
           </div>
         </div>

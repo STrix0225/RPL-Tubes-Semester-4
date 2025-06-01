@@ -105,9 +105,13 @@ if (isset($_POST['update_quantity'])) {
 										<i class="fa fa-angle-down"></i>
 									</a>
 									<ul class="account_selection">
-										<li><a href="../gems-login/login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-										<li><a href="../gems-login/register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-									</ul>
+                                            <?php if (isset($_SESSION['customer_id'])): ?>
+                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                                            <?php else: ?>
+                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+                                            <?php endif; ?>
+                                        </ul>
 								</li>
 							</ul>
 						</div>

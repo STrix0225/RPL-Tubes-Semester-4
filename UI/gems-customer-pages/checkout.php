@@ -5,7 +5,7 @@ include('../Database/connection.php');
 // Redirect jika belum login
 if (!isset($_SESSION['customer_id'])) {
     $_SESSION['checkout_message'] = 'Untuk melanjutkan checkout, silakan login terlebih dahulu.';
-    header("Location: ../gems-login/login-customer.php?redirect=checkout");
+    header("Location: login-customer.php?redirect=checkout.php");
     exit();
 }
 
