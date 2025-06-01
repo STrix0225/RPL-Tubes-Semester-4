@@ -3,36 +3,39 @@ session_start();
 include '../Database/connection.php';
 
 $error = "";
-
-// Handle redirect parameter
 $redirect_url = 'dashboard.php'; // default ke dashboard
+
 if (isset($_GET['redirect'])) {
     $redirect_url = urldecode($_GET['redirect']);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password_input = $_POST['password'];
+    // Validasi CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = "Invalid CSRF token!";
+    } else {
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $password_input = $_POST['password'];
 
-    // Ambil data customer berdasarkan email
-    $query_customer = mysqli_query($conn, "SELECT * FROM customers WHERE customer_email='$email'");
+        // Ambil data customer berdasarkan email
+        $query_customer = mysqli_query($conn, "SELECT * FROM customers WHERE customer_email='$email'");
 
-    if (mysqli_num_rows($query_customer) > 0) {
-        $data = mysqli_fetch_assoc($query_customer);
+        if (mysqli_num_rows($query_customer) > 0) {
+            $data = mysqli_fetch_assoc($query_customer);
 
-        // Verifikasi password dengan password_verify
-        if (password_verify($password_input, $data['customer_password'])) {
-            $_SESSION['login_type'] = 'customer';
-            $_SESSION['user'] = $data;
-            
-            // Redirect ke URL yang diminta atau default
-            header("Location: $redirect_url");
-            exit;
+            // Verifikasi password
+            if (password_verify($password_input, $data['customer_password'])) {
+                $_SESSION['login_type'] = 'customer';
+                $_SESSION['user'] = $data;
+                $_SESSION['customer_id'] = $data['customer_id']; // TAMBAHKAN INI
+
+                // Redirect ke URL yang diminta atau default
+                header("Location: $redirect_url");
+                exit;
+            }
         }
+        $error = "Email atau password salah!";
     }
-
-    // Kalau email tidak ditemukan atau password salah
-    $error = "Email atau password salah!";
 }
 ?>
 

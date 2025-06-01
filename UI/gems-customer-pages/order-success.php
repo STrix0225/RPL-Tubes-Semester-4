@@ -1,6 +1,37 @@
 <?php
 session_start();
 include('../Database/connection.php');
+
+// Ambil order_id dari query string
+if (!isset($_GET['order_id'])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
+$order_id = (int)$_GET['order_id'];
+
+// Ambil data pesanan dari database
+$stmt = $conn->prepare("SELECT * FROM orders WHERE order_id = ?");
+$stmt->bind_param('i', $order_id);
+$stmt->execute();
+$order = $stmt->get_result()->fetch_assoc();
+
+if (!$order) {
+    die("Pesanan tidak ditemukan.");
+}
+
+// Ambil item pesanan
+$stmt_items = $conn->prepare("SELECT * FROM order_items WHERE order_id = ?");
+$stmt_items->bind_param('i', $order_id);
+$stmt_items->execute();
+$order_items = $stmt_items->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Hitung total dari item jika diperlukan
+$subtotal = 0;
+foreach ($order_items as $item) {
+    $subtotal += $item['product_price'] * $item['product_quantity'];
+}
+$total = $subtotal + ($order['shipping_cost'] ?? 0); // Gunakan shipping_cost dari database
 ?>
 
 <!DOCTYPE html>
@@ -167,7 +198,7 @@ include('../Database/connection.php');
                         <div class="order_info bg-light p-4 rounded mb-5">
                             <p class="mb-2">Order Number: <strong class="text-primary">#<?= $_GET['order_id'] ?></strong></p>
                             <p class="mb-2">Tanggal Pemesanan: <strong><?= date('d F Y, H:i') ?></strong></p>
-                            <p class="mb-0">Total Pembayaran: <strong class="text-success">$<?= number_format($total, 2) ?></strong></p>
+                            <p class="mb-0">Total Pembayaran: <strong class="text-success">$<?= number_format($order['order_cost'], 2) ?></strong></p>
                         </div>
                         <div class="success_buttons">
                             <a href="shop.php" class="btn btn-primary btn-lg mr-3">

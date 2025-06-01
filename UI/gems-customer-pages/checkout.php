@@ -16,14 +16,13 @@ $stmt->bind_param('i', $customer_id);
 $stmt->execute();
 $customer = $stmt->get_result()->fetch_assoc();
 
-
 // Redirect jika cart kosong
 if (empty($_SESSION['cart'])) {
     header("Location: cart.php");
     exit();
 }
 
-// Hitung total seperti di cart.php
+// Hitung total
 $subtotal = 0;
 $cart_items = [];
 
@@ -31,8 +30,14 @@ if (!empty($_SESSION['cart'])) {
     $product_ids = array_keys($_SESSION['cart']);
     $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
 
+    // PERBAIKAN: Tambahkan tipe data untuk bind_param
+    $types = str_repeat('i', count($product_ids));
+    
     $stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-    $stmt->bind_param(str_repeat('i', count($product_ids)), ...$product_ids);
+    
+    // PERBAIKAN: Gunakan bind_param dengan benar
+    $stmt->bind_param($types, ...$product_ids);
+    
     $stmt->execute();
     $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -41,12 +46,17 @@ if (!empty($_SESSION['cart'])) {
         $cart_item = $_SESSION['cart'][$product_id];
 
         $has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-        $price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
+        $price = $has_discount ? 
+                 $product['product_price'] * (1 - $product['product_discount'] / 100) : 
+                 $product['product_price'];
+                 
         $total = $price * $cart_item['quantity'];
 
+        // PERBAIKAN: Tambahkan field 'image' yang diperlukan
         $cart_items[] = [
             'id' => $product_id,
             'name' => $product['product_name'],
+            'image' => $product['product_image1'], // Pastikan field ini ada
             'price' => $product['product_price'],
             'discounted_price' => $price,
             'quantity' => $cart_item['quantity'],
@@ -60,32 +70,65 @@ if (!empty($_SESSION['cart'])) {
 $shipping = $subtotal > 50 ? 0 : 10;
 $total = $subtotal + $shipping;
 
-
-
-// Contoh sederhana:
-$_SESSION['order_success'] = true;
-unset($_SESSION['cart']);
-header("Location: order-success.php");
-exit();
-
-
+// PERBAIKAN: Pindahkan kode POST handler ke sini
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payment_method = $_POST['payment'] ?? 'paypal';
     $order_date = date('Y-m-d H:i:s');
 
-    // Simpan ke tabel orders
+    // PERBAIKAN: Gunakan placeholder yang benar
     $stmt = $conn->prepare("INSERT INTO orders (order_cost, order_status, customer_id, customer_phone, customer_city, customer_address, order_date, payment_method) 
                             VALUES (?, 'pending', ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param('dssssss', $total, $customer_id, $customer['customer_phone'], $customer['customer_city'], $customer['customer_address'], $order_date, $payment_method);
+    
+    if ($stmt === false) {
+        die("Error in order prepare: " . $conn->error);
+    }
+    
+    // PERBAIKAN: Sesuaikan tipe data dan urutan parameter
+    $stmt->bind_param(
+        'disssss', 
+        $total,
+        $customer_id,
+        $customer['customer_phone'],
+        $customer['customer_city'],
+        $customer['customer_address'],
+        $order_date,
+        $payment_method
+    );
+    
     $stmt->execute();
+    
+    if ($stmt->error) {
+        die("Error executing order insert: " . $stmt->error);
+    }
+    
     $order_id = $conn->insert_id;
 
-    // Simpan ke tabel order_items
+    // Simpan item pesanan
     foreach ($cart_items as $item) {
         $stmt = $conn->prepare("INSERT INTO order_items (order_id, product_id, product_name, product_image, product_price, product_quantity, customer_id, order_date) 
                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('iissdiss', $order_id, $item['id'], $item['name'], $item['image'], $item['discounted_price'], $item['quantity'], $customer_id, $order_date);
+        
+        if ($stmt === false) {
+            die("Error in order_items prepare: " . $conn->error);
+        }
+        
+        $stmt->bind_param(
+            'iissdiss', 
+            $order_id,
+            $item['id'],
+            $item['name'],
+            $item['image'], // Pastikan field ini ada
+            $item['discounted_price'],
+            $item['quantity'],
+            $customer_id,
+            $order_date
+        );
+        
         $stmt->execute();
+        
+        if ($stmt->error) {
+            die("Error executing order_items insert: " . $stmt->error);
+        }
     }
 
     // Kosongkan cart dan redirect
@@ -93,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: order-success.php?order_id=$order_id");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -227,76 +269,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <br>
         <br>
         <br>
-        <br>
-        <br>
-        <br>
         <!-- Checkout Section -->
-        <div class="checkout_section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="billing checkout_section">
-                            <div class="section_title">Customer Information</div>
-                            <div class="customer_info">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>Name:</strong> <?= htmlspecialchars($customer['customer_name']) ?></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Email:</strong> <?= htmlspecialchars($customer['customer_email']) ?></p>
-                                    </div>
+        <!-- Checkout Section -->
+<div class="checkout_section">
+    <div class="container">
+        <form id="checkout_form" method="POST">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="billing checkout_section">
+                        <div class="section_title">Customer Information</div>
+                        <div class="customer_info">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> <?= htmlspecialchars($customer['customer_name']) ?></p>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>Phone:</strong> <?= htmlspecialchars($customer['customer_phone']) ?></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Country:</strong> <?= htmlspecialchars($customer['customer_country']) ?></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <p><strong>Address:</strong> <?= htmlspecialchars($customer['customer_address']) ?></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <p><strong>City:</strong> <?= htmlspecialchars($customer['customer_city']) ?></p>
-                                    </div>
+                                <div class="col-md-6">
+                                    <p><strong>Email:</strong> <?= htmlspecialchars($customer['customer_email']) ?></p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6">
-                        <div class="order checkout_section">
-                            <!-- ... kode order details tetap ... -->
-                            <div class="payment">
-                                <div class="payment_options">
-                                    <label class="payment_option clearfix">PayPal
-                                        <input type="radio" name="payment" value="paypal" checked>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="payment_option clearfix">Credit Card
-                                        <input type="radio" name="payment" value="credit_card">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="payment_option clearfix">Bank Transfer
-                                        <input type="radio" name="payment" value="bank_transfer">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="payment_option clearfix">Cash on Delivery
-                                        <input type="radio" name="payment" value="cod">
-                                        <span class="checkmark"></span>
-                                    </label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Phone:</strong> <?= htmlspecialchars($customer['customer_phone']) ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Country:</strong> <?= htmlspecialchars($customer['customer_city']) ?></p>
                                 </div>
                             </div>
-                            <button type="submit" form="checkout_form" class="order_button">Place Order</button>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p><strong>Address:</strong> <?= htmlspecialchars($customer['customer_address']) ?></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p><strong>City:</strong> <?= htmlspecialchars($customer['customer_city']) ?></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-lg-6">
+                    <div class="order checkout_section">
+                        <!-- Order Summary -->
+                        <div class="section_title">Order Summary</div>
+                        <div class="order_items">
+                            <ul class="order_list">
+                                <?php foreach ($cart_items as $item): ?>
+                                    <li class="d-flex justify-content-between">
+                                        <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
+                                        <span>$<?= number_format($item['total'], 2) ?></span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <div class="order_total">
+                            <div class="d-flex justify-content-between">
+                                <div>Subtotal:</div>
+                                <div>$<?= number_format($subtotal, 2) ?></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>Shipping:</div>
+                                <div>$<?= number_format($shipping, 2) ?></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Total:</strong></div>
+                                <div><strong>$<?= number_format($total, 2) ?></strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Options -->
+                        <div class="payment">
+                            <div class="section_title">Payment Method</div>
+                            <div class="payment_options">
+                                <label class="payment_option clearfix">PayPal
+                                    <input type="radio" name="payment" value="paypal" checked>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="payment_option clearfix">Credit Card
+                                    <input type="radio" name="payment" value="credit_card">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="payment_option clearfix">Bank Transfer
+                                    <input type="radio" name="payment" value="bank_transfer">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="payment_option clearfix">Cash on Delivery
+                                    <input type="radio" name="payment" value="cod">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="order_button">Place Order</button>
+                    </div>
+                </div>
             </div>
-        </div>
+        </form>
+    </div>
+</div>
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
