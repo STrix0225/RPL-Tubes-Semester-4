@@ -5,7 +5,7 @@ session_start();
 
 <?php include('layouts/header.php'); ?>
 <?php
-$query_orders = "SELECT o.order_id, o.order_cost, o.order_status, u.user_name, o.user_address, o.order_date FROM `orders` o, `users` u WHERE o.user_id = u.user_id ORDER BY o.order_date DESC";
+$query_orders = "SELECT o.order_id, o.order_cost, o.order_status, u.customer_name, o.customer_address, o.order_date FROM `orders` o, `customers` u WHERE o.customer_id = u.customer_id ORDER BY o.order_date DESC";
 
 $stmt_orders = $conn->prepare($query_orders);
 $stmt_orders->execute();
@@ -63,8 +63,8 @@ $orders = $stmt_orders->get_result();
                                 <td><?php echo $order['order_id']; ?></td>
                                 <td><?php echo $order['order_cost']; ?></td>
                                 <td><?php echo $order['order_status']; ?></td>
-                                <td><?php echo $order['user_name']; ?></td>
-                                <td><?php echo $order['user_address']; ?></td>
+                                <td><?php echo $order['customer_name']; ?></td>
+                                <td><?php echo $order['customer_address']; ?></td>
                                 <td><?php echo $order['order_date']; ?></td>
                                 <td class="text-center">
                                     <a href="edit_order.php?order_id=<?php echo $order['order_id']; ?>" class="btn btn-info btn-circle">

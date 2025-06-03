@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include '../../UI/Database/connection.php';
+include '../../Database/connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim(mysqli_real_escape_string($conn, $_POST['email']));

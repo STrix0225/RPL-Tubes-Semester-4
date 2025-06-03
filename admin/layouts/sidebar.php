@@ -4,9 +4,9 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
         <div class="sidebar-brand-icon">
-            <i class="fas fa-tshirt"></i>
+            <i class="fas fa-gem"></i>
         </div>
-        <div class="sidebar-brand-text mx-3"> Male Fashion</div>
+        <div class="sidebar-brand-text mx-3">GEMS ADMIN</div>
     </a>
 
     <!-- Divider -->
@@ -44,7 +44,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Products Management</h6>
                 <a class="collapse-item" href="products.php">Product List</a>
-                <a class="collapse-item" href="create_product.php">Create Product</a>
+                <a class="collapse-item" href="logic/create_product.php">Create Product</a>
             </div>
         </div>
     </li>
@@ -93,7 +93,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-6 col-md-6 text-center">
-                        <img src="<?php echo '../img/blog/details/' . $_SESSION['admin_photo2']; ?>" alt="" class="rounded-circle img-responsive" width="150" height="200" />
+                        <img src="<?php echo '../img/Person/' . $_SESSION['admin_photo2']; ?>" alt="" class="rounded-circle img-responsive" width="150" height="200" />
                     </div>
                     <div class="col-sm-6 col-md-6">
                         <h4><?php if (isset($_SESSION['admin_name'])) {

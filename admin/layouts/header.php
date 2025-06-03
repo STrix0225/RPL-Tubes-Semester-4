@@ -1,4 +1,9 @@
-<?php include ('../UI/Database/connection.php'); ?>
+<?php 
+include (__DIR__.'/../../Database/connection.php');
+if (!isset($_SESSION)) {
+    session_start();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -195,11 +200,11 @@
 
                         <div class="topbar-divider d-none d-sm-block"></div>
                         <!-- Nav Item - User Information -->
-                        <?php if (isset($_SESSION['admin_logged_in'])) { ?>
+                        <?php if (isset($_SESSION['login_success'])) { ?>
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php if (isset($_SESSION['admin_name'])) { echo $_SESSION['admin_name']; } ?></span>
-                                    <img class="img-profile rounded-circle" src="<?php echo '../img/blog/details/' . $_SESSION['admin_photo']; ?>">
+                                    <img class="img-profile rounded-circle" src="<?php echo '../img/Person/' . $_SESSION['admin_photo']; ?>">
                                 </a>
                                 <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

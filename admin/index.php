@@ -4,7 +4,7 @@
     header('Location: ../login.php');
     exit();
 }
-    include ('../UI/Database/connection.php');
+    include ('../Database/connection.php');
  
 ?>
 

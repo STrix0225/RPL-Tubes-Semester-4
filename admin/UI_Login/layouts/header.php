@@ -1,4 +1,4 @@
-<?php include('../../../Database/connection.php'); ?>
+<?php include (__DIR__.'/../../Database/connection.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
