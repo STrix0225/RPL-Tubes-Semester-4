@@ -1,7 +1,31 @@
 <?php
-session_start();
-$error = $_SESSION['login_error'] ?? "";
-unset($_SESSION['login_error']);
+// Display error message if login failed
+if (isset($_GET['error']) && $_GET['error'] == 1) {
+echo '
+<div class="alert alert-danger" style="
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background-color: #f44336;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+">
+    <strong>Error!</strong> Email atau password salah!
+    <span style="cursor:pointer; float:right; margin-left:10px;" onclick="this.parentElement.remove();">&times;</span>
+</div>
+<script>
+  setTimeout(function() {
+      const alert = document.querySelector(".alert");
+      if(alert) alert.remove();
+  }, 5000);
+</script>
+';
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,10 +62,6 @@ unset($_SESSION['login_error']);
       <p class="sign-up">
         Don't have an Account? <a href="register-customer.php">Sign Up</a>
       </p>
-
-      <?php if (!empty($error)): ?>
-        <div class="error-message"><?= htmlspecialchars($error) ?></div>
-      <?php endif; ?>
     </form>
   </div>
 

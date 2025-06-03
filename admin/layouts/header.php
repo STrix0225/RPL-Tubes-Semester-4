@@ -1,4 +1,4 @@
-<?php include('../Database/connection.php'); ?>
+<?php include ('../UI/Database/connection.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>GEMS Admin</title>
+    <title>GEMS</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="css/sb-admin-2-dark.css" rel="stylesheet">
+
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
@@ -194,7 +194,6 @@
                         </li>
 
                         <div class="topbar-divider d-none d-sm-block"></div>
-
                         <!-- Nav Item - User Information -->
                         <?php if (isset($_SESSION['admin_logged_in'])) { ?>
                             <li class="nav-item dropdown no-arrow">
