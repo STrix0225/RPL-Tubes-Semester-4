@@ -1,5 +1,5 @@
 <?php
-include('../Database/connection.php');
+include('../../Database/connection.php');
 
 // Fungsi untuk mendapatkan produk berdasarkan kategori
 function getProductsByCategory($conn, $category = null) {

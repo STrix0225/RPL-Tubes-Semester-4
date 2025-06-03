@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../Database/connection.php';
+include '../../Database/connection.php';
 
 $error = "";
 $redirect_url = 'dashboard.php'; // default ke dashboard

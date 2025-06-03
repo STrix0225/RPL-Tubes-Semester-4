@@ -1,5 +1,5 @@
 <?php
-include '../Database/connection.php';
+include '../../Database/connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate and sanitize inputs

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../Database/connection.php');
+include('../../Database/connection.php');
 
 // Get product ID from URL
 if (isset($_GET['id'])) {

@@ -1,5 +1,5 @@
 <?php
-include('../Database/connection.php');
+include('../../Database/connection.php');
 session_start();
 
 // Initialize cart if not exists

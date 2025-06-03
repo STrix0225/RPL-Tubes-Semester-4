@@ -1,5 +1,5 @@
 <?php
-include('../Database/connection.php');
+include('../../Database/connection.php');
 
 if (isset($_POST['search']) && isset($_POST['product_category'])) {
 	//Get all products by category
