@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../../Database/connection.php');
+include('../Database/connection.php');
 
 // Redirect jika belum login
 if (!isset($_SESSION['customer_id'])) {
@@ -157,291 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" type="text/css" href="styles/cart_styles.css">
     <link rel="stylesheet" type="text/css" href="styles/checkout_responsive.css">
     <link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
-    
-    <style>
-        /* Modern Checkout Styles */
-        .modern-checkout-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .modern-checkout-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px;
-        }
-        
-        .modern-checkout-header h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .modern-checkout-header p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .modern-checkout-body {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .modern-checkout-column {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            transition: transform 0.3s ease;
-        }
-        
-        .dark-mode .modern-checkout-column {
-            background: #2c3e50;
-            color: #ecf0f1;
-        }
-        
-        .modern-checkout-column:hover {
-            transform: translateY(-5px);
-        }
-        
-        .modern-section-title {
-            font-size: 1.6rem;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #3498db;
-            position: relative;
-        }
-        
-        .dark-mode .modern-section-title {
-            color: #ecf0f1;
-            border-bottom-color: #1abc9c;
-        }
-        
-        .modern-section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 80px;
-            height: 2px;
-            background: #3498db;
-        }
-        
-        .dark-mode .modern-section-title::after {
-            background: #1abc9c;
-        }
-        
-        .modern-customer-info {
-            font-size: 1.15rem;
-        }
-        
-        .dark-mode .modern-customer-info {
-            color: #ecf0f1;
-        }
-        
-        .modern-info-row {
-            display: flex;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .dark-mode .modern-info-row {
-            border-bottom-color: #34495e;
-        }
-        
-        .modern-info-label {
-            font-weight: 700;
-            color: #2c3e50;
-            min-width: 120px;
-        }
-        
-        .dark-mode .modern-info-label {
-            color: #1abc9c;
-        }
-        
-        .modern-info-value {
-            color: #555;
-            flex-grow: 1;
-        }
-        
-        .dark-mode .modern-info-value {
-            color: #bdc3c7;
-        }
-        
-        .modern-order-items {
-            margin-bottom: 25px;
-        }
-        
-        .modern-order-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 1.15rem;
-        }
-        
-        .dark-mode .modern-order-item {
-            border-bottom-color: #34495e;
-            color: #ecf0f1;
-        }
-        
-        .modern-order-total {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .dark-mode .modern-order-total {
-            background: #34495e;
-            color: #ecf0f1;
-        }
-        
-        .modern-total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            font-size: 1.2rem;
-        }
-        
-        .modern-total-row:last-child {
-            border-top: 2px solid #eee;
-            margin-top: 10px;
-            padding-top: 20px;
-            font-weight: 700;
-            color: #2c3e50;
-            font-size: 1.4rem;
-        }
-        
-        .dark-mode .modern-total-row:last-child {
-            border-top-color: #34495e;
-            color: #ecf0f1;
-        }
-        
-        .modern-payment-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .modern-payment-option {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .dark-mode .modern-payment-option {
-            border-color: #34495e;
-            background: #2c3e50;
-        }
-        
-        .modern-payment-option:hover {
-            border-color: #3498db;
-            background: #f8fdff;
-        }
-        
-        .dark-mode .modern-payment-option:hover {
-            border-color: #1abc9c;
-            background: #34495e;
-        }
-        
-        .modern-payment-option.selected {
-            border-color: #3498db;
-            background: #e8f4fe;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
-        }
-        
-        .dark-mode .modern-payment-option.selected {
-            border-color: #1abc9c;
-            background: #2c3e50;
-            box-shadow: 0 5px 15px rgba(26, 188, 156, 0.2);
-        }
-        
-        .modern-payment-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-        
-        .dark-mode .modern-payment-icon {
-            color: #1abc9c;
-        }
-        
-        .modern-payment-label {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #2c3e50;
-            text-align: center;
-        }
-        
-        .dark-mode .modern-payment-label {
-            color: #ecf0f1;
-        }
-        
-        .modern-order-button {
-            width: 100%;
-            padding: 18px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 30px;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-        
-        .dark-mode .modern-order-button {
-            background: #1abc9c;
-            box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
-        }
-        
-        .modern-order-button:hover {
-            background: #2980b9;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
-        }
-        
-        .dark-mode .modern-order-button:hover {
-            background: #16a085;
-            box-shadow: 0 8px 20px rgba(26, 188, 156, 0.6);
-        }
-        
-        .modern-payment-input {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .modern-checkout-body {
-                flex-direction: column;
-            }
-            
-            .modern-checkout-header h1 {
-                font-size: 2rem;
-            }
-            
-            .modern-section-title {
-                font-size: 1.4rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -544,126 +259,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Modern Checkout Section -->
-        <div class="modern-checkout-container">
-            <div class="modern-checkout-header">
-                <h1>Secure Checkout</h1>
-                <p>Review your order details and complete your purchase</p>
-            </div>
-            
-            <form id="checkout_form" method="POST">
-                <div class="modern-checkout-body">
-                    <!-- Customer Information Column -->
-                    <div class="modern-checkout-column">
-                        <h2 class="modern-section-title">Customer Information</h2>
-                        
-                        <div class="modern-customer-info">
-                            <div class="modern-info-row">
-                                <div class="modern-info-label">Name:</div>
-                                <div class="modern-info-value"><?= htmlspecialchars($customer['customer_name']) ?></div>
+        <!-- Checkout -->
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <!-- Checkout Section -->
+        <!-- Checkout Section -->
+<div class="checkout_section">
+    <div class="container">
+        <form id="checkout_form" method="POST">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="billing checkout_section">
+                        <div class="section_title">Customer Information</div>
+                        <div class="customer_info">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> <?= htmlspecialchars($customer['customer_name']) ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Email:</strong> <?= htmlspecialchars($customer['customer_email']) ?></p>
+                                </div>
                             </div>
-                            
-                            <div class="modern-info-row">
-                                <div class="modern-info-label">Email:</div>
-                                <div class="modern-info-value"><?= htmlspecialchars($customer['customer_email']) ?></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Phone:</strong> <?= htmlspecialchars($customer['customer_phone']) ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Country:</strong> <?= htmlspecialchars($customer['customer_city']) ?></p>
+                                </div>
                             </div>
-                            
-                            <div class="modern-info-row">
-                                <div class="modern-info-label">Phone:</div>
-                                <div class="modern-info-value"><?= htmlspecialchars($customer['customer_phone']) ?></div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p><strong>Address:</strong> <?= htmlspecialchars($customer['customer_address']) ?></p>
+                                </div>
                             </div>
-                            
-                            <div class="modern-info-row">
-                                <div class="modern-info-label">Country:</div>
-                                <div class="modern-info-value"><?= htmlspecialchars($customer['customer_city']) ?></div>
-                            </div>
-                            
-                            <div class="modern-info-row">
-                                <div class="modern-info-label">Address:</div>
-                                <div class="modern-info-value"><?= htmlspecialchars($customer['customer_address']) ?></div>
-                            </div>
-                            
-                            <div class="modern-info-row">
-                                <div class="modern-info-label">City:</div>
-                                <div class="modern-info-value"><?= htmlspecialchars($customer['customer_city']) ?></div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p><strong>City:</strong> <?= htmlspecialchars($customer['customer_city']) ?></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Order Summary Column -->
-                    <div class="modern-checkout-column">
-                        <h2 class="modern-section-title">Order Summary</h2>
-                        
-                        <div class="modern-order-items">
-                            <?php foreach ($cart_items as $item): ?>
-                                <div class="modern-order-item">
-                                    <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
-                                    <span>$<?= number_format($item['total'], 2) ?></span>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        
-                        <div class="modern-order-total">
-                            <div class="modern-total-row">
-                                <span>Subtotal:</span>
-                                <span>$<?= number_format($subtotal, 2) ?></span>
-                            </div>
-                            
-                            <div class="modern-total-row">
-                                <span>Shipping:</span>
-                                <span>$<?= number_format($shipping, 2) ?></span>
-                            </div>
-                            
-                            <div class="modern-total-row">
-                                <span>Total:</span>
-                                <span><strong>$<?= number_format($total, 2) ?></strong></span>
-                            </div>
-                        </div>
-                        
-                        <h2 class="modern-section-title">Payment Method</h2>
-                        
-                        <div class="modern-payment-options">
-                            <label class="modern-payment-option" id="paypal-option">
-                                <div class="modern-payment-icon">
-                                    <i class="fa fa-paypal"></i>
-                                </div>
-                                <div class="modern-payment-label">PayPal</div>
-                                <input type="radio" name="payment" value="paypal" class="modern-payment-input" checked>
-                            </label>
-                            
-                            <label class="modern-payment-option" id="creditcard-option">
-                                <div class="modern-payment-icon">
-                                    <i class="fa fa-credit-card"></i>
-                                </div>
-                                <div class="modern-payment-label">Credit Card</div>
-                                <input type="radio" name="payment" value="credit_card" class="modern-payment-input">
-                            </label>
-                            
-                            <label class="modern-payment-option" id="bank-option">
-                                <div class="modern-payment-icon">
-                                    <i class="fa fa-university"></i>
-                                </div>
-                                <div class="modern-payment-label">Bank Transfer</div>
-                                <input type="radio" name="payment" value="bank_transfer" class="modern-payment-input">
-                            </label>
-                            
-                            <label class="modern-payment-option" id="cod-option">
-                                <div class="modern-payment-icon">
-                                    <i class="fa fa-money"></i>
-                                </div>
-                                <div class="modern-payment-label">Cash on Delivery</div>
-                                <input type="radio" name="payment" value="cod" class="modern-payment-input">
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="modern-order-button">
-                            <i class="fa fa-lock"></i> Place Order Securely
-                        </button>
                     </div>
                 </div>
-            </form>
-        </div>
-        
+
+                <div class="col-lg-6">
+                    <div class="order checkout_section">
+                        <!-- Order Summary -->
+                        <div class="section_title">Order Summary</div>
+                        <div class="order_items">
+                            <ul class="order_list">
+                                <?php foreach ($cart_items as $item): ?>
+                                    <li class="d-flex justify-content-between">
+                                        <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
+                                        <span>$<?= number_format($item['total'], 2) ?></span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <div class="order_total">
+                            <div class="d-flex justify-content-between">
+                                <div>Subtotal:</div>
+                                <div>$<?= number_format($subtotal, 2) ?></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>Shipping:</div>
+                                <div>$<?= number_format($shipping, 2) ?></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Total:</strong></div>
+                                <div><strong>$<?= number_format($total, 2) ?></strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Options -->
+                        <div class="payment">
+                            <div class="section_title">Payment Method</div>
+                            <div class="payment_options">
+                                <label class="payment_option clearfix">PayPal
+                                    <input type="radio" name="payment" value="paypal" checked>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="payment_option clearfix">Credit Card
+                                    <input type="radio" name="payment" value="credit_card">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="payment_option clearfix">Bank Transfer
+                                    <input type="radio" name="payment" value="bank_transfer">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="payment_option clearfix">Cash on Delivery
+                                    <input type="radio" name="payment" value="cod">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="order_button">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
@@ -729,39 +432,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             document.body.classList.add('dark-mode');
             document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
         }
-        
-        // Payment option selection
-        const paymentOptions = document.querySelectorAll('.modern-payment-option');
-        
-        paymentOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                // Remove selected class from all options
-                paymentOptions.forEach(opt => opt.classList.remove('selected'));
-                
-                // Add selected class to clicked option
-                option.classList.add('selected');
-                
-                // Check the radio input
-                const radioInput = option.querySelector('.modern-payment-input');
-                radioInput.checked = true;
-            });
-        });
-        
-        // Initialize with PayPal selected
-        document.getElementById('paypal-option').classList.add('selected');
-        
-        // Place order button animation
-        const orderButton = document.querySelector('.modern-order-button');
-        
-        orderButton.addEventListener('click', (e) => {
-            // Animation effect
-            orderButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
-            orderButton.style.backgroundColor = '#27ae60';
-            
-            setTimeout(() => {
-                // Allow form to submit normally
-            }, 500);
-        });
     </script>
 </body>
 

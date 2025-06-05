@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../../Database/connection.php');
+include('../Database/connection.php');
 
 // Initialize cart if not exists
 if (!isset($_SESSION['cart'])) {
