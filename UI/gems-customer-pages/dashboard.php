@@ -211,7 +211,7 @@ if (isset($_POST['update_quantity'])) {
 
 	<!-- Slider -->
 
-		<div class="main_slider" style="background-image:url(images/Background5.avif)">
+	<div class="main_slider" style="background-image:url(images/Background5.avif)">
 		<div class="container fill_height">
 			<div class="row align-items-center fill_height">
 				<div class="col">
@@ -219,11 +219,33 @@ if (isset($_POST['update_quantity'])) {
 						<h6>Spring / Summer Collection 2025</h6>
 						<h1>Get up to 30% Off New Arrivals</h1>
 						<div class="red_button shop_now_button"><a href="shop.php">shop now</a></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+
+		<!--<div id="carouselExampleFade" class="carousel slide carousel-fade">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+			<img src="images/Background5.avif" class="d-block w-100" alt="...">
+			</div>
+			<div class="carousel-item">
+			<img src="..." class="d-block w-100" alt="...">
+			</div>
+			<div class="carousel-item">
+			<img src="..." class="d-block w-100" alt="...">
+			</div>
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+		</div>-->
 
 	<!-- Banner -->
 	<div class="banner">
@@ -268,10 +290,10 @@ if (isset($_POST['update_quantity'])) {
 				<div class="col text-center">
 					<div class="new_arrivals_sorting">
 						<ul class="arrivals_grid_sorting clearfix button-group filters-button-group">
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked" data-filter="*">all</li>
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".laptop">Laptop</li>
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".accessories">Accessories</li>
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".handphone">Handphone</li>
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked hover" data-filter="*">all</li>
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center hover" data-filter=".laptop">Laptop</li>
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center hover" data-filter=".accessories">Accessories</li>
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center hover" data-filter=".handphone">Handphone</li>
 						</ul>
 					</div>
 				</div>
@@ -344,7 +366,7 @@ if (isset($_POST['update_quantity'])) {
 				<div class="col-lg-6 text-right deal_ofthe_week_col">
 					<div class="deal_ofthe_week_content d-flex flex-column align-items-center float-right">
 						<div class="section_title">
-							<h2>Deal Of The Week</h2>
+							<h2>Flash Sale !!!</h2>
 						</div>
 						<ul class="timer">
 							<li class="d-inline-flex flex-column justify-content-center align-items-center">
@@ -658,6 +680,27 @@ $(document).ready(function() {
             600: { items: 2 },
             1000: { items: 4 }
         }
+    });
+});
+
+//Letakkan script di bagian bawah sebelum penutup body -->
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.grid_sorting_button');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Hapus class active dari semua tombol
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Tambahkan class active ke tombol yang diklik
+            this.classList.add('active');
+            
+            // Logika filter bisa ditambahkan di sini
+            const filterValue = this.getAttribute('data-filter');
+            console.log('Filter dipilih:', filterValue);
+        });
     });
 });
 </script>
