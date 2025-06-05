@@ -157,7 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" type="text/css" href="styles/cart_styles.css">
     <link rel="stylesheet" type="text/css" href="styles/checkout_responsive.css">
     <link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
-    
     <style>
         /* Modern Checkout Styles */
         .modern-checkout-container {
@@ -543,7 +542,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </ul>
             </div>
         </div>
-
         <!-- Modern Checkout Section -->
         <div class="modern-checkout-container">
             <div class="modern-checkout-header">
@@ -728,8 +726,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
             document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-        }
-        
+        } 
         // Payment option selection
         const paymentOptions = document.querySelectorAll('.modern-payment-option');
         
