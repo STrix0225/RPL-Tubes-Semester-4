@@ -266,6 +266,7 @@ section
 	left: 0;
 	width: 100%;
 	background: #EEF5FF;
+
 	z-index: 10;
 }
 .top_nav
@@ -883,8 +884,6 @@ section
 	width: 140px;
 	margin-top: 32px;
 }
-
-
 
 /*********************************
 4. Banner
@@ -1607,7 +1606,6 @@ section
 	border-right: solid 1px #FFFFFF;
 	padding-left: 25px;
 }
-
 .benefit_item:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);

@@ -1,5 +1,5 @@
 <?php
-include('../Database/connection.php');
+include('../../Database/connection.php');
 
 // Fungsi untuk mendapatkan produk berdasarkan kategori
 function getProductsByCategory($conn, $category = null) {
@@ -211,7 +211,7 @@ if (isset($_POST['update_quantity'])) {
 
 	<!-- Slider -->
 
-	<div class="main_slider" style="background-image:url(images/Background5.avif)">
+		<div class="main_slider" style="background-image:url(images/Background5.avif)">
 		<div class="container fill_height">
 			<div class="row align-items-center fill_height">
 				<div class="col">
@@ -225,7 +225,7 @@ if (isset($_POST['update_quantity'])) {
 			</div>
 		</div>
 
-		<!--<div id="carouselExampleFade" class="carousel slide carousel-fade">
+		div id="carouselExampleFade" class="carousel slide carousel-fade">
 		<div class="carousel-inner">
 			<div class="carousel-item active">
 			<img src="images/Background5.avif" class="d-block w-100" alt="...">
@@ -245,7 +245,7 @@ if (isset($_POST['update_quantity'])) {
 			<span class="carousel-control-next-icon" aria-hidden="true"></span>
 			<span class="visually-hidden">Next</span>
 		</button>
-		</div>-->
+  </div>
 
 	<!-- Banner -->
 	<div class="banner">
@@ -367,6 +367,7 @@ if (isset($_POST['update_quantity'])) {
 					<div class="deal_ofthe_week_content d-flex flex-column align-items-center float-right">
 						<div class="section_title">
 							<h2>Flash Sale !!!</h2>
+              
 						</div>
 						<ul class="timer">
 							<li class="d-inline-flex flex-column justify-content-center align-items-center">
@@ -704,8 +705,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-
 
 </body>
 </html>

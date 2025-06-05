@@ -1,5 +1,5 @@
 <?php
-include('../Database/connection.php');
+include('../../Database/connection.php');
 
 if(isset($_POST['action'])) {
     $products = [];
