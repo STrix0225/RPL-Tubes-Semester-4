@@ -272,3 +272,13 @@ select:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
 }
+
+.form-select {
+    height: auto;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.form-check-inline {
+    margin-right: 15px;
+}
