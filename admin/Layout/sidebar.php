@@ -32,11 +32,21 @@
                 <i class="fas fa-shopping-cart"></i> Orders
             </a>
             <ul class="collapse list-unstyled ps-3" id="orderMenu">
-                <li><a href="admins.php"><i class="fas fa-list-alt"></i> List Orders</a></li>
-                <li><a href="admins.php"><i class="fas fa-history"></i> History Orders</a></li>
+                <li><a href="../../admin/Pages/listOrder.php"><i class="fas fa-list-alt"></i> List Orders</a></li>
+                <li><a href="../../admin/Pages/historyOrder.php"><i class="fas fa-history"></i> History Orders</a></li>
             </ul>
         </li>
-        <li><a href="blogs.php"><i class="fas fa-blog"></i> Blogs</a></li>
+        <li>
+            <a href="#customerMenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i class="fas fa-shopping-cart"></i> Customers
+            </a>
+            <ul class="collapse list-unstyled ps-3" id="customerMenu">
+                <li><a href="admins.php"><i class="fas fa-list-alt"></i> List Customers</a></li>
+                <li><a href="admins.php"><i class="fas fa-history"></i> Review Coment</a></li>
+            </ul>
+        </li>
+            </ul>
+        </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
     </ul>
     <button type="button" id="sidebarCollapse" 
