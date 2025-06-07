@@ -99,7 +99,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php include '../Layout/header.php'; ?>
 
             <div class="container-fluid mt-4">
-                <h1 class="h3 mb-4 text-primary ">Add Product</h1>
+                <h1 class="h3 mb-4 text-primary">
+                    <i class="fas fa-box mr-2"></i> Add Products
+                </h1>
 
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?php echo $success; ?></div>
