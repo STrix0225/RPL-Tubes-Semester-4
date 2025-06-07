@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $discount = floatval($_POST['product_discount']);
     $color = $conn->real_escape_string($_POST['product_color']);
     $product_sold = 0;
+    $product_qty = 0; // Set quantity to 0 by default
 
     $allowed = ['jpg', 'jpeg', 'png', 'webp'];
     $upload_dir = '../img/Products/';
@@ -62,14 +63,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $conn->prepare("INSERT INTO products 
         (product_name, product_brand, product_category, product_description, product_criteria, 
          product_image1, product_image2, product_image3, product_price, product_discount, 
-         product_color, product_sold) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+         product_color, product_sold, product_qty) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("sssssssssdsi", $name, $brand, $category, $description, $criteria,
-            $img1, $img2, $img3, $price, $discount, $color, $product_sold);
+        $stmt->bind_param("sssssssssdsii", $name, $brand, $category, $description, $criteria,
+            $img1, $img2, $img3, $price, $discount, $color, $product_sold, $product_qty);
 
         if ($stmt->execute()) {
-            $success = "Product added successfully.";
+            $success = "Product added successfully with initial quantity set to 0.";
         } else {
             $error = "Database error: " . $stmt->error;
         }
