@@ -1,10 +1,11 @@
 <?php
-require_once '../DB/connection.php';
+require_once '../../Database/connection.php';
 
 if (!isAdminLoggedIn()) {
     redirect('../login.php');
 }
 
+// Get data for header notifications
 $header_data = [
     'pending_orders' => 0,
     'recent_orders' => []

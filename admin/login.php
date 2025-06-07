@@ -1,5 +1,7 @@
 <?php
-require_once './DB/connection.php';
+require_once '../Database/connection.php';
+
+// Check if already logged in
 if (isAdminLoggedIn()) {
     redirect('index.php');
 }
@@ -11,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
 
     if (!empty($email) && !empty($password)) {
+        // Prepare SQL to prevent SQL injection
         $stmt = $conn->prepare("SELECT admin_id, admin_name, admin_email, admin_password FROM admins WHERE admin_email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -19,10 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows === 1) {
             $admin = $result->fetch_assoc();
             
+            // Verify password (assuming passwords are stored using MD5 in your database)
             if (md5($password) === $admin['admin_password']) {
+                // Set session variables
                 $_SESSION['admin_id'] = $admin['admin_id'];
                 $_SESSION['admin_name'] = $admin['admin_name'];
                 $_SESSION['admin_email'] = $admin['admin_email'];
+                
+                // Redirect to dashboard
                 redirect('index.php');
             } else {
                 $error = "Invalid email or password";
@@ -90,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
+        // Toggle password visibility
         $('#togglePassword').click(function() {
             const password = $('#password');
             const type = password.attr('type') === 'password' ? 'text' : 'password';

@@ -12,8 +12,8 @@
                 <i class="fas fa-plus-square"></i> Products
             </a>
             <ul class="collapse list-unstyled ps-3" id="productSubmenu">
-                <li><a href="../Pages/addProducts.php"><i class="fas fa-box"></i> Add Products</a></li>
-                <li><a href="../Pages/listProducts.php"><i class="fas fa-boxes"></i> List Products</a></li>
+                <li><a href="../../Admin/Pages/addProducts.php"><i class="fas fa-box"></i> Add Products</a></li>
+                <li><a href="../../Admin/Pages/listProducts.php"><i class="fas fa-boxes"></i> List Products</a></li>
             </ul>
         </li>
         <li>

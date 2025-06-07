@@ -1,5 +1,5 @@
 <?php
-require_once '../DB/connection.php';
+require_once '../../Database/connection.php';
 
 if (!isAdminLoggedIn()) {
     redirect('../login.php');
@@ -181,5 +181,6 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/products.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 </html>
