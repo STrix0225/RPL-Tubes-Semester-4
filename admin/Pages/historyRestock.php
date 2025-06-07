@@ -79,6 +79,12 @@ if (isset($_POST['update_status']) && isset($_POST['id_stock']) && isset($_POST[
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link href="../css/style.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <div class="wrapper">
@@ -92,6 +98,14 @@ if (isset($_POST['update_status']) && isset($_POST['id_stock']) && isset($_POST[
                     <h1 class="h3 mb-0 text-primary">
                         <i class="fas fa-boxes-stacked me-2"></i>History Restock
                     </h1>
+                    <div>
+                        <button id="exportCSV" class="btn btn-success me-2">
+                            <i class="fas fa-file-csv me-1"></i> Export CSV
+                        </button>
+                        <button id="exportPDF" class="btn btn-danger">
+                            <i class="fas fa-file-pdf me-1"></i> Export PDF
+                        </button>
+                    </div>
                 </div>
 
                 <?php if (isset($_GET['success'])): ?>
@@ -244,18 +258,6 @@ if (isset($_POST['update_status']) && isset($_POST['id_stock']) && isset($_POST[
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/script.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#restockTable').DataTable({
-                responsive: true,
-                columnDefs: [
-                    { responsivePriority: 1, targets: 0 },
-                    { responsivePriority: 2, targets: 4 },
-                    { responsivePriority: 3, targets: 11 },
-                    { responsivePriority: 4, targets: 13 }
-                ]
-            });
-        });
-    </script>
+    <script src="../js/formatFIle.js"></script>
 </body>
 </html>
