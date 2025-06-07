@@ -48,3 +48,36 @@ $('.view-sales-btn').on('click', function () {
 });
 
 });
+
+$(document).ready(function() {
+    // View Sales button click handler
+    $('.view-sales-btn').on('click', function() {
+        var supplierId = $(this).data('id');
+        
+        $.ajax({
+            url: 'getSupplierSales.php',
+            type: 'GET',
+            data: { id: supplierId },
+            beforeSend: function() {
+                $('#salesDetailsContent').html(`
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Loading sales information...</p>
+                    </div>
+                `);
+            },
+            success: function(response) {
+                $('#salesDetailsContent').html(response);
+            },
+            error: function() {
+                $('#salesDetailsContent').html(`
+                    <div class="alert alert-danger">
+                        Failed to load sales information. Please try again.
+                    </div>
+                `);
+            }
+        });
+    });
+});

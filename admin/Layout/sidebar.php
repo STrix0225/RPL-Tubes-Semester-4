@@ -5,7 +5,7 @@
     </div>
     <ul class="list-unstyled components px-2">
         <li class="active">
-            <a href="../index.php"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="../../admin/index.php"><i class="fas fa-home"></i> Dashboard</a>
         </li>
         <li>
             <a href="#productSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -24,7 +24,7 @@
                 <li><a href="../../admin/Pages/addSupplier.php"><i class="fas fa-user"></i> Add Supplayers</a></li>
                 <li><a href="../../admin/Pages/listSupplier.php"><i class="fas fa-users"></i> List Suplayers</a></li>
                 <li><a href="../../admin/Pages/restockProduct.php"><i class="fas fa-truck"></i> Restock Products</a></li>
-                <li><a href="admins.php"><i class="fas fa-history"></i> History Restock</a></li>
+                <li><a href="../../admin/Pages/historyRestock.php"><i class="fas fa-history"></i> History Restock</a></li>
             </ul>
         </li>
         <li>
