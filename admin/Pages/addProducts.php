@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $brand = $conn->real_escape_string($_POST['product_brand']);
     $category = $conn->real_escape_string($_POST['product_category']);
     $description = $conn->real_escape_string($_POST['product_description']);
-    $criteria = $conn->real_escape_string($_POST['product_criteria']);
+    $criteria = isset($_POST['product_criteria']) ? $conn->real_escape_string($_POST['product_criteria']) : 'Non';
     $price = floatval($_POST['product_price']);
     $discount = floatval($_POST['product_discount']);
     $color = $conn->real_escape_string($_POST['product_color']);
@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php include '../Layout/header.php'; ?>
 
             <div class="container-fluid mt-4">
-                <h1 class="h3 mb-4 text-primary">Add Product</h1>
+                <h1 class="h3 mb-4 text-primary ">Add Product</h1>
 
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?php echo $success; ?></div>
@@ -125,11 +125,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Category</label>
-                                    <input type="text" class="form-control" name="product_category" required>
+                                    <select class="form-select" name="product_category" required>
+                                        <option value="" disabled selected>Select category</option>
+                                        <option value="Handphone">Handphone</option>
+                                        <option value="Laptop">Laptop</option>
+                                        <option value="Aksesoris">Aksesoris</option>
+                                        <option value="Hardware">Hardware</option>
+                                        <option value="Software">Software</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Criteria</label>
-                                    <input type="text" class="form-control" name="product_criteria" required>
+                                    <div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="product_criteria" id="criteriaFavourite" value="Favourite">
+                                            <label class="form-check-label" for="criteriaFavourite">Favourite</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="product_criteria" id="criteriaNon" value="Non" checked>
+                                            <label class="form-check-label" for="criteriaNon">Non-Favourite</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
