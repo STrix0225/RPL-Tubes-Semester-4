@@ -23,7 +23,7 @@
             <ul class="collapse list-unstyled ps-3" id="supplayerMenu">
                 <li><a href="../../admin/Pages/addSupplier.php"><i class="fas fa-user"></i> Add Supplayers</a></li>
                 <li><a href="../../admin/Pages/listSupplier.php"><i class="fas fa-users"></i> List Suplayers</a></li>
-                <li><a href="admins.php"><i class="fas fa-truck"></i> Restock Products</a></li>
+                <li><a href="../../admin/Pages/restockProduct.php"><i class="fas fa-truck"></i> Restock Products</a></li>
                 <li><a href="admins.php"><i class="fas fa-history"></i> History Restock</a></li>
             </ul>
         </li>
