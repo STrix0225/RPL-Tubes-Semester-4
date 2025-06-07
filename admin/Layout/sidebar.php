@@ -38,13 +38,11 @@
         </li>
         <li>
             <a href="#customerMenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <i class="fas fa-shopping-cart"></i> Customers
+                <i class="fas fa-user"></i> Customers
             </a>
             <ul class="collapse list-unstyled ps-3" id="customerMenu">
-                <li><a href="admins.php"><i class="fas fa-list-alt"></i> List Customers</a></li>
-                <li><a href="admins.php"><i class="fas fa-history"></i> Review Coment</a></li>
-            </ul>
-        </li>
+                <li><a href="../../admin/Pages/listCustomers.php"><i class="fas fa-list-alt"></i> List Customers</a></li>
+                <li><a href="admins.php"><i class="fas fa-star"></i> Review Coment</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>

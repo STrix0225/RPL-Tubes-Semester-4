@@ -1,0 +1,14 @@
+.customer-photo {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .action-btns .btn {
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 2px;
+        }
