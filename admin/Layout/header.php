@@ -59,7 +59,7 @@ $recent_orders_notif = $header_data['recent_orders'] ?? [];
                     <li><a class="dropdown-item" href="profile.php"><i class="fas fa-user"></i> Profile</a></li>
                     <li><a class="dropdown-item" href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li><a class="dropdown-item" href="../../admin/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </li>
         </ul>
