@@ -43,7 +43,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     
     // Delete photo from server if exists
     if ($customer && !empty($customer['customer_photo'])) {
-        $upload_dir = '../img/Customers/';
+        $upload_dir = '../../Customer/gems-customer-pages/uploads/';
         if (file_exists($upload_dir . $customer['customer_photo'])) {
             unlink($upload_dir . $customer['customer_photo']);
         }
@@ -131,7 +131,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                         <td><?php echo $index + 1; ?></td>
                                         <td>
                                             <?php if (!empty($customer['customer_photo'])): ?>
-                                                <img src="../img/Customers/<?php echo htmlspecialchars($customer['customer_photo']); ?>" 
+                                                <img src="../../Customer/gems-customer-pages/uploads/<?php echo htmlspecialchars($customer['customer_photo']); ?>" 
                                                      alt="Customer Photo" class="customer-img">
                                             <?php else: ?>
                                                 <div class="customer-img bg-secondary text-white d-flex align-items-center justify-content-center">

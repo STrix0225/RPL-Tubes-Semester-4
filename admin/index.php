@@ -7,38 +7,39 @@ if (!isAdminLoggedIn()) {
     redirect('login.php');
 }
 
-// Get all dashboard stats in one place
+// Statistik
 $stats = [
     'total_products' => 0,
-    'total_orders' => 0,
+    'active_suppliers' => 0,
     'pending_orders' => 0,
     'total_customers' => 0
 ];
 
-// Get product count
-$result = $conn->query("SELECT COUNT(*) as count FROM products");
+// Total produk
+$result = $conn->query("SELECT COUNT(*) AS count FROM products");
 if ($result) {
     $stats['total_products'] = (int)$result->fetch_assoc()['count'];
 }
 
-// Get order counts
-$result = $conn->query("SELECT COUNT(*) as count FROM orders");
+// Supplier aktif
+$result = $conn->query("SELECT COUNT(*) AS count FROM supplier WHERE status = 1");
 if ($result) {
-    $stats['total_orders'] = (int)$result->fetch_assoc()['count'];
+    $stats['active_suppliers'] = (int)$result->fetch_assoc()['count'];
 }
 
-$result = $conn->query("SELECT COUNT(*) as count FROM orders WHERE order_status = 'pending'");
+// Pesanan tertunda
+$result = $conn->query("SELECT COUNT(*) AS count FROM orders WHERE order_status = 'pending'");
 if ($result) {
     $stats['pending_orders'] = (int)$result->fetch_assoc()['count'];
 }
 
-// Get customer count
-$result = $conn->query("SELECT COUNT(*) as count FROM customers");
+// Total pelanggan
+$result = $conn->query("SELECT COUNT(*) AS count FROM customers");
 if ($result) {
     $stats['total_customers'] = (int)$result->fetch_assoc()['count'];
 }
 
-// Get recent orders (5 most recent)
+// Pesanan terbaru (5)
 $recent_orders = [];
 $result = $conn->query("
     SELECT o.order_id, o.order_cost, o.order_status, o.order_date, c.customer_name 
@@ -51,181 +52,182 @@ if ($result) {
     $recent_orders = $result->fetch_all(MYSQLI_ASSOC);
 }
 
-// Data untuk header (digunakan juga di header.php)
 $header_data = [
     'pending_orders' => $stats['pending_orders'],
-    'recent_orders' => array_slice($recent_orders, 0, 5) // Ambil 5 terbaru untuk notifikasi
+    'recent_orders' => array_slice($recent_orders, 0, 5)
 ];
-?>
 
+$product_sales = [];
+$result = $conn->query("
+    SELECT product_name, SUM(product_quantity) AS total_sales
+    FROM order_items
+    GROUP BY product_name
+    ORDER BY total_sales DESC
+    LIMIT 10
+");
+if ($result) {
+    $product_sales = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+$order_status_distribution = [];
+$result = $conn->query("
+    SELECT order_status, COUNT(*) AS total
+    FROM orders
+    GROUP BY order_status
+");
+if ($result) {
+    $order_status_distribution = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GEMS Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <?php include 'Layout/sidebar.php'; ?>
+<div class="wrapper">
+    <?php include 'Layout/sidebar.php'; ?>
+    <div id="content">
+        <?php include 'Layout/header.php'; ?>
 
-        <!-- Page Content -->
-        <div id="content">
-            <!-- Top Navigation (header.php menggunakan data dari $header_data) -->
-            <?php include 'Layout/header.php'; ?>
+        <div class="container-fluid mt-4">
+            <!-- Stats Cards -->
+            <div class="row">
+                <?php
+                $cards = [
+                    ['title' => 'Total Customers', 'value' => $stats['total_customers'], 'icon' => 'fa-users', 'color' => 'primary', 'link' => 'listCustomers.php'],
+                    ['title' => 'Total Products', 'value' => $stats['total_products'], 'icon' => 'fa-boxes', 'color' => 'success', 'link' => 'listProducts.php'],
+                    ['title' => 'Pending Orders', 'value' => $stats['pending_orders'], 'icon' => 'fa-clock', 'color' => 'warning', 'link' => 'listOrder.php'],
+                    ['title' => 'Active Suppliers', 'value' => $stats['active_suppliers'], 'icon' => 'fa-truck', 'color' => 'info', 'link' => 'listSupplier.php']
+                ];
 
-            <div class="container-fluid mt-4">
-                <!-- Stats Cards -->
-                <div class="row">
+                foreach ($cards as $card): ?>
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Total Customers
+                        <a href="../../admin/Pages/<?= $card['link'] ?>" class="card-link" style="text-decoration: none;">
+                            <div class="card border-left-<?= $card['color'] ?> shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-<?= $card['color'] ?> text-uppercase mb-1">
+                                                <?= $card['title'] ?>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= htmlspecialchars($card['value']) ?>
+                                            </div>
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?= $stats['total_customers'] ?>
+                                        <div class="col-auto">
+                                            <i class="fas <?= $card['icon'] ?> fa-2x text-gray-300"></i>
                                         </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Total Products
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?php echo (int)$stats['total_products']; ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-boxes fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
+                <?php endforeach; ?>
+            </div>
+            <!-- Charts -->
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="m-0">Sales by Product</h6>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Total Orders
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?php echo (int)$stats['total_orders']; ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Pending Orders
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?php echo (int)$stats['pending_orders']; ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-clock fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card-body">
+                            <canvas id="salesByProductChart"></canvas>
                         </div>
                     </div>
                 </div>
-                <!-- Recent Orders Table -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                                <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
-                                <a href="orders.php" class="btn btn-sm btn-primary">View All</a>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>Order ID</th>
-                                                <th>Customer</th>
-                                                <th>Date</th>
-                                                <th>Amount</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php if (!empty($recent_orders)): ?>
-                                                <?php foreach($recent_orders as $order): ?>
-                                                    <tr>
-                                                        <td>#<?= htmlspecialchars($order['order_id']) ?></td>
-                                                        <td><?= htmlspecialchars($order['customer_name']) ?></td>
-                                                        <td><?= date('M d, Y', strtotime($order['order_date'])) ?></td>
-                                                        <td>$<?= number_format($order['order_cost'], 2) ?></td>
-                                                        <td>
-                                                            <span class="badge <?= 
-                                                                match(strtolower($order['order_status'])) {
-                                                                    'completed' => 'bg-success',
-                                                                    'pending' => 'bg-warning',
-                                                                    'cancelled' => 'bg-danger',
-                                                                    default => 'bg-info'
-                                                                }
-                                                            ?>">
-                                                                <?= ucfirst(htmlspecialchars($order['order_status'])) ?>
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="order_details.php?id=<?= $order['order_id'] ?>" class="btn btn-sm btn-primary">View</a>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            <?php else: ?>
-                                                <tr><td colspan="6" class="text-center">No recent orders found.</td></tr>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="m-0">Order Status Distribution</h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="orderStatusChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <?php include 'Layout/footer.php'; ?>
-
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/script.js"></script>
+        <?php include 'Layout/footer.php'; ?>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/sidebar.js"></script>
+<script>
+    const salesByProductData = {
+        labels: <?= json_encode(array_column($product_sales, 'product_name')) ?>,
+        datasets: [{
+            label: 'Total Sales',
+            data: <?= json_encode(array_map('intval', array_column($product_sales, 'total_sales'))) ?>,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const orderStatusData = {
+        labels: <?= json_encode(array_column($order_status_distribution, 'order_status')) ?>,
+        datasets: [{
+            label: 'Order Status',
+            data: <?= json_encode(array_map('intval', array_column($order_status_distribution, 'total'))) ?>,
+            backgroundColor: [
+                'rgba(255, 205, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(153, 102, 255, 0.7)'
+            ],
+            borderColor: [
+                'rgba(255, 205, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(153, 102, 255, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+</script>
+<script src="js/script.js"></script>
+<script>
+    const ctxSales = document.getElementById('salesByProductChart').getContext('2d');
+    const salesChart = new Chart(ctxSales, {
+        type: 'bar',
+        data: salesByProductData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Sales by Product' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const ctxOrder = document.getElementById('orderStatusChart').getContext('2d');
+    const orderChart = new Chart(ctxOrder, {
+        type: 'doughnut',
+        data: orderStatusData,
+        options: {
+            responsive: true,
+            plugins: {
+                title: { display: true, text: 'Order Status Distribution' }
+            }
+        }
+    });
+</script>
 </body>
 </html>

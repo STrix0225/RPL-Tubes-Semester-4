@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $product_qty = 0; // Set quantity to 0 by default
 
     $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-    $upload_dir = '../img/Products/';
+    $upload_dir = '../../Customer/gems-customer-pages/images/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
     function uploadImage($file, $allowed, $upload_dir) {

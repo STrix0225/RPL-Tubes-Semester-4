@@ -1,0 +1,16 @@
+.form-group.row {
+        margin-bottom: 1.5rem;
+      }
+      .image-upload-container {
+        display: flex;
+        flex-direction: column;
+      }
+      .image-upload-item {
+        margin-bottom: 1rem;
+      }
+      .form-control, .form-select {
+        height: calc(2.25rem + 8px);
+      }
+      .description-area {
+        margin-top: 1.5rem;
+      }
