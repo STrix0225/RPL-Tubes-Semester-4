@@ -129,9 +129,12 @@ if (isset($_POST['update_status'])) {
                                                     Actions
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="orderDetails.php?id=<?php echo $order['order_id']; ?>">
+                                                    <li><button class="dropdown-item btn-view-order" 
+                                                        data-id="<?php echo $order['order_id']; ?>" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#orderDetailsModal">
                                                         <i class="fas fa-eye me-2"></i>View Details
-                                                    </a></li>
+                                                    </button>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <form method="post" action="listOrder.php" class="p-2">
@@ -166,6 +169,23 @@ if (isset($_POST['update_status'])) {
             <?php include '../Layout/footer.php'; ?>
         </div>
     </div>
+    <!-- Modal detail order -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderDetailsModalLabel">Detail Pesanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="orderDetailsContent">
+                <div class="text-center p-5">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-3">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -185,6 +205,29 @@ if (isset($_POST['update_status'])) {
                     { responsivePriority: 5, targets: -1 }
                 ]
             });
+
+            $('.btn-view-order').on('click', function() {
+        const orderId = $(this).data('id');
+        $('#orderDetailsContent').html(`
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary"></div>
+                <p class="mt-3">Memuat data...</p>
+            </div>
+        `);
+
+        $.ajax({
+            url: 'orderDetails.php',    
+            method: 'GET',
+            data: { id: orderId },
+            success: function(response) {
+                $('#orderDetailsContent').html(response);
+            },
+            error: function() {
+                $('#orderDetailsContent').html('<div class="alert alert-danger m-3">Gagal memuat detail pesanan.</div>');
+            }
+        });
+    });
+
         });
     </script>
 </body>

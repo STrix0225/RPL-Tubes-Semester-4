@@ -13,7 +13,7 @@ $recent_orders_notif = $header_data['recent_orders'] ?? [];
     <button type="button" id="sidebarCollapse" class="btn btn-primary">
       <i class="fas fa-bars"></i>
     </button>
-    <a class="navbar-brand ms-3" href="index.php">
+    <a class="navbar-brand ms-3" href="../../admin/index.php">
         <i class="fas fa-gem me-1"></i> GEMS Admin
     </a>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">

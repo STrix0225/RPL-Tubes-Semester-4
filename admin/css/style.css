@@ -166,7 +166,7 @@ body {
    Content Area
 =========================== */
 #content {
-    width: calc(100% - 250px);
+    flex-grow: 1;
     min-height: 100vh;
     transition: all 0.3s ease;
     margin-left: 250px;
@@ -305,4 +305,13 @@ select:focus {
 #salesDetailsContent .spinner-border {
     width: 3rem;
     height: 3rem;
+}
+
+.card-link:hover .card {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+.card-link .card {
+    transition: all 0.3s ease;
 }

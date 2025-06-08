@@ -80,4 +80,62 @@ $(document).ready(function() {
             }
         });
     });
+    
+    
+
+    const salesByProductData = {
+    labels: ["iPhone 15", "Galaxy S24", "Xiaomi 13", "Realme C55", "Infinix Zero"],
+    datasets: [{
+        label: "Units Sold",
+        data: [120, 95, 60, 80, 45],
+        backgroundColor: [
+            '#4e73df',
+            '#1cc88a',
+            '#36b9cc',
+            '#f6c23e',
+            '#e74a3b'
+        ]
+    }]
+};
+
+const orderStatusData = {
+    labels: ["Completed", "Pending", "Cancelled"],
+    datasets: [{
+        data: [250, 75, 30],
+        backgroundColor: [
+            '#1cc88a', // green
+            '#f6c23e', // yellow
+            '#e74a3b'  // red
+        ],
+        hoverOffset: 8
+    }]
+};
+
+new Chart(document.getElementById("salesByProductChart"), {
+    type: 'bar',
+    data: salesByProductData,
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Top 5 Products by Sales' }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+new Chart(document.getElementById("orderStatusChart"), {
+    type: 'doughnut',
+    data: orderStatusData,
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Order Status Breakdown' }
+        }
+    }
+});
+
 });
