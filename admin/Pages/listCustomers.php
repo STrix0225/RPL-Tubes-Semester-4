@@ -33,15 +33,19 @@ if ($result) {
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $customer_id = (int)$_GET['delete'];
     
-    // First get customer photo path
-    $result = $conn->query("SELECT customer_photo FROM customers WHERE customer_id = $customer_id");
-    if ($result && $result->num_rows > 0) {
-        $customer = $result->fetch_assoc();
-        $photo_path = $customer['customer_photo'];
-        
-        // Delete photo file if exists
-        if ($photo_path && file_exists('../../' . $photo_path)) {
-            unlink('../../' . $photo_path);
+    // Get customer photo to delete from server
+    $stmt = $conn->prepare("SELECT customer_photo FROM customers WHERE customer_id = ?");
+    $stmt->bind_param("i", $customer_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $customer = $result->fetch_assoc();
+    $stmt->close();
+    
+    // Delete photo from server if exists
+    if ($customer && !empty($customer['customer_photo'])) {
+        $upload_dir = '../img/Customers/';
+        if (file_exists($upload_dir . $customer['customer_photo'])) {
+            unlink($upload_dir . $customer['customer_photo']);
         }
     }
     
@@ -57,6 +61,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
@@ -68,9 +73,21 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link href="../css/style.css" rel="stylesheet" />
-    <link href="../css/customers.css" rel="stylesheet" />
-    
-
+    <style>
+        .customer-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .action-btns .btn {
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -84,9 +101,6 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                     <h1 class="h3 mb-0 text-primary">
                         <i class="fas fa-users me-2"></i>List Customers
                     </h1>
-                    <a href="addCustomer.php" class="btn btn-primary">
-                        <i class="fas fa-plus-circle me-1"></i> Add Customer
-                    </a>
                 </div>
 
                 <?php if (isset($_GET['success'])): ?>
@@ -103,13 +117,12 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     <tr>
                                         <th>No</th>
                                         <th>Photo</th>
-                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Address</th>
                                         <th>Phone</th>
                                         <th>City</th>
-                                        <th>Address</th>
-                                        <th>Actions</th>
+                                        <th>Tools</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,38 +130,31 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     <tr>
                                         <td><?php echo $index + 1; ?></td>
                                         <td>
-                                            <?php if ($customer['customer_photo']): ?>
-                                                <img src="../../admin/img/products/<?php echo htmlspecialchars($customer['customer_photo']); ?>" 
-                                                     alt="Customer Photo" 
-                                                     class="customer-photo">
+                                            <?php if (!empty($customer['customer_photo'])): ?>
+                                                <img src="../img/Customers/<?php echo htmlspecialchars($customer['customer_photo']); ?>" 
+                                                     alt="Customer Photo" class="customer-img">
                                             <?php else: ?>
-                                                <div class="customer-photo bg-secondary text-white d-flex align-items-center justify-content-center">
+                                                <div class="customer-img bg-secondary text-white d-flex align-items-center justify-content-center">
                                                     <i class="fas fa-user"></i>
                                                 </div>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?php echo htmlspecialchars($customer['customer_id']); ?></td>
                                         <td><?php echo htmlspecialchars($customer['customer_name']); ?></td>
                                         <td><?php echo htmlspecialchars($customer['customer_email']); ?></td>
+                                        <td><?php echo htmlspecialchars($customer['customer_address'] ?? 'N/A'); ?></td>
                                         <td><?php echo htmlspecialchars($customer['customer_phone'] ?? 'N/A'); ?></td>
                                         <td><?php echo htmlspecialchars($customer['customer_city'] ?? 'N/A'); ?></td>
-                                        <td><?php echo htmlspecialchars($customer['customer_address'] ?? 'N/A'); ?></td>
                                         <td class="action-btns">
-                                            <a href="editCustomer.php?id=<?php echo $customer['customer_id']; ?>" 
-                                               class="btn btn-sm btn-outline-primary rounded-circle" 
-                                               title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                                            <button class="btn btn-sm btn-outline-primary rounded-circle view-btn" 
+                                                    title="View Details"
+                                                    data-id="<?php echo $customer['customer_id']; ?>">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
                                             <button class="btn btn-sm btn-outline-danger rounded-circle delete-btn" 
                                                     title="Delete"
                                                     data-id="<?php echo $customer['customer_id']; ?>">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
-                                            <a href="viewCustomer.php?id=<?php echo $customer['customer_id']; ?>" 
-                                               class="btn btn-sm btn-outline-info rounded-circle" 
-                                               title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -160,6 +166,24 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
             </div>
 
             <?php include '../Layout/footer.php'; ?>
+        </div>
+    </div>
+
+    <!-- View Customer Modal -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewModalLabel">Customer Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="customerDetails">
+                    <!-- Content will be loaded via AJAX -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -187,6 +211,36 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="../js/sidebar.js"></script>
-    <script src="../js/customer.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#customersTable').DataTable();
+            
+            // Handle view button click
+            $('.view-btn').click(function() {
+                const customerId = $(this).data('id');
+                $.ajax({
+                    url: 'getCustomerDetails.php',
+                    type: 'GET',
+                    data: { id: customerId },
+                    success: function(response) {
+                        $('#customerDetails').html(response);
+                        $('#viewModal').modal('show');
+                    },
+                    error: function() {
+                        alert('Failed to load customer details.');
+                    }
+                });
+            });
+            
+            // Handle delete button click
+            $('.delete-btn').click(function() {
+                const customerId = $(this).data('id');
+                $('#confirmDelete').attr('href', 'listCustomers.php?delete=' + customerId);
+                $('#deleteModal').modal('show');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 -- Host:                         127.0.0.1
 -- Server version:               10.4.32-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.10.0.7000
+-- HeidiSQL Version:             12.8.0.6908
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -32,8 +32,9 @@ CREATE TABLE IF NOT EXISTS `admins` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Dumping data for table gems_web.admins: ~1 rows (approximately)
+DELETE FROM `admins`;
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_phone`, `admin_password`, `admin_photo`, `admin_photo2`) VALUES
-	(1, 'Khaleed', 'admin@gmail.com', '62897765432', '0287040c474dbf44cdeb17eebb99d828', 'admin_profile.jpg', 'admin_profile2.jpg');
+	(1, 'Khaleed', 'admin@gmail.com', '62897765432', '25d55ad283aa400af464c76d713c07ad', 'admin_profile.jpg', 'admin_profile2.jpg');
 
 -- Dumping structure for table gems_web.blogs
 CREATE TABLE IF NOT EXISTS `blogs` (
@@ -50,6 +51,38 @@ CREATE TABLE IF NOT EXISTS `blogs` (
   PRIMARY KEY (`blog_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+-- Dumping data for table gems_web.blogs: ~29 rows (approximately)
+DELETE FROM `blogs`;
+INSERT INTO `blogs` (`blog_id`, `blog_title`, `blog_description`, `blog_quotes`, `blog_quotes_writer`, `blog_image`, `blog_image2`, `blog_tags`, `blog_date`, `admin_id`) VALUES
+	(1, 'What Curling Irons Are The Best Ones', 'Spesifikasi Technoplast GB-200:\nTerbuat dari bahan plastik berkualitas( Food Grade), serta bebas dari bahan-bahan berbahaya(BPA free)\n\nTersedia dalam warna hitam, biru, merah\n\nTumbler ini sangat cocok untuk kalian yang ingin memberikan souvenir perusahaan, hadiah wisuda, ulang tahun atau bahkan sebagai koleksi pribadi.\n\nKalian bisa menggunakan desain buatan kalian sendiri untuk botol minum kalian nih. Caranya dengan\n1. order via chat Whatsapp\n2. Kirim desain kalian via email mfbinary18@gmail.com.\n3. Desain yang kalian kirim hanya dalam bentuk .eps ya\n', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-1.jpg', 'banner1.jpg', '#Poster #Tumbler #2022\n', '2022-11-04', 1),
+	(2, 'Eternity Bands Do Last Forever', 'Spesifikasi Technoplast GS-400:\nTerbuat dari bahan plastik berkualitas( Food Grade), serta bebas dari bahan-bahan berbahaya(BPA free)\n\nTersedia dalam warna Hitam\n\nTumbler ini sangat cocok untuk kalian yang ingin memberikan souvenir perusahaan, hadiah wisuda, ulang tahun atau bahkan sebagai koleksi pribadi.\n\nKalian bisa menggunakan desain buatan kalian sendiri untuk botol minum kalian nih. Caranya dengan\n1. order via chat Whatsapp\n2. Kirim desain kalian via email mfbinary18@gmail.com.\n3. Desain yang kalian kirim hanya dalam bentuk .eps ya\n', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-2.jpg', 'banner1.jpg', '#Poster #Tumbler #Edukasi #2022\n', '2022-11-05', 1),
+	(3, 'The Health Benefits Of Sunglasses', 'Miliki sekarang Tumbler Custom GS-400 2 side.\nDimensi:\nVolume 370 ml\nTinggi 17.1 cm\nLebar 7.5 cm', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-3.jpg', 'banner1.jpg', '#Tumbler', '2022-11-05', 1),
+	(4, 'Aiming For Higher The Mastopexy', 'Tu kan Lucu banget, ayo meriahkan hari spesial sahabat mu dengan order sekarang juga tumbler cantik ini di @mfbinary ya', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-4.jpg', 'banner1.jpg', '#Tumbler', '2022-11-05', 1),
+	(5, 'Wedding Rings A Gift For A Lifetime', '<p>Hydroderm is the highly desired anti-aging cream on the block. This serum restricts the\n occurrence of early aging sings on the skin and keeps the skin younger, tighter and\n healthier. It reduces the wrinkles and loosening of skin. This cream nourishes the skin\n and brings back the glow that had lost in the run of hectic years.</p>\n <p>The most essential ingredient that makes hydroderm so effective is Vyo-Serum, which is a\n product of natural selected proteins. This concentrate works actively in bringing about\n the natural youthful glow of the skin. It tightens the skin along with its moisturizing\n effect on the skin. The other important ingredient, making hydroderm so effective is\n “marine collagen” which along with Vyo-Serum helps revitalize the skin.</p>', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-5.jpg', 'banner1.jpg', '#Poster #Tumbler #Edukasi #2022\n', '2022-11-05', 1),
+	(6, 'The Different Methods Of Hair Removal', 'Kamu bisa beli satuan ya. No min. Order.\r\nJadikan hari spesial keluargamu semakin berkesan, dengan hadiah spesial dari kamu nih.', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-6.jpg', 'banner1.jpg', '#Tumbler #Quotes', '2022-11-05', 1),
+	(7, 'Hoop Earrings A Style From History', 'Ada juga ni pulpen dengan desain unik dan lucu, bisa custom sesuai keinginan kamu, dan cocok banget ni buat hadiah perpisahan sekolah.', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-7.jpg', 'banner1.jpg', '#Pulpen', '2022-11-05', 1),
+	(8, 'Lasik Eye Surgery Are You Ready', 'Kalender dan Poster Edukasi bisa kamu dapatkan dengan harga terjangkan, untuk desainnya bisa kamu tentukan sendiri loh.., ayo! tunggu apa lagi untuk berkunjung ke toko kami @mfbinary', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-8.jpg', 'banner1.jpg', '#Poster #Tumbler #Edukasi #2022\n', '2022-11-05', 1),
+	(9, 'Enjoying Beautiful Scarf', 'Khusus poster edukasi lagi diskon gede-gedean ini sampe 50%, kamu jangan sampai ketinggalan, promonya hanya bulan ini saja, ayo tunggu apa lagi :D.', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-9.jpg', 'banner1.jpg', '#Poster', '2022-11-05', 1),
+	(10, 'Artikel 1', 'Deskripsi artikel 1', 'Quote menarik 1', 'Daniel West', 'blog1.jpg', NULL, 'tag1, tag2, tag1', '2025-01-25', 1),
+	(11, 'Artikel 2', 'Deskripsi artikel 2', 'Quote menarik 2', 'Jillian Robinson', 'blog2.jpg', NULL, 'tag1, tag2, tag2', '2024-09-11', 1),
+	(12, 'Artikel 3', 'Deskripsi artikel 3', 'Quote menarik 3', 'Lisa Barrett', 'blog3.jpg', NULL, 'tag1, tag2, tag3', '2023-06-12', 1),
+	(13, 'Artikel 4', 'Deskripsi artikel 4', 'Quote menarik 4', 'Lee Marshall', 'blog4.jpg', NULL, 'tag1, tag2, tag4', '2023-11-01', 1),
+	(14, 'Artikel 5', 'Deskripsi artikel 5', 'Quote menarik 5', 'Jonathan Bolton', 'blog5.jpg', NULL, 'tag1, tag2, tag5', '2025-04-13', 1),
+	(15, 'Artikel 6', 'Deskripsi artikel 6', 'Quote menarik 6', 'Linda Bailey', 'blog6.jpg', NULL, 'tag1, tag2, tag6', '2024-04-21', 1),
+	(16, 'Artikel 7', 'Deskripsi artikel 7', 'Quote menarik 7', 'Breanna Jefferson', 'blog7.jpg', NULL, 'tag1, tag2, tag7', '2023-08-12', 1),
+	(17, 'Artikel 8', 'Deskripsi artikel 8', 'Quote menarik 8', 'Maria Ramirez', 'blog8.jpg', NULL, 'tag1, tag2, tag8', '2024-06-16', 1),
+	(18, 'Artikel 9', 'Deskripsi artikel 9', 'Quote menarik 9', 'Thomas Cobb', 'blog9.jpg', NULL, 'tag1, tag2, tag9', '2024-08-23', 1),
+	(19, 'Artikel 10', 'Deskripsi artikel 10', 'Quote menarik 10', 'Stephanie Mueller', 'blog10.jpg', NULL, 'tag1, tag2, tag10', '2023-07-08', 1),
+	(20, 'Artikel 11', 'Deskripsi artikel 11', 'Quote menarik 11', 'George White', 'blog11.jpg', NULL, 'tag1, tag2, tag11', '2023-08-25', 1),
+	(21, 'Artikel 12', 'Deskripsi artikel 12', 'Quote menarik 12', 'Patrick Hogan', 'blog12.jpg', NULL, 'tag1, tag2, tag12', '2024-03-18', 1),
+	(22, 'Artikel 13', 'Deskripsi artikel 13', 'Quote menarik 13', 'Amber Salinas', 'blog13.jpg', NULL, 'tag1, tag2, tag13', '2024-10-21', 1),
+	(23, 'Artikel 14', 'Deskripsi artikel 14', 'Quote menarik 14', 'Amy Allen', 'blog14.jpg', NULL, 'tag1, tag2, tag14', '2024-11-18', 1),
+	(24, 'Artikel 15', 'Deskripsi artikel 15', 'Quote menarik 15', 'Ashley Cummings', 'blog15.jpg', NULL, 'tag1, tag2, tag15', '2023-08-03', 1),
+	(25, 'Artikel 16', 'Deskripsi artikel 16', 'Quote menarik 16', 'Janet Phillips', 'blog16.jpg', NULL, 'tag1, tag2, tag16', '2023-12-03', 1),
+	(26, 'Artikel 17', 'Deskripsi artikel 17', 'Quote menarik 17', 'Trevor Newman', 'blog17.jpg', NULL, 'tag1, tag2, tag17', '2023-07-21', 1),
+	(27, 'Artikel 18', 'Deskripsi artikel 18', 'Quote menarik 18', 'Belinda Johnson', 'blog18.jpg', NULL, 'tag1, tag2, tag18', '2025-04-27', 1),
+	(28, 'Artikel 19', 'Deskripsi artikel 19', 'Quote menarik 19', 'Robin Davis', 'blog19.jpg', NULL, 'tag1, tag2, tag19', '2023-08-20', 1),
+	(29, 'Artikel 20', 'Deskripsi artikel 20', 'Quote menarik 20', 'Sarah Turner', 'blog20.jpg', NULL, 'tag1, tag2, tag20', '2023-07-02', 1);
 
 -- Dumping structure for table gems_web.customers
 CREATE TABLE IF NOT EXISTS `customers` (
@@ -58,11 +91,16 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_email` varchar(100) NOT NULL,
   `customer_password` varchar(100) NOT NULL,
   `customer_phone` varchar(20) DEFAULT NULL,
-  `customer_address` varchar(255) DEFAULT NULL,
-  `customer_city` varchar(100) DEFAULT NULL,
+  `customer_city` varchar(255) DEFAULT NULL,
+  `customer_address` varchar(100) DEFAULT NULL,
   `customer_photo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dumping data for table gems_web.customers: ~1 rows (approximately)
+DELETE FROM `customers`;
+INSERT INTO `customers` (`customer_id`, `customer_name`, `customer_email`, `customer_password`, `customer_phone`, `customer_city`, `customer_address`, `customer_photo`) VALUES
+	(32, 'Lanz Alexander', 'Lanz@gmail.com', '$2y$10$6MtCG8UKKU4qYmUhW708lO7TVUc3zf3J5rmNPORGT5V58C/KpfJ1K', '0895411811612', 'Buitenzorg', 'JlCikutrano90', 'uploads/683b07bc67423.jpg');
 
 -- Dumping structure for table gems_web.orders
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -74,8 +112,17 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `customer_city` varchar(255) NOT NULL,
   `customer_address` varchar(255) NOT NULL,
   `order_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `payment_method` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dumping data for table gems_web.orders: ~4 rows (approximately)
+DELETE FROM `orders`;
+INSERT INTO `orders` (`order_id`, `order_cost`, `order_status`, `customer_id`, `customer_phone`, `customer_city`, `customer_address`, `order_date`, `payment_method`) VALUES
+	(25, 6460.00, 'pending', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-01 23:28:34', 'paypal'),
+	(26, 900.00, 'cancelled', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-02 00:09:40', 'paypal'),
+	(27, 600.00, 'completed', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-02 00:11:01', 'paypal'),
+	(28, 600.00, 'completed', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-03 07:25:58', 'paypal');
 
 -- Dumping structure for table gems_web.order_items
 CREATE TABLE IF NOT EXISTS `order_items` (
@@ -86,11 +133,47 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `product_image` varchar(255) NOT NULL,
   `product_price` decimal(10,2) NOT NULL,
   `product_quantity` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
   `order_date` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+-- Dumping data for table gems_web.order_items: ~7 rows (approximately)
+DELETE FROM `order_items`;
+INSERT INTO `order_items` (`item_id`, `order_id`, `product_id`, `product_name`, `product_image`, `product_price`, `product_quantity`, `customer_id`, `order_date`) VALUES
+	(27, 25, '2', 'J11', 'product2.jpeg', 900.00, 1, 32, '2025-06-01 23:28:34'),
+	(28, 25, '4', 'IPhone 14', 'product1.jpeg', 780.00, 2, 32, '2025-06-01 23:28:34'),
+	(29, 25, '5', 'Hetzer', 'Headphone1.webp', 600.00, 4, 32, '2025-06-01 23:28:34'),
+	(30, 25, '6', 'Funiculi ', 'ACER2.jpeg', 1600.00, 1, 32, '2025-06-01 23:28:34'),
+	(31, 26, '2', 'J11', 'product2.jpeg', 900.00, 1, 32, '2025-06-02 00:09:40'),
+	(32, 27, '5', 'Hetzer', 'Headphone1.webp', 600.00, 1, 32, '2025-06-02 00:11:01'),
+	(33, 28, '5', 'Hetzer', 'Headphone1.webp', 600.00, 1, 32, '2025-06-03 07:25:58');
+
+-- Dumping structure for table gems_web.order_stock
+CREATE TABLE IF NOT EXISTS `order_stock` (
+  `id_stock` int(11) NOT NULL AUTO_INCREMENT,
+  `id_supplier` int(11) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `product_name` varchar(100) DEFAULT NULL,
+  `product_brand` varchar(100) DEFAULT NULL,
+  `product_category` varchar(100) DEFAULT NULL,
+  `product_color` varchar(50) DEFAULT NULL,
+  `product_qty` int(11) DEFAULT NULL,
+  `product_ori_price` decimal(10,2) DEFAULT NULL,
+  `total_restock_price` decimal(10,2) DEFAULT NULL,
+  `order_date` date DEFAULT curdate(),
+  `status_order` varchar(20) DEFAULT 'pending',
+  `catatan` text DEFAULT NULL,
+  PRIMARY KEY (`id_stock`),
+  KEY `id_supplier` (`id_supplier`),
+  CONSTRAINT `order_stock_ibfk_1` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table gems_web.order_stock: ~2 rows (approximately)
+DELETE FROM `order_stock`;
+INSERT INTO `order_stock` (`id_stock`, `id_supplier`, `product_id`, `product_name`, `product_brand`, `product_category`, `product_color`, `product_qty`, `product_ori_price`, `total_restock_price`, `order_date`, `status_order`, `catatan`) VALUES
+	(2, 1, 32, 'HP-15 db006wm', 'HP', 'Laptop', 'Black', 10, 5000600.00, 50006000.00, '2025-06-07', 'processing', 'Pajak 20%'),
+	(4, 2, 34, 'MacBook Air M3', 'Apple', 'Laptop', 'white', 10, 24999000.00, 99999999.99, '2025-06-07', 'completed', 'Gaji bulanan dipotong');
 
 -- Dumping structure for table gems_web.payments
 CREATE TABLE IF NOT EXISTS `payments` (
@@ -101,6 +184,31 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `payment_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+-- Dumping data for table gems_web.payments: ~22 rows (approximately)
+DELETE FROM `payments`;
+INSERT INTO `payments` (`payment_id`, `order_id`, `user_id`, `transaction_id`, `payment_date`) VALUES
+	(0, 1, 1, '5GF373104L5481926', '2023-03-12 23:47:35'),
+	(0, 3, 1, '4EA15211WD712624R', '2023-03-19 13:03:05'),
+	(1, 9, 2, '23c98d7a-a385-47ce-b9c6-e7dc6e5f8b83', '2023-09-15 12:09:44'),
+	(2, 4, 7, '8d95ea49-85dd-4d4b-8a5b-770ff33c14cf', '2024-09-23 15:41:14'),
+	(3, 13, 5, '5bcb2ab2-b77e-490f-96cc-52a76f803c7d', '2024-05-28 13:42:50'),
+	(4, 17, 11, 'd1039ac9-9e26-4b7f-b3a2-3eb38e0fd5aa', '2025-04-12 02:36:03'),
+	(5, 10, 15, '073cd915-97c4-4e93-80e3-479bc8c72a36', '2025-04-23 00:23:53'),
+	(6, 12, 13, '4f6a1aa0-e056-4505-9af1-5fe7ec2d63c3', '2023-07-09 04:55:26'),
+	(7, 10, 10, '6c870ed0-1daf-41d2-936c-f7663f9bfc6c', '2023-12-20 05:32:18'),
+	(8, 5, 12, '9c610e37-e96d-4cc1-8464-18b5ab2829e2', '2023-11-17 06:56:17'),
+	(9, 13, 6, 'c2091e3a-f055-4fc9-8aed-561c2b9779bc', '2025-03-29 14:58:45'),
+	(10, 11, 6, '795a4ecc-0f04-4b62-96f5-5e1bc3df4feb', '2024-08-23 22:15:35'),
+	(11, 18, 9, 'bdaddde6-4da5-4e9d-ad12-b82ab9759769', '2024-03-08 07:17:21'),
+	(12, 17, 6, 'e2d4a640-e229-4bd4-9a98-dc8b62ad8c53', '2025-01-07 20:38:25'),
+	(13, 3, 12, '46865013-e900-4a85-858f-5883a540e5d9', '2023-06-23 21:26:21'),
+	(14, 3, 5, 'b3708dc3-79fa-4806-b12b-54fb06385208', '2023-08-29 04:28:45'),
+	(15, 15, 4, '07df2c7e-36ec-4036-adce-07c53cebd371', '2024-09-19 09:07:01'),
+	(16, 8, 5, '9b56d4ec-c1c4-4413-b6d4-781266002c11', '2024-05-15 02:35:49'),
+	(17, 12, 13, '4fc4d02d-2d3c-40fa-b433-593529e2d837', '2024-10-22 17:21:30'),
+	(18, 16, 18, '5e9a0e26-01bd-4865-a7c1-3d61ad90c9ff', '2024-07-27 10:32:08'),
+	(19, 4, 16, 'f1022a34-93cc-456f-95f4-511f77ff38e4', '2023-09-21 00:04:17'),
+	(20, 16, 16, 'b2353c79-1d43-4be1-9ff9-029dbe525c1e', '2024-08-06 06:22:59');
 
 -- Dumping structure for table gems_web.products
 CREATE TABLE IF NOT EXISTS `products` (
@@ -113,21 +221,66 @@ CREATE TABLE IF NOT EXISTS `products` (
   `product_image1` varchar(100) DEFAULT NULL,
   `product_image2` varchar(100) DEFAULT NULL,
   `product_image3` varchar(100) DEFAULT NULL,
-  `product_image4` varchar(100) DEFAULT NULL,
   `product_price` decimal(10,2) DEFAULT NULL,
   `product_discount` decimal(10,2) DEFAULT NULL,
   `product_color` varchar(50) DEFAULT NULL,
   `product_sold` int(11) DEFAULT NULL,
+  `product_qty` int(11) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table gems_web.products: ~5 rows (approximately)
-INSERT INTO `products` (`product_id`, `product_name`, `product_brand`, `product_category`, `product_description`, `product_criteria`, `product_image1`, `product_image2`, `product_image3`, `product_image4`, `product_price`, `product_discount`, `product_color`, `product_sold`) VALUES
-	(1, 'Nitro 5 Pro', 'ACER', 'Laptop', 'usgfuipbaougbuaoicbuaouyheiaohcabouahfoia', 'New', 'ACER2.jpeg', NULL, NULL, NULL, 1000.00, 20.00, NULL, 1),
-	(2, 'J11', 'SAMSUNG', 'Handphone', 'dsuigsughsoiioshfiosdadadwagucuaca', 'Non', 'product2.jpeg', NULL, NULL, NULL, 1000.00, 10.00, NULL, 3),
-	(3, 'ZT95', 'ROG', 'Laptop', 'u9sgh9f8sghvuobouishvsvssfsers', 'New', 'ROG2.jpeg', NULL, NULL, NULL, 1500.00, 50.00, NULL, 2),
-	(4, 'IPhone 14', 'Apple', 'Handphone', 'idusgbu9sofusabfuofabfouah', 'New', 'product1.jpeg', NULL, NULL, NULL, 2000.00, 2.00, NULL, 4),
-	(5, 'Hetzer', 'LADA', 'Accessories', 'dfghjkl;adeawtghyjumadsadwa', 'Non', 'Headphone1.webp', NULL, NULL, NULL, 600.00, NULL, NULL, 2);
+-- Dumping data for table gems_web.products: ~7 rows (approximately)
+DELETE FROM `products`;
+INSERT INTO `products` (`product_id`, `product_name`, `product_brand`, `product_category`, `product_description`, `product_criteria`, `product_image1`, `product_image2`, `product_image3`, `product_price`, `product_discount`, `product_color`, `product_sold`, `product_qty`) VALUES
+	(2, 'J11', 'SAMSUNG', 'Handphone', 'dsuigsughsoiioshfiosdadadwagucuaca', 'Non', 'product2.jpeg', NULL, NULL, 1000.00, 10.00, 'black', 3, 0),
+	(4, 'IPhone 14', 'Apple', 'Handphone', 'idusgbu9sofusabfuofabfouah', 'New', 'product1.jpeg', NULL, NULL, 1200.00, 35.00, 'purple', 4, 0),
+	(5, 'Hetzer', 'LADA', 'Accessories', 'dfghjkl;adeawtghyjumadsadwa', 'Non', 'Headphone1.webp', 'alien1.jpg', 'alien.jpg', 600.00, NULL, 'white', 0, 0),
+	(6, 'Funiculi ', 'Funicula', 'Laptop', 'usgfuipbaougbuaoicbuaouyheiaohcabouahfoia', 'New', 'ACER2.jpeg', 'ROG2.jpeg', 'Headphone1.webp', 2000.00, 20.00, 'pink', 1, 0),
+	(32, 'HP-15 db006wm', 'HP', 'Laptop', 'Buat Kuliah joss', 'Non', '6844250a19396.jpeg', '6844250a19987.jpeg', '6844250a19d49.jpeg', 6000720.00, 0.00, 'Black', 0, 10),
+	(34, 'MacBook Air M3', 'Apple', 'Laptop', 'Most expensive', 'Favourite', '68444a89aadb3.jpeg', '68444a89ab33f.jpeg', '68444a89ac244.jpeg', 29998800.00, 0.00, 'white', 0, 20),
+	(35, 'MacBook Air M3', 'Apple', 'Laptop', 'Most expensive', 'Non', '68444bdb71c34.jpeg', '68444bdb7223a.jpeg', '68444bdb728c1.jpeg', 24999000.00, 0.00, 'Black', 0, 0);
+
+-- Dumping structure for table gems_web.reviews
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `review_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `rating` tinyint(1) NOT NULL CHECK (`rating` between 1 and 5),
+  `review_text` text DEFAULT NULL,
+  `review_date` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`review_id`),
+  KEY `product_id` (`product_id`),
+  KEY `customer_id` (`customer_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table gems_web.reviews: ~1 rows (approximately)
+DELETE FROM `reviews`;
+INSERT INTO `reviews` (`review_id`, `product_id`, `customer_id`, `rating`, `review_text`, `review_date`) VALUES
+	(1, 32, 32, 3, 'Lapto nya gampang overheat', '2025-06-08 10:58:09');
+
+-- Dumping structure for table gems_web.supplier
+CREATE TABLE IF NOT EXISTS `supplier` (
+  `id_supplier` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_PT_supplier` varchar(100) NOT NULL,
+  `alamat_supplier` text NOT NULL,
+  `contact_PT` varchar(20) NOT NULL,
+  `email_supplier` varchar(100) DEFAULT NULL,
+  `sales_name` varchar(50) DEFAULT NULL,
+  `contact_person` varchar(100) DEFAULT NULL,
+  `product_brand` varchar(100) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id_supplier`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table gems_web.supplier: ~2 rows (approximately)
+DELETE FROM `supplier`;
+INSERT INTO `supplier` (`id_supplier`, `nama_PT_supplier`, `alamat_supplier`, `contact_PT`, `email_supplier`, `sales_name`, `contact_person`, `product_brand`, `status`, `created_at`, `updated_at`) VALUES
+	(1, ' PT Sat Nusapersada Tbk', 'Jl. Pelita VI No. 99, Kelurahan Kampung Pelita, Kecamatan Lubuk Baja, Kota Batam', '(0778) 5708888', 'corporate.secretary@satnusa.com', 'Jamals', '08974520321', 'HP', 1, '2025-06-07 13:06:04', '2025-06-07 13:06:04'),
+	(2, 'PT Data Citra Mandiri', 'Jln.Bandengan Selatan No. 19-20, Pekojan, Jakarta Barat 11240. ', '08216915401', 'corporate@ibox.co.id', 'Herman', '081478650', 'Apple', 1, '2025-06-07 14:23:18', '2025-06-07 14:23:18');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
