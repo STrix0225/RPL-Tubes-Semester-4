@@ -81,17 +81,27 @@ if(isset($_POST['action'])) {
     </div>';
     
     // Script untuk inisialisasi ulang Isotope dan plugins
-    echo <<<HTML
-    <script>
-    $(document).ready(function() {
-        // Inisialisasi ulang Isotope
-        $('.product-grid').isotope({
+    // Replace the existing script section in filter_products.php with this:
+echo <<<HTML
+<script>
+$(document).ready(function() {
+    // Tunggu hingga DOM selesai diupdate
+    setTimeout(function() {
+        var \$grid = $('.product-grid');
+        
+        // Hancurkan instance Isotope lama jika ada
+        if (\$grid.data('isotope')) {
+            \$grid.isotope('destroy');
+        }
+        
+        // Inisialisasi Isotope baru
+        \$grid.isotope({
             itemSelector: '.product-item',
             layoutMode: 'fitRows',
+            percentPosition: true,
             getSortData: {
                 price: function(itemElem) {
-                    var priceText = $(itemElem).find('.product_price').text().replace('$','').split(' ')[0];
-                    return parseFloat(priceText);
+                    return parseFloat($(itemElem).attr('data-price'));
                 },
                 name: function(itemElem) {
                     return $(itemElem).find('.product_name').text().toLowerCase();
@@ -99,52 +109,46 @@ if(isset($_POST['action'])) {
             }
         });
         
-        // Re-init sorting handlers
+        // Layout ulang setelah gambar selesai load
+        \$grid.imagesLoaded().progress(function() {
+            \$grid.isotope('layout');
+        });
+        
+        // Paksa layout ulang untuk memastikan
+        setTimeout(function() {
+            \$grid.isotope('layout');
+        }, 300);
+        
+        // Re-init event handlers
         $('.type_sorting_btn').off('click').on('click', function() {
-            var sortByValue = $(this).attr('data-isotope-option');
-            sortByValue = JSON.parse(sortByValue).sortBy;
-            $('.product-grid').isotope({ sortBy: sortByValue });
+            var sortByValue = JSON.parse($(this).attr('data-isotope-option')).sortBy;
+            \$grid.isotope({ sortBy: sortByValue });
         });
         
-        // Re-init items per page
-        $('.num_sorting_btn').off('click').on('click', function() {
-            var itemsPerPage = parseInt($(this).text());
-            $('.num_sorting_text').text(itemsPerPage);
-            
-            // Logic to show only X items (requires pagination implementation)
-            // For now just re-layout
-            $('.product-grid').isotope('layout');
-        });
-        
-        // Re-init pagination
-        $('.page_selection a').off('click').on('click', function(e) {
-            e.preventDefault();
-            var page = $(this).text();
-            $('.page_current span').text(page);
-            // Normally you would fetch new page via AJAX here
-            // For now just re-layout
-            $('.product-grid').isotope('layout');
-        });
-        
-        // Re-init slider if present
-        if ($('#slider-range').length) {
-            $("#slider-range").slider({
-                range: true,
-                min: 0,
-                max: 1000,
-                values: [0, 1000],
-                slide: function(event, ui) {
-                    $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
-                }
-            });
-        }
-        
-        // Force layout update after images load
-        $('.product-grid').imagesLoaded().progress(function() {
-            $('.product-grid').isotope('layout');
-        });
-    });
-    </script>
+    }, 100);
+});
+</script>
+echo '<style>
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.product-item {
+    width: calc(25% - 20px);
+    min-width: 250px;
+}
+@media (max-width: 1200px) {
+    .product-item { width: calc(33.333% - 20px); }
+}
+@media (max-width: 768px) {
+    .product-item { width: calc(50% - 20px); }
+}
+@media (max-width: 480px) {
+    .product-item { width: 100%; }
+}
+</style>';
 HTML;
 }
+
 ?>

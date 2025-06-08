@@ -132,13 +132,13 @@ if (!empty($_SESSION['cart'])) {
 											<i class="fa fa-angle-down"></i>
 										</a>
 										<ul class="account_selection">
-                                            <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
-                                            <?php else: ?>
-                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-                                            <?php endif; ?>
-                                        </ul>
+											<?php if (isset($_SESSION['customer_id'])): ?>
+												<li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+											<?php else: ?>
+												<li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+												<li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+											<?php endif; ?>
+										</ul>
 									</li>
 								</ul>
 							</div>
@@ -325,9 +325,10 @@ if (!empty($_SESSION['cart'])) {
 										?>
 											<div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'])); ?>">
 												<div class="product discount product_filter">
-													<div class="product_image">
+													<div class="product_image" style="height: 200px; overflow: hidden;">
 														<img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>"
-															alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+															alt="<?php echo htmlspecialchars($product['product_name']); ?>"
+															style="width: 100%; height: 100%; object-fit: contain;">
 													</div>
 													<div class="favorite favorite_left"></div>
 
@@ -525,7 +526,11 @@ if (!empty($_SESSION['cart'])) {
 							max_price: ui.values[1]
 						},
 						success: function(response) {
-							$('.product-grid').html(response);
+							$('.product-grid').html($(response).find('.product-grid').html());
+							// Force redraw
+							setTimeout(function() {
+								$('.product-grid').isotope('layout');
+							}, 100);
 						}
 					});
 				}
