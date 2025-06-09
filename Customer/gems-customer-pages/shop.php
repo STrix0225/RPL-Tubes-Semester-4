@@ -1,8 +1,8 @@
 <?php
 include('../../Database/connection.php');
 
+// === AMBIL DATA PRODUK SESUAI KATEGORI (OPSIONAL) ===
 if (isset($_POST['search']) && isset($_POST['product_category'])) {
-	//Get all products by category
 	$category = $_POST['product_category'];
 	$query_products = "SELECT * FROM products WHERE product_category = ?";
 	$stmt_products = $conn->prepare($query_products);
@@ -10,63 +10,64 @@ if (isset($_POST['search']) && isset($_POST['product_category'])) {
 	$stmt_products->execute();
 	$products = $stmt_products->get_result();
 } else {
-	//Get all products
 	$query_products = "SELECT * FROM products";
 	$stmt_products = $conn->prepare($query_products);
 	$stmt_products->execute();
-	$products = $stmt_products->get_result();
+	$shop_products = $stmt_products->get_result();
 }
 
-
-// Initialize cart if not exists
+// === INISIALISASI KERANJANG ===
 if (!isset($_SESSION['cart'])) {
 	$_SESSION['cart'] = [];
 }
 
-// Handle remove item action
+// === HAPUS ITEM DARI KERANJANG ===
 if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
 	unset($_SESSION['cart'][$_GET['remove']]);
 	header("Location: cart.php");
 	exit();
 }
 
-// Handle quantity update
+// === UPDATE KUANTITAS ITEM ===
 if (isset($_POST['update_quantity'])) {
 	foreach ($_POST['quantity'] as $id => $quantity) {
 		if (isset($_SESSION['cart'][$id])) {
-			$_SESSION['cart'][$id] = [
-				'product_id' => $id,
-				'quantity' => max(1, (int)$quantity)
-			];
+			$_SESSION['cart'][$id]['quantity'] = max(1, (int)$quantity);
 		}
 	}
 	header("Location: cart.php");
 	exit();
 }
 
-// Calculate totals
+// === HITUNG TOTAL KERANJANG ===
 $subtotal = 0;
 $cart_items = [];
 
 if (!empty($_SESSION['cart'])) {
-	$placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+	// Ambil semua ID produk dari keranjang
 	$ids = array_column($_SESSION['cart'], 'product_id');
+	$placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+	// Ambil info produk dari database
 	$stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
 	$stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
 	$stmt->execute();
 	$products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+	// Siapkan item keranjang untuk ditampilkan
 	foreach ($products as $product) {
-		$cart_item_key = array_search($product['product_id'], array_column($_SESSION['cart'], 'product_id'));
-		$cart_item = $_SESSION['cart'][$cart_item_key];
+		$product_id = $product['product_id'];
 
-		// Hitung harga dengan diskon
+		if (!isset($_SESSION['cart'][$product_id])) continue;
+
+		$cart_item = $_SESSION['cart'][$product_id];
+
 		$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
 		$price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
 		$total = $price * $cart_item['quantity'];
 
 		$cart_items[] = [
-			'id' => $product['product_id'],
+			'id' => $product_id,
 			'name' => $product['product_name'],
 			'image' => $product['product_image1'],
 			'price' => $product['product_price'],
@@ -74,15 +75,14 @@ if (!empty($_SESSION['cart'])) {
 			'quantity' => $cart_item['quantity'],
 			'total' => $total,
 			'has_discount' => $has_discount,
-			'discount' => $product['product_discount']
+			'discount' => $product['product_discount'],
+			'color' => $cart_item['color'] ?? ''
 		];
 
 		$subtotal += $total;
 	}
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -316,7 +316,7 @@ if (!empty($_SESSION['cart'])) {
 
 									<!-- Product Grid -->
 									<div class="product-grid">
-										<?php while ($product = $products->fetch_assoc()):
+										<?php while ($product = $shop_products->fetch_assoc()):
 											// Calculate discount if exists
 											$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
 											$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];

@@ -32,7 +32,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $product_id = (int)$_GET['delete'];
 
     // Get product images to delete them from server
-    $stmt = $conn->prepare("SELECT product_image1, product_image2, product_image3 FROM products WHERE product_id = ?");
+    $stmt = $conn->prepare("SELECT product_image1, product_image2, product_image3, product_image4 FROM products WHERE product_id = ?");
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -42,7 +42,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     // Delete images from server (cek dulu ada file-nya dan bukan empty)
     if ($product) {
         $upload_dir = '../../Customer/gems-customer-pages/images/';
-        foreach (['product_image1', 'product_image2', 'product_image3'] as $imgField) {
+        foreach (['product_image1', 'product_image2', 'product_image3', 'product_image4'] as $imgField) {
             if (!empty($product[$imgField]) && file_exists($upload_dir . $product[$imgField])) {
                 unlink($upload_dir . $product[$imgField]);
             }

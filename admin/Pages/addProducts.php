@@ -32,6 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $price = floatval($_POST['product_price']);
     $discount = floatval($_POST['product_discount']);
     $color = $conn->real_escape_string($_POST['product_color']);
+    $raw_colors = explode(',', $_POST['product_color']);
+    $clean_colors = array_map(function($c) use ($conn) {
+        return trim($conn->real_escape_string($c));
+    }, $raw_colors);
+    $color = implode(', ', $clean_colors);
     $product_sold = 0;
     $product_qty = 0;
 
@@ -166,31 +171,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <input type="number" step="0.01" class="form-control" name="product_price" required>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label">Discount</label>
-                                    <input type="number" step="0.01" class="form-control" name="product_discount">
+                                    <label class="form-label">Discount %</label>
+                                    <div class="discount-input-wrapper">
+                                        <input type="number" step="0.01" class="form-control" name="product_discount" placeholder="0" min="0" max="100">
+                                        <span class="percent-symbol">%</span>
+                                    </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Color</label>
-                                    <input type="text" class="form-control" name="product_color">
+                                    <input type="text" class="form-control" name="product_color" placeholder="e.g., black, white, purple" required>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Image 1</label>
-                                    <input class="form-control" type="file" name="product_image1" accept="image/*" required>
+                                    <input id="product_image1" class="form-control" type="file" name="product_image1" accept="image/*" required onchange="previewImage(this, 'preview1')">
+                                    <div class="mt-2 image-preview" id="preview1"></div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-1" 
+                                            onclick="clearImage('product_image1', 'preview1')">Clear</button>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Image 2</label>
-                                    <input class="form-control" type="file" name="product_image2" accept="image/*" required>
+                                    <input id="product_image2" class="form-control" type="file" name="product_image2" accept="image/*" required onchange="previewImage(this, 'preview2')">
+                                    <div class="mt-2 image-preview" id="preview2"></div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-1" 
+                                            onclick="clearImage('product_image2', 'preview2')">Clear</button>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Image 3</label>
-                                    <input class="form-control" type="file" name="product_image3" accept="image/*" required>
+                                    <input id="product_image3" class="form-control" type="file" name="product_image3" accept="image/*" required onchange="previewImage(this, 'preview3')">
+                                    <div class="mt-2 image-preview" id="preview3"></div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-1" 
+                                            onclick="clearImage('product_image3', 'preview3')">Clear</button>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Image 4</label>
-                                    <input class="form-control" type="file" name="product_image4" accept="image/*" required>
+                                    <input id="product_image4" class="form-control" type="file" name="product_image4" accept="image/*" required onchange="previewImage(this, 'preview4')">
+                                    <div class="mt-2 image-preview" id="preview4"></div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-1" 
+                                            onclick="clearImage('product_image4', 'preview4')">Clear</button>
                                 </div>
                             </div>
 
@@ -206,9 +226,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/script.js"></script>
+
 </body>
 </html>
