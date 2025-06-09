@@ -128,7 +128,7 @@ $(document).ready(function() {
     }, 100);
 });
 </script>
-echo '<style>
+<style>
 .product-grid {
     display: flex;
     flex-wrap: wrap;
@@ -147,7 +147,7 @@ echo '<style>
 @media (max-width: 480px) {
     .product-item { width: 100%; }
 }
-</style>';
+</style>
 HTML;
 }
 

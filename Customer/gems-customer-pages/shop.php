@@ -316,55 +316,61 @@ if (!empty($_SESSION['cart'])) {
 
 									<!-- Product Grid -->
 									<div class="product-grid">
-										<?php while ($product = $products->fetch_assoc()):
-											// Calculate discount if exists
-											$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-											$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
-											$discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
-											$is_new = empty($product['product_sold']) || $product['product_sold'] == 0;
-										?>
-											<div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'])); ?>">
-												<div class="product discount product_filter">
-													<div class="product_image" style="height: 200px; overflow: hidden;">
-														<img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>"
-															alt="<?php echo htmlspecialchars($product['product_name']); ?>"
-															style="width: 100%; height: 100%; object-fit: contain;">
-													</div>
-													<div class="favorite favorite_left"></div>
+										<div class="row">
+											<?php while ($product = $products->fetch_assoc()): ?>
+												<div class="col-lg-3 col-md-4 col-sm-6 col-6">
+													<?php while ($product = $products->fetch_assoc()):
+														// Calculate discount if exists
+														$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
+														$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
+														$discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
+														$is_new = empty($product['product_sold']) || $product['product_sold'] == 0;
+													?>
+														<div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'])); ?>">
+															<div class="product discount product_filter">
+																<div class="product_image" style="height: 200px; overflow: hidden;">
+																	<img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>"
+																		alt="<?php echo htmlspecialchars($product['product_name']); ?>"
+																		style="width: 100%; height: 100%; object-fit: contain;">
+																</div>
+																<div class="favorite favorite_left"></div>
 
-													<?php if ($has_discount): ?>
-														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
-															<span>-$<?php echo number_format($discount_amount, 0); ?></span>
-														</div>
-													<?php endif; ?>
+																<?php if ($has_discount): ?>
+																	<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+																		<span>-$<?php echo number_format($discount_amount, 0); ?></span>
+																	</div>
+																<?php endif; ?>
 
-													<?php if ($is_new): ?>
-														<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center">
-															<span>new</span>
-														</div>
-													<?php endif; ?>
+																<?php if ($is_new): ?>
+																	<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center">
+																		<span>new</span>
+																	</div>
+																<?php endif; ?>
 
-													<div class="product_info">
-														<h6 class="product_name">
-															<a href="single.php?id=<?php echo $product['product_id']; ?>">
-																<?php echo htmlspecialchars($product['product_name']); ?>
-															</a>
-														</h6>
-														<div class="product_price">
-															$<?php echo number_format($discounted_price, 2); ?>
-															<?php if ($has_discount): ?>
-																<span>$<?php echo number_format($product['product_price'], 2); ?></span>
-															<?php endif; ?>
+																<div class="product_info">
+																	<h6 class="product_name">
+																		<a href="single.php?id=<?php echo $product['product_id']; ?>">
+																			<?php echo htmlspecialchars($product['product_name']); ?>
+																		</a>
+																	</h6>
+																	<div class="product_price">
+																		$<?php echo number_format($discounted_price, 2); ?>
+																		<?php if ($has_discount): ?>
+																			<span>$<?php echo number_format($product['product_price'], 2); ?></span>
+																		<?php endif; ?>
+																	</div>
+																</div>
+															</div>
+															<div class="red_button add_to_cart_button">
+																<a href="shop-detail.php?id=<?php echo $product['product_id']; ?>">add to cart</a>
+															</div>
 														</div>
-													</div>
+													<?php endwhile; ?>
 												</div>
-												<div class="red_button add_to_cart_button">
-													<a href="shop-detail.php?id=<?php echo $product['product_id']; ?>">add to cart</a>
-												</div>
-											</div>
-										<?php endwhile; ?>
+
+										</div>
 									</div>
-
+								<?php endwhile; ?>
 								</div>
 							</div>
 						</div>
@@ -476,6 +482,110 @@ if (!empty($_SESSION['cart'])) {
 		</footer>
 
 	</div>
+	<div class="pages d-flex flex-row align-items-center">
+    <?php
+    $itemsPerPage = 12;
+    $totalItems = $products->num_rows;
+    $totalPages = ceil($totalItems / $itemsPerPage);
+    $currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
+    ?>
+    <div class="page_current">
+        <span><?= $currentPage ?></span>
+        <ul class="page_selection">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li><a href="?page=<?= $i ?>"><?= $i ?></a></li>
+            <?php endfor; ?>
+        </ul>
+    </div>
+    <div class="page_total"><span>of</span> <?= $totalPages ?></div>
+    <?php if ($currentPage < $totalPages): ?>
+    <div class="page_next">
+        <a href="?page=<?= $currentPage + 1 ?>">
+            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+        </a>
+    </div>
+    <?php endif; ?>
+</div>
+<script>
+	// Update AJAX handlers
+$(document).ready(function() {
+    let currentPage = 1;
+    
+    function loadProducts(url, data) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                $('.product-grid').html(response);
+                
+                // Reinitialize Isotope
+                var $grid = $('.product-grid').isotope({
+                    itemSelector: '.product-item',
+                    layoutMode: 'fitRows',
+                    percentPosition: true,
+                    getSortData: {
+                        price: function(itemElem) {
+                            return parseFloat($(itemElem).attr('data-price'));
+                        },
+                        name: function(itemElem) {
+                            return $(itemElem).find('.product_name').text().toLowerCase();
+                        }
+                    }
+                });
+                
+                // Layout after images load
+                $grid.imagesLoaded().progress(function() {
+                    $grid.isotope('layout');
+                });
+            }
+        });
+    }
+
+    // Category filter
+    $('.sidebar_categories li').click(function(e) {
+        e.preventDefault();
+        let category = $(this).text().trim();
+        loadProducts('filter_products.php', {
+            action: 'filter_category',
+            category: category,
+            page: currentPage
+        });
+    });
+
+    // Price filter
+    $('#slider-range').slider({
+        // ... existing options ...,
+        stop: function(event, ui) {
+            loadProducts('filter_products.php', {
+                action: 'filter_price',
+                min_price: ui.values[0],
+                max_price: ui.values[1],
+                page: currentPage
+            });
+        }
+    });
+
+    // Pagination handler
+    $(document).on('click', '.page_selection a, .page_next a', function(e) {
+        e.preventDefault();
+        currentPage = $(this).data('page');
+        
+        // Re-run current filter with new page
+        if ($('#slider-range').slider('values')) {
+            const values = $('#slider-range').slider('values');
+            loadProducts('filter_products.php', {
+                action: 'filter_price',
+                min_price: values[0],
+                max_price: values[1],
+                page: currentPage
+            });
+        } else {
+            // ... similar for category filter ...
+        }
+    });
+});
+</script>
 
 
 	<script src="js/jquery-3.2.1.min.js"></script>
