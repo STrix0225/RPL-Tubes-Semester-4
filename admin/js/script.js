@@ -136,3 +136,25 @@ function clearImage(inputId, previewId) {
     if (inputElem) inputElem.value = '';
     if (previewElem) previewElem.innerHTML = '<div class="preview-text">No image selected</div>';
 }
+
+$(document).ready(function () {
+    $('#product_name').on('input', function () {
+        const name = $(this).val().trim();
+        if (name.length === 0) {
+            $('#product_name').removeClass('is-invalid');
+            $('#name-feedback').addClass('d-none');
+            return;
+        }
+
+        $.get('check_product_name.php', { name: name }, function (data) {
+            const res = JSON.parse(data);
+            if (res.exists) {
+                $('#product_name').addClass('is-invalid');
+                $('#name-feedback').removeClass('d-none');
+            } else {
+                $('#product_name').removeClass('is-invalid');
+                $('#name-feedback').addClass('d-none');
+            }
+        });
+    });
+});
