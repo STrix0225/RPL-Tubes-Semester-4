@@ -68,6 +68,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $img4 = uploadImage($_FILES['product_image4'], $allowed, $upload_dir, $name, 4);
 
     if ($img1 && $img2 && $img3 && $img4) {
+
+        $name = $conn->real_escape_string($_POST['product_name']);
+        // Cek apakah produk sudah ada
+        $check_stmt = $conn->prepare("SELECT COUNT(*) AS total FROM products WHERE product_name = ?");
+        $check_stmt->bind_param("s", $name);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        $existing_count = $check_result->fetch_assoc()['total'];
+
+        if ($existing_count > 0) {
+            $error = "Product name already exists. Please choose a different name.";
+        } else {
         $stmt = $conn->prepare("INSERT INTO products 
         (product_name, product_brand, product_category, product_description, product_criteria, 
          product_image1, product_image2, product_image3, product_image4, product_price, product_discount, 
@@ -83,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error = "Database error: " . $stmt->error;
         }
         $stmt->close();
+        }
     } else {
         $error = "Image upload failed. Please ensure all 4 images are valid.";
     }
@@ -124,11 +137,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="card-body">
                         <form action="" method="POST" enctype="multipart/form-data">
-                            <div class="mb-3">
+                           <div class="mb-3">
                                 <label class="form-label">Product Name</label>
-                                <input type="text" class="form-control" name="product_name" required>
+                                <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                <div id="name-feedback" class="form-text text-danger d-none">Product name already exists.</div>
                             </div>
-
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Brand</label>
@@ -141,8 +154,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <option value="Handphone">Handphone</option>
                                         <option value="Laptop">Laptop</option>
                                         <option value="Aksesoris">Aksesoris</option>
-                                        <option value="Hardware">Hardware</option>
-                                        <option value="Software">Software</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4 mb-3">
