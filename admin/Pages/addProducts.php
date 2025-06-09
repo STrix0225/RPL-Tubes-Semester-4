@@ -33,19 +33,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $discount = floatval($_POST['product_discount']);
     $color = $conn->real_escape_string($_POST['product_color']);
     $product_sold = 0;
-    $product_qty = 0; // Set quantity to 0 by default
+    $product_qty = 0;
 
     $allowed = ['jpg', 'jpeg', 'png', 'webp'];
     $upload_dir = '../../Customer/gems-customer-pages/images/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
-    function uploadImage($file, $allowed, $upload_dir) {
+    function uploadImage($file, $allowed, $upload_dir, $product_name, $image_number) {
         $img_name = $file['name'];
         $img_tmp = $file['tmp_name'];
         $img_ext = strtolower(pathinfo($img_name, PATHINFO_EXTENSION));
 
         if (in_array($img_ext, $allowed)) {
-            $new_name = uniqid() . '.' . $img_ext;
+            $clean_name = preg_replace('/[^a-zA-Z0-9]/', '_', strtolower($product_name));
+            $new_name = $clean_name . $image_number . '.' . $img_ext;
             $target_path = $upload_dir . $new_name;
 
             if (move_uploaded_file($img_tmp, $target_path)) {
@@ -55,10 +56,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return null;
     }
 
-    $img1 = uploadImage($_FILES['product_image1'], $allowed, $upload_dir);
-    $img2 = uploadImage($_FILES['product_image2'], $allowed, $upload_dir);
-    $img3 = uploadImage($_FILES['product_image3'], $allowed, $upload_dir);
-    $img4 = uploadImage($_FILES['product_image4'], $allowed, $upload_dir);
+    // Upload masing-masing gambar dengan nomor urut
+    $img1 = uploadImage($_FILES['product_image1'], $allowed, $upload_dir, $name, 1);
+    $img2 = uploadImage($_FILES['product_image2'], $allowed, $upload_dir, $name, 2);
+    $img3 = uploadImage($_FILES['product_image3'], $allowed, $upload_dir, $name, 3);
+    $img4 = uploadImage($_FILES['product_image4'], $allowed, $upload_dir, $name, 4);
 
     if ($img1 && $img2 && $img3 && $img4) {
         $stmt = $conn->prepare("INSERT INTO products 
