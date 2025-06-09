@@ -364,7 +364,3 @@ select:focus {
   pointer-events: none;
   user-select: none;
 }
-
-[data-bs-theme="dark"] .discount-input-wrapper .percent-symbol {
-  color: #fff;
-}

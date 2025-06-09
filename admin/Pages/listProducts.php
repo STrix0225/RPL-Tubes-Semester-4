@@ -4,25 +4,92 @@ if (!isAdminLoggedIn()) {
     redirect('../login.php');
 }
 
+// Handle AJAX request for chart data
+if (isset($_GET['kategori']) && isset($_GET['ajax'])) {
+    header('Content-Type: application/json');
+    
+    $kategori = $_GET['kategori'] ?? '';
+    $where = "";
+    $params = [];
+    
+    if ($kategori) {
+        $where = "WHERE product_category = ?";
+        $params[] = $kategori;
+    }
+
+    $stmt = $conn->prepare("SELECT product_brand, product_category, SUM(product_qty) as total_qty 
+                           FROM products $where 
+                           GROUP BY product_brand, product_category");
+    
+    if ($kategori) {
+        $stmt->bind_param("s", $kategori);
+    }
+    
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+    
+    echo json_encode($data);
+    exit();
+}
+
+// Handle product deletion
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+    $product_id = (int)$_GET['delete'];
+
+    // Get product images to delete them from server
+    $stmt = $conn->prepare("SELECT product_image1, product_image2, product_image3, product_image4 FROM products WHERE product_id = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $product = $result->fetch_assoc();
+    $stmt->close();
+
+    // Delete images from server
+    if ($product) {
+        $upload_dir = '../../Customer/gems-customer-pages/images/';
+        foreach (['product_image1', 'product_image2', 'product_image3', 'product_image4'] as $imgField) {
+            if (!empty($product[$imgField])) {
+                $file_path = $upload_dir . $product[$imgField];
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+        }
+    }
+
+    // Delete from database
+    $stmt = $conn->prepare("DELETE FROM products WHERE product_id = ?");
+    $stmt->bind_param("i", $product_id);
+    if ($stmt->execute()) {
+        header("Location: listProducts.php?success=Product+deleted+successfully");
+        exit();
+    } else {
+        header("Location: listProducts.php?error=Failed+to+delete+product");
+        exit();
+    }
+}
+
+// Get statistics for cards
 $stats = [
     'total_products' => 0,
     'total_brands' => 0,
     'total_quantity' => 0
 ];
 
-// Hitung total produk
+// Get total products
 $result = $conn->query("SELECT COUNT(*) AS total_products FROM products");
 if ($result) {
     $stats['total_products'] = (int)$result->fetch_assoc()['total_products'];
 }
 
-// Hitung total brand unik
+// Get total unique brands
 $result = $conn->query("SELECT COUNT(DISTINCT product_brand) AS total_brands FROM products");
 if ($result) {
     $stats['total_brands'] = (int)$result->fetch_assoc()['total_brands'];
 }
 
-// Hitung total quantity semua produk
+// Get total quantity of all products
 $result = $conn->query("SELECT SUM(product_qty) AS total_quantity FROM products");
 if ($result) {
     $stats['total_quantity'] = (int)$result->fetch_assoc()['total_quantity'];
@@ -35,7 +102,7 @@ $cards = [
     ['title' => 'Total Quantity', 'value' => $stats['total_quantity'], 'icon' => 'fa-layer-group', 'color' => 'info', 'link' => 'listProducts.php']
 ];
 
-// Get data for header notifications
+// Get header notifications data
 $header_data = [
     'pending_orders' => 0,
     'recent_orders' => []
@@ -57,39 +124,6 @@ $query = "SELECT * FROM products ORDER BY product_id DESC";
 $result = $conn->query($query);
 if ($result) {
     $products = $result->fetch_all(MYSQLI_ASSOC);
-}
-
-if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $product_id = (int)$_GET['delete'];
-
-    // Get product images to delete them from server
-    $stmt = $conn->prepare("SELECT product_image1, product_image2, product_image3, product_image4 FROM products WHERE product_id = ?");
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $product = $result->fetch_assoc();
-    $stmt->close();
-
-    // Delete images from server (cek dulu ada file-nya dan bukan empty)
-    if ($product) {
-        $upload_dir = '../../Customer/gems-customer-pages/images/';
-        foreach (['product_image1', 'product_image2', 'product_image3', 'product_image4'] as $imgField) {
-            if (!empty($product[$imgField]) && file_exists($upload_dir . $product[$imgField])) {
-                unlink($upload_dir . $product[$imgField]);
-            }
-        }
-    }
-
-    // Delete from database
-    $stmt = $conn->prepare("DELETE FROM products WHERE product_id = ?");
-    $stmt->bind_param("i", $product_id);
-    if ($stmt->execute()) {
-        header("Location: listProducts.php?success=Product+deleted+successfully");
-        exit();
-    } else {
-        header("Location: listProducts.php?error=Failed+to+delete+product");
-        exit();
-    }
 }
 
 ?>
@@ -204,6 +238,47 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                  <div class="col-md-6">
+                      <div class="card p-3" id="chartCard">
+                          <h5>Produk per Brand</h5>
+                          <select id="filterKategori" class="form-select mb-3">
+                              <option value="">Semua Kategori</option>
+                              <?php
+                              $result = $conn->query("SELECT DISTINCT product_category FROM products");
+                              if ($result) {
+                                  while ($row = $result->fetch_assoc()) {
+                                      echo '<option value="'.htmlspecialchars($row['product_category']).'">'.htmlspecialchars($row['product_category']).'</option>';
+                                  }
+                              }
+                              ?>
+                          </select>
+                          <div style="height: 260px;">
+                              <canvas id="qtyChart"></canvas>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card p-3" id="brandDetailCard">
+                        <h5>Detail Brand</h5>
+                        <div class="table-responsive" style="max-height: 314px; overflow-y: auto;">
+                            <table class="table table-hover mb-0" id="brandTable">
+                                <thead class="sticky-top bg-light" style="z-index: 1;">
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Kategori</th>
+                                        <th>Total Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+              </div>
+
             </div>
 
             <?php include '../Layout/footer.php'; ?>
@@ -380,8 +455,151 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/products.js"></script>
     <script src="../js/script.js"></script>
+<script>
+function updateChartTheme() {
+    const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+    const chartCard = document.getElementById('chartCard');
+    const brandDetailCard = document.getElementById('brandDetailCard');
+    const brandTable = $('#brandTable');
+    
+    if (isDarkMode) {
+        chartCard.classList.add('bg-dark', 'text-white');
+        chartCard.classList.remove('bg-white', 'text-dark');
+        brandDetailCard.classList.add('bg-dark', 'text-white');
+        brandDetailCard.classList.remove('bg-white', 'text-dark');
+        brandTable.addClass('table-dark').removeClass('table-light');
+
+        // Warna teks tabel jadi putih
+        $('#brandTable td, #brandTable th').css('color', '#fff');
+    } else {
+        chartCard.classList.add('bg-white', 'text-dark');
+        chartCard.classList.remove('bg-dark', 'text-white');
+        brandDetailCard.classList.add('bg-white', 'text-dark');
+        brandDetailCard.classList.remove('bg-dark', 'text-white');
+        brandTable.addClass('table-light').removeClass('table-dark');
+
+        // Warna teks tabel jadi hitam
+        $('#brandTable td, #brandTable th').css('color', '#000');
+    }
+
+    // Update warna teks pada chart jika ada
+    if (window.chart) {
+        const textColor = isDarkMode ? '#fff' : '#000';
+        window.chart.options.plugins.legend.labels.color = textColor;
+        window.chart.update();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Jalankan saat pertama kali halaman load
+    updateChartTheme();
+    
+    // Pantau perubahan tema
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'data-bs-theme') {
+                updateChartTheme();
+            }
+        });
+    });
+    
+    observer.observe(document.documentElement, {
+        attributes: true
+    });
+});
+
+$(document).ready(function () {
+    // Plugin teks tengah pada donut chart
+    const centerTextPlugin = {
+        id: 'centerText',
+        afterDraw(chart) {
+            const { ctx, chartArea } = chart;
+            ctx.save();
+
+            const total = chart.data.datasets[0].data.reduce((a, b) => Number(a) + Number(b), 0);
+            const centerX = (chartArea.left + chartArea.right) / 2;
+            const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+            const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = isDarkMode ? '#fff' : '#000';
+
+            ctx.font = 'bold 18px Arial';
+            ctx.fillText(total.toLocaleString(), centerX, centerY - 5);
+
+            ctx.font = 'normal 11px Arial';
+            ctx.fillText('Total Qty', centerX, centerY + 12);
+            ctx.restore();
+        }
+    };
+
+    // Fungsi untuk load chart berdasarkan kategori
+    function loadChart(kategori = '') {
+        $.get('listProducts.php?kategori=' + encodeURIComponent(kategori) + '&ajax=1', function (data) {
+            const labels = data.map(item => item.product_brand);
+            const values = data.map(item => item.total_qty);
+            const colors = labels.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16));
+            const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+
+            const ctx = document.getElementById('qtyChart').getContext('2d');
+            if (window.chart) window.chart.destroy();
+            window.chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: isDarkMode ? '#fff' : '#000'
+                            }
+                        }
+                    }
+                },
+                plugins: [centerTextPlugin]
+            });
+
+            // Isi tabel brand di bawah chart
+            const tbody = $('#brandTable tbody');
+            tbody.empty();
+            data.forEach(item => {
+                tbody.append(`
+                    <tr>
+                        <td>${item.product_brand}</td>
+                        <td>${item.product_category}</td>
+                        <td>${item.total_qty}</td>
+                    </tr>
+                `);
+            });
+
+            // Sesuaikan warna teks tabel dengan tema
+            $('#brandTable td, #brandTable th').css('color', isDarkMode ? '#fff' : '#000');
+        });
+    }
+
+    // Ganti chart saat dropdown kategori berubah
+    $('#filterKategori').change(function () {
+        loadChart($(this).val());
+    });
+
+    // Pertama kali load
+    loadChart();
+});
+</script>
+
 </body>
 </html>
