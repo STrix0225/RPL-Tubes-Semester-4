@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $brand = $conn->real_escape_string($_POST['product_brand']);
     $category = $conn->real_escape_string($_POST['product_category']);
     $description = $conn->real_escape_string($_POST['product_description']);
-    $criteria = isset($_POST['product_criteria']) ? $conn->real_escape_string($_POST['product_criteria']) : 'Non';
+    $criteria = isset($_POST['product_criteria']) ? $conn->real_escape_string($_POST['product_criteria']) : 'Non-Favorite';
     $price = floatval($_POST['product_price']);
     $discount = floatval($_POST['product_discount']);
     $color = $conn->real_escape_string($_POST['product_color']);
@@ -58,16 +58,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $img1 = uploadImage($_FILES['product_image1'], $allowed, $upload_dir);
     $img2 = uploadImage($_FILES['product_image2'], $allowed, $upload_dir);
     $img3 = uploadImage($_FILES['product_image3'], $allowed, $upload_dir);
+    $img4 = uploadImage($_FILES['product_image4'], $allowed, $upload_dir);
 
-    if ($img1 && $img2 && $img3) {
+    if ($img1 && $img2 && $img3 && $img4) {
         $stmt = $conn->prepare("INSERT INTO products 
         (product_name, product_brand, product_category, product_description, product_criteria, 
-         product_image1, product_image2, product_image3, product_price, product_discount, 
+         product_image1, product_image2, product_image3, product_image4, product_price, product_discount, 
          product_color, product_sold, product_qty) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("sssssssssdsii", $name, $brand, $category, $description, $criteria,
-            $img1, $img2, $img3, $price, $discount, $color, $product_sold, $product_qty);
+        $stmt->bind_param("ssssssssssdsii", $name, $brand, $category, $description, $criteria,
+            $img1, $img2, $img3, $img4, $price, $discount, $color, $product_sold, $product_qty);
 
         if ($stmt->execute()) {
             $success = "Product added successfully with initial quantity set to 0.";
@@ -76,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
     } else {
-        $error = "Image upload failed. Please ensure all 3 images are valid.";
+        $error = "Image upload failed. Please ensure all 4 images are valid.";
     }
 }
 ?>
@@ -141,12 +142,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <label class="form-label">Criteria</label>
                                     <div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="product_criteria" id="criteriaFavourite" value="Favourite">
-                                            <label class="form-check-label" for="criteriaFavourite">Favourite</label>
+                                            <input class="form-check-input" type="radio" name="product_criteria" id="criteriaFavourite" value="Favorite">
+                                            <label class="form-check-label" for="criteriaFavourite">Favorite</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="product_criteria" id="criteriaNon" value="Non" checked>
-                                            <label class="form-check-label" for="criteriaNon">Non-Favourite</label>
+                                            <input class="form-check-input" type="radio" name="product_criteria" id="criteriaNon" value="Non-Favorite" checked>
+                                            <label class="form-check-label" for="criteriaNon">Non-Favorite</label>
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +185,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Image 3</label>
                                     <input class="form-control" type="file" name="product_image3" accept="image/*" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Image 4</label>
+                                    <input class="form-control" type="file" name="product_image4" accept="image/*" required>
                                 </div>
                             </div>
 
