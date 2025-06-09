@@ -5,6 +5,37 @@ if (!isAdminLoggedIn()) {
     redirect('../login.php');
 }
 
+$stats = [
+    'total_products' => 0,
+    'total_brands' => 0,
+    'total_quantity' => 0
+];
+
+// Hitung total produk
+$result = $conn->query("SELECT COUNT(*) AS total_products FROM products");
+if ($result) {
+    $stats['total_products'] = (int)$result->fetch_assoc()['total_products'];
+}
+
+// Hitung total brand unik
+$result = $conn->query("SELECT COUNT(DISTINCT product_brand) AS total_brands FROM products");
+if ($result) {
+    $stats['total_brands'] = (int)$result->fetch_assoc()['total_brands'];
+}
+
+// Hitung total quantity semua produk
+$result = $conn->query("SELECT SUM(product_qty) AS total_quantity FROM products");
+if ($result) {
+    $stats['total_quantity'] = (int)$result->fetch_assoc()['total_quantity'];
+}
+
+// Build card data
+$cards = [
+    ['title' => 'Total Products', 'value' => $stats['total_products'], 'icon' => 'fa-boxes', 'color' => 'primary', 'link' => 'listProducts.php'],
+    ['title' => 'Total Brands', 'value' => $stats['total_brands'], 'icon' => 'fa-tags', 'color' => 'success', 'link' => 'listProducts.php'],
+    ['title' => 'Total Quantity', 'value' => $stats['total_quantity'], 'icon' => 'fa-layer-group', 'color' => 'info', 'link' => 'listProducts.php']
+];
+
 // Get data for header notifications
 $header_data = [
     'pending_orders' => 0,
@@ -124,7 +155,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h1 class="h3 mb-4 text-primary">
                     <i class="fas fa-box mr-2"></i> Add Products
                 </h1>
-
+                <div class="row mb-4">
+                    <?php foreach ($cards as $card): ?>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-left-<?= $card['color']; ?> shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-<?= $card['color']; ?> text-uppercase mb-1">
+                                                <?= $card['title']; ?>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $card['value']; ?></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas <?= $card['icon']; ?> fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="<?= $card['link']; ?>" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?php echo $success; ?></div>
                 <?php elseif ($error): ?>

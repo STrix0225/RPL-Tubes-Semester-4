@@ -1,3 +1,14 @@
+ $(document).ready(function () {
+    $('#productsTable').DataTable({
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50, 100], // opsi dropdown untuk user
+      order: [[1, 'asc']], // urutkan berdasarkan kolom ID
+      columnDefs: [
+        { orderable: false, targets: [0, 6, 9] } // non-urutkan kolom No, Image, Tools
+      ]
+    });
+  });
+
 // Saat tombol edit ditekan
 $('#productsTable').on('click', '.edit-btn', function () {
   const id = $(this).data('id');
@@ -13,18 +24,22 @@ $('#productsTable').on('click', '.edit-btn', function () {
       $('#editProductDescription').val(p.product_description);
       $('#editProductPrice').val(p.product_price);
       $('#editProductDiscount').val(p.product_discount);
-      $('#editProductCriteria').val(p.product_criteria);
+
+      // Set radio button criteria
+      if (p.product_criteria === 'Favorite') {
+        $('#editCriteriaFavorite').prop('checked', true);
+      } else {
+        $('#editCriteriaNonFavorite').prop('checked', true);
+      }
 
       // Set image previews
       const basePath = '../../Customer/gems-customer-pages/images/';
-      if (p.product_image1) {
-        $('#preview_image1').attr('src', basePath + p.product_image1).show();
-      }
-      if (p.product_image2) {
-        $('#preview_image2').attr('src', basePath + p.product_image2).show();
-      }
-      if (p.product_image3) {
-        $('#preview_image3').attr('src', basePath + p.product_image3).show();
+      for (let i = 1; i <= 4; i++) {
+        if (p[`product_image${i}`]) {
+          $(`#preview_image${i}`).attr('src', basePath + p[`product_image${i}`]).show();
+        } else {
+          $(`#preview_image${i}`).hide();
+        }
       }
 
       $('#editProductModal').modal('show');
@@ -34,12 +49,14 @@ $('#productsTable').on('click', '.edit-btn', function () {
   }, 'json');
 });
 
+
+
 // Saat form edit disubmit
 $('#editProductForm').on('submit', function (e) {
   e.preventDefault();
-  
+
   const formData = new FormData(this);
-  
+
   $.ajax({
     url: 'editProduct.php',
     type: 'POST',
@@ -62,32 +79,27 @@ $('#editProductForm').on('submit', function (e) {
   });
 });
 
-// Image preview functionality
-$('input[type="file"]').change(function() {
+// Preview gambar
+$('input[type="file"]').on('change', function () {
   const previewId = 'preview_' + $(this).attr('id');
   const preview = $('#' + previewId);
   const file = this.files[0];
-  
+
   if (file) {
     const reader = new FileReader();
-    
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       preview.attr('src', e.target.result).show();
-    }
-    
+    };
     reader.readAsDataURL(file);
   } else {
     preview.hide();
   }
-}); // Ditutup di sini
+});
 
-// Delete button functionality
-$(document).ready(function() {
-  // Gunakan event delegation untuk tombol delete yang mungkin dimuat secara dinamis
-  $('#productsTable').on('click', '.delete-btn', function() {
-    const id = $(this).data('id');
-    $('#confirmDelete').attr('href', 'listProducts.php?delete=' + id);
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    deleteModal.show();
-  });
+// Konfirmasi delete
+$('#productsTable').on('click', '.delete-btn', function () {
+  const id = $(this).data('id');
+  $('#confirmDelete').attr('href', 'listProducts.php?delete=' + id);
+  const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+  deleteModal.show();
 });
