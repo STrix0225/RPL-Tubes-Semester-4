@@ -1,5 +1,4 @@
 <?php
-session_start();
 include('../../Database/connection.php');
 
 // Redirect jika belum login
@@ -60,7 +59,8 @@ if (!empty($_SESSION['cart'])) {
             'price' => $product['product_price'],
             'discounted_price' => $price,
             'quantity' => $cart_item['quantity'],
-            'total' => $total
+            'total' => $total,
+            'color' => $cart_item['color'] ?? ''
         ];
 
         $subtotal += $total;
@@ -105,23 +105,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Simpan item pesanan
     foreach ($cart_items as $item) {
-        $stmt = $conn->prepare("INSERT INTO order_items (order_id, product_id, product_name, product_image, product_price, product_quantity, customer_id, order_date) 
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        
-        if ($stmt === false) {
-            die("Error in order_items prepare: " . $conn->error);
-        }
+        $stmt = $conn->prepare("INSERT INTO order_items (order_id, product_id, product_name, product_image, product_price, product_quantity, customer_id, order_date, product_color) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         $stmt->bind_param(
-            'iissdiss', 
+            'iissdisss', 
             $order_id,
             $item['id'],
             $item['name'],
-            $item['image'], // Pastikan field ini ada
+            $item['image'],
             $item['discounted_price'],
             $item['quantity'],
             $customer_id,
-            $order_date
+            $order_date,
+            $item['color']
         );
         
         $stmt->execute();
@@ -593,11 +590,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h2 class="modern-section-title">Order Summary</h2>
                         
                         <div class="modern-order-items">
-                            <?php foreach ($cart_items as $item): ?>
-                                <div class="modern-order-item">
+                            <?php foreach ($cart_items as $item): 
+                                $hex_color = match(strtolower($item['color'] ?? '')) {
+                                    'black' => '#252525',
+                                    'white' => '#ffffff',
+                                    'red' => '#e54e5d',
+                                    'blue' => '#60b3f3',
+                                    'green' => '#4CAF50',
+                                    'yellow' => '#FFEB3B',
+                                    'purple' => '#9C27B0',
+                                    'grey', 'gray' => '#9E9E9E',
+                                    default => '#607D8B'
+                                };
+                            ?>
+                            <div class="modern-order-item">
+                                <div>
                                     <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
-                                    <span>$<?= number_format($item['total'], 2) ?></span>
+                                    <?php if (!empty($item['color'])): ?>
+                                    <div class="product-color-display" style="margin-top: 5px;">
+                                        <p>warna</p>
+                                        <span class="color-circle" style="background-color: <?= $hex_color ?>;"></span>
+                                        <span class="color-name"><?= htmlspecialchars(ucfirst($item['color'])) ?></span>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
+                                <span>$<?= number_format($item['total'], 2) ?></span>
+                            </div>
                             <?php endforeach; ?>
                         </div>
                         
