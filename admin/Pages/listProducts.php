@@ -4,6 +4,37 @@ if (!isAdminLoggedIn()) {
     redirect('../login.php');
 }
 
+$stats = [
+    'total_products' => 0,
+    'total_brands' => 0,
+    'total_quantity' => 0
+];
+
+// Hitung total produk
+$result = $conn->query("SELECT COUNT(*) AS total_products FROM products");
+if ($result) {
+    $stats['total_products'] = (int)$result->fetch_assoc()['total_products'];
+}
+
+// Hitung total brand unik
+$result = $conn->query("SELECT COUNT(DISTINCT product_brand) AS total_brands FROM products");
+if ($result) {
+    $stats['total_brands'] = (int)$result->fetch_assoc()['total_brands'];
+}
+
+// Hitung total quantity semua produk
+$result = $conn->query("SELECT SUM(product_qty) AS total_quantity FROM products");
+if ($result) {
+    $stats['total_quantity'] = (int)$result->fetch_assoc()['total_quantity'];
+}
+
+// Build card data
+$cards = [
+    ['title' => 'Total Products', 'value' => $stats['total_products'], 'icon' => 'fa-boxes', 'color' => 'primary', 'link' => 'listProducts.php'],
+    ['title' => 'Total Brands', 'value' => $stats['total_brands'], 'icon' => 'fa-tags', 'color' => 'success', 'link' => 'listProducts.php'],
+    ['title' => 'Total Quantity', 'value' => $stats['total_quantity'], 'icon' => 'fa-layer-group', 'color' => 'info', 'link' => 'listProducts.php']
+];
+
 // Get data for header notifications
 $header_data = [
     'pending_orders' => 0,
@@ -92,7 +123,28 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                         <i class="fas fa-plus-circle me-1"></i> Add Product
                     </a>
                 </div>
-
+                <div class="row mb-4">
+                    <?php foreach ($cards as $card): ?>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-left-<?= $card['color']; ?> shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-<?= $card['color']; ?> text-uppercase mb-1">
+                                                <?= $card['title']; ?>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $card['value']; ?></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas <?= $card['icon']; ?> fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="<?= $card['link']; ?>" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
                 <?php if (isset($_GET['success'])): ?>
                     <div class="alert alert-success"><?php echo htmlspecialchars($_GET['success']); ?></div>
                 <?php elseif (isset($_GET['error'])): ?>
@@ -176,136 +228,153 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
             </div>
         </div>
     </div>
-<!-- Edit Product Modal -->
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="editProductForm" enctype="multipart/form-data">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="editProductId" name="editProductId">
-          
-          <div class="row g-3 mb-4">
-            <!-- Basic Info -->
-            <div class="col-md-6">
-              <label for="editProductName" class="form-label">Product Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="editProductName" name="editProductName" required>
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form id="editProductForm" enctype="multipart/form-data">
+            <div class="modal-header bg-primary text-white">
+              <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
-            <div class="col-md-6">
-              <label for="editProductBrand" class="form-label">Brand</label>
-              <input type="text" class="form-control" id="editProductBrand" name="editProductBrand">
-            </div>
-            
-            <div class="col-md-6">
-              <label for="editProductCategory" class="form-label">Category</label>
-              <input type="text" class="form-control" id="editProductCategory" name="editProductCategory">
-            </div>
-            
-            <div class="col-md-6">
-              <label for="editProductColor" class="form-label">Color</label>
-              <input type="text" class="form-control" id="editProductColor" name="editProductColor">
-            </div>
-            
-            <div class="col-12">
-              <label for="editProductDescription" class="form-label">Description</label>
-              <textarea class="form-control" id="editProductDescription" name="editProductDescription" rows="3"></textarea>
-            </div>
-          </div>
-          
-          <div class="row g-3 mb-4">
-            <!-- Pricing -->
-            <div class="col-md-6">
-              <label for="editProductPrice" class="form-label">Price <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text">Rp</span>
-                <input type="number" step="0.01" class="form-control" id="editProductPrice" name="editProductPrice" required>
-              </div>
-            </div>
-            
-            <div class="col-md-6">
-              <label for="editProductDiscount" class="form-label">Discount</label>
-              <div class="input-group">
-                <span class="input-group-text">Rp</span>
-                <input type="number" step="0.01" class="form-control" id="editProductDiscount" name="editProductDiscount">
-              </div>
-            </div>
-            
-            <!-- Criteria Radio Buttons -->
-            <div class="col-md-12">
-              <label class="form-label">Criteria</label>
-              <div class="d-flex gap-4">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="editProductCriteria" id="editCriteriaFavorite" value="favorite">
-                  <label class="form-check-label" for="editCriteriaFavorite">
-                    <i class="bi bi-star-fill text-warning"></i> Favorite
-                  </label>
+
+            <div class="modal-body">
+              <input type="hidden" id="editProductId" name="editProductId">
+
+              <!-- Product Basic Info -->
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label for="editProductName" class="form-label">Product Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="editProductName" name="editProductName" required>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="editProductCriteria" id="editCriteriaNonFavorite" value="non-favorite">
-                  <label class="form-check-label" for="editCriteriaNonFavorite">
-                    <i class="bi bi-star text-secondary"></i> Non-Favorite
-                  </label>
+
+                <div class="col-md-6">
+                  <label for="editProductBrand" class="form-label">Brand</label>
+                  <input type="text" class="form-control" id="editProductBrand" name="editProductBrand">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="editProductCategory" class="form-label">Category</label>
+                  <input type="text" class="form-control" id="editProductCategory" name="editProductCategory">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="editProductColor" class="form-label">Color</label>
+                  <input type="text" class="form-control" id="editProductColor" name="editProductColor">
+                </div>
+
+                <div class="col-12">
+                  <label for="editProductDescription" class="form-label">Description</label>
+                  <textarea class="form-control" id="editProductDescription" name="editProductDescription" rows="3"></textarea>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <!-- Image Upload Section -->
-          <div class="row g-3 mb-3">
-            <h6 class="fw-bold">Product Images</h6>
-            
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body">
-                  <label for="product_image1" class="form-label">Image 1 (Primary)</label>
-                  <input type="file" class="form-control mb-2" id="product_image1" name="product_image1" accept="image/*">
-                  <div class="text-center">
-                    <img id="preview_image1" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
+
+              <!-- Pricing Section -->
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label for="editProductPrice" class="form-label">Price <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text">Rp</span>
+                    <input type="number" step="0.01" class="form-control" id="editProductPrice" name="editProductPrice" required>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="editProductDiscount" class="form-label">Discount</label>
+                  <div class="input-group">
+                    <span class="input-group-text">Rp</span>
+                    <input type="number" step="0.01" class="form-control" id="editProductDiscount" name="editProductDiscount">
+                  </div>
+                </div>
+
+                <!-- Criteria Radio Buttons -->
+                <div class="col-md-12">
+                  <label class="form-label">Criteria</label>
+                  <div class="d-flex gap-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="editProductCriteria" id="editCriteriaFavorite" value="Favorite">
+                      <label class="form-check-label" for="editCriteriaFavorite">
+                        <i class="bi bi-star-fill text-warning"></i> Favorite
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="editProductCriteria" id="editCriteriaNonFavorite" value="Non-Favorite">
+                      <label class="form-check-label" for="editCriteriaNonFavorite">
+                        <i class="bi bi-star text-secondary"></i> Non-Favorite
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Image Upload Section -->
+              <div class="row g-3 mb-3">
+                <h6 class="fw-bold">Product Images</h6>
+
+                <!-- Image 1 -->
+                <div class="col-md-4">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <label for="product_image1" class="form-label">Image 1 (Primary)</label>
+                      <input type="file" class="form-control mb-2" id="product_image1" name="product_image1" accept="image/*">
+                      <div class="text-center">
+                        <img id="preview_image1" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Image 2 -->
+                <div class="col-md-4">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <label for="product_image2" class="form-label">Image 2</label>
+                      <input type="file" class="form-control mb-2" id="product_image2" name="product_image2" accept="image/*">
+                      <div class="text-center">
+                        <img id="preview_image2" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Image 3 -->
+                <div class="col-md-4">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <label for="product_image3" class="form-label">Image 3</label>
+                      <input type="file" class="form-control mb-2" id="product_image3" name="product_image3" accept="image/*">
+                      <div class="text-center">
+                        <img id="preview_image3" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Image 4 -->
+                <div class="col-md-4">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <label for="product_image4" class="form-label">Image 4</label>
+                      <input type="file" class="form-control mb-2" id="product_image4" name="product_image4" accept="image/*">
+                      <div class="text-center">
+                        <img id="preview_image4" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body">
-                  <label for="product_image2" class="form-label">Image 2</label>
-                  <input type="file" class="form-control mb-2" id="product_image2" name="product_image2" accept="image/*">
-                  <div class="text-center">
-                    <img id="preview_image2" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
-                  </div>
-                </div>
-              </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
-            
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body">
-                  <label for="product_image3" class="form-label">Image 3</label>
-                  <input type="file" class="form-control mb-2" id="product_image3" name="product_image3" accept="image/*">
-                  <div class="text-center">
-                    <img id="preview_image3" src="" class="img-fluid rounded border" style="max-height: 150px; display: none;">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          </form>
         </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-save me-1"></i> Update Product
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
-</div>
+    <!-- End Edit Product Modal -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
