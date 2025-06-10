@@ -55,6 +55,8 @@ body
 	font-weight: 400;
 	background: #FFFFFF;
 	color: #1e1e27;
+	margin: 0;
+    padding: 0;
 }
 div
 {
@@ -269,14 +271,14 @@ section
 {
 	width: 100%;
 	height: 50px;
-	background: #1e1e27;
+	background: #0C356A;
 }
 .top_nav_left
 {
 	height: 50px;
 	line-height: 50px;
 	font-size: 13px;
-	color: #b5aec4;
+	color: #FFFFFF;
 	text-transform: uppercase;
 }
 
@@ -447,183 +449,247 @@ section
 /*********************************
 3.3 Account
 *********************************/
+.account {
+    position: relative;
+    display: inline-block;
+    min-width: 60px;
+}
 
-.account
-{
-	display: inline-block;
-	position: relative;
-	min-width: 50px;
-	padding-left: 20px;
-	text-align: center;
-	vertical-align: middle;
-	background: #1e1e27;
+.account > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    height: 50px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
 }
-.account > a
-{
-	display: block;
-	color: #b5aec4;
-	font-weight: 400;
-	height: 50px;
-	line-height: 50px;
-	font-size: 13px;
+
+.account > a > .fa-user {
+    font-size: 16px;
+    margin-right: 8px;
 }
-.account > a > i
-{
-	margin-left: 8px;
+
+.account > a > .fa-angle-down {
+    font-size: 14px;
+    margin-left: 3px;
 }
-.account:hover .account_selection
-{
-	visibility: visible;
-	opacity: 1;
-	top: 100%;
+
+.account_selection {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
-.account_selection
-{
-	display: block;
-	position: absolute;
-	right: 0;
-	top: 120%;
-	margin: 0;
-	width: 100%;
-	background: #FFFFFF;
-	visibility: hidden;
-	opacity: 0;
-	z-index: 1;
-	box-shadow: 0 0 25px rgba(63, 78, 100, 0.15);
-	-webkit-transition: opacity 0.3s ease;
-	-moz-transition: opacity 0.3s ease;
-	-ms-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: all 0.3s ease;
+
+.account:hover .account_selection {
+    display: block;
 }
-.account_selection li
-{
-	padding-left: 10px;
-	padding-right: 10px;
-	line-height: 50px;
+
+.account_selection li a {
+    display: flex;
+    align-items: center; /* Ini sudah benar untuk vertikal center */
+    padding: 10px 0px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    flex-direction: row; /* Pastikan flex direction row */
 }
-.account_selection li a
-{
-	display: block;
-	color: #232530;
-	border-bottom: solid 1px #dddddd;
-	font-size: 14px;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
+
+.account_selection li a:hover {
+    background: #f7f7f7;
+    color: #0C356A;
 }
-.account_selection li a:hover
-{
-	color: #b5aec4;
+
+.account_selection li:last-child a {
+    border-bottom: none;
 }
-.account_selection li:last-child a
-{
-	border-bottom: none;
+
+.account_selection li a i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0; /* Pastikan ikon tidak menyusut */
 }
-.account_selection li a i
-{
-	margin-right: 10px;
-}
+
 
 /*********************************
 3.4 Main Navigation
 *********************************/
 
-.main_nav_container
-{
-	width: 100%;
-	background: #FFFFFF;
-	box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
+.main_nav_container {
+    width: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
 }
-.navbar
-{
-	width: auto;
-	height: 100px;
-	float: right;
-	padding-left: 0px;
-	padding-right: 0px;
+
+.navbar {
+    width: auto;
+    height: 100px;
+    float: right;
+    padding: 0;
 }
-.navbar_menu li
-{
-	display: inline-block;
+
+.navbar_menu,
+.navbar_user {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
-.navbar_menu li a
-{
-	display: block;
-	color: #1e1e27;
-	font-size: 13px;
-	font-weight: 500;
-	text-transform: uppercase;
-	padding: 20px;
-	-webkit-transition: color 0.3s ease;
-	-moz-transition: color 0.3s ease;
-	-ms-transition: color 0.3s ease;
-	-o-transition: color 0.3s ease;
-	transition: color 0.3s ease;
+
+.navbar_menu li {
+    display: inline-block;
 }
-.navbar_menu li a:hover
-{
-	color: #b5aec4;
+
+.navbar_menu li a {
+    display: block;
+    color: #1e1e27;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
-.navbar_user
-{
-	margin-left: 37px;
+
+.navbar_menu li a:hover {
+    color: #b5aec4;
 }
-.navbar_user li
-{
-	display: inline-block;
-	text-align: center;
+
+.navbar_user {
+    margin-left: 37px;
 }
-.navbar_user li a
-{
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	width: 40px;
-	height: 40px;
-	color: #1e1e27;
-	-webkit-transition: color 0.3s ease;
-	-moz-transition: color 0.3s ease;
-	-ms-transition: color 0.3s ease;
-	-o-transition: color 0.3s ease;
-	transition: color 0.3s ease;
+
+.navbar_user li {
+    display: inline-block;
+    text-align: center;
 }
-.navbar_user li a:hover
-{
-	color: #b5aec4;
+
+.navbar_user li a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    color: #0C356A;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
-.checkout a
-{
-	background: #eceff6;
-	border-radius: 50%;
+
+.navbar_user li a:hover {
+    color: #b5aec4;
 }
-.checkout_items
-{
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	top: -9px;
-	left: 22px;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background: #fe4c50;
-	font-size: 12px;
-	color: #FFFFFF;
+
+.checkout a {
+    background: #eceff6;
+    border-radius: 50%;
+}
+
+.checkout_items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -9px;
+    left: 22px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0C356A;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+/* MODIFIED SECTION - Dropdown Vertikal untuk navbar_user */
+/* Tempatkan ini setelah .checkout_items atau di akhir section 3.4 */
+.navbar_user li.account {
+    position: relative;
+}
+
+.navbar_user li.account .account_selection {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 150px; /* Diperlebar untuk menampung teks */
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 5px 0; /* Tambahkan padding atas bawah */
+    margin: 0;
+    list-style: none;
+}
+
+.navbar_user li.account:hover .account_selection {
+    display: block;
+}
+
+.navbar_user li.account .account_selection li {
+    display: block;
+    width: 100%;
+}
+
+.navbar_user li.account .account_selection li a {
+    display: flex;
+    flex-direction: row; /* Pastikan row */
+    align-items: center;
+    padding: 8px 0px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.navbar_user li.account .account_selection li a:hover {
+    background: #f7f7f7;
+    color: #0C356A;
+}
+
+.navbar_user li.account .account_selection li:last-child a {
+    border-bottom: none;
+}
+
+.navbar_user li.account .account_selection li a i {
+    margin-right: 12px;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.navbar_user li.account > a {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 15px !important;
+}
+
+.navbar_user li.account > a i.fa-user {
+    margin-right: 8px;
+}
+
+.navbar_user li.account > a i.fa-angle-down {
+    margin-left: 5px;
 }
 
 /*********************************
@@ -807,13 +873,13 @@ section
 .logo_container a
 {
 	font-size: 24px;
-	color: #1e1e27;
+	color: #0C356A;
 	font-weight: 700;
 	text-transform: uppercase;
 }
 .logo_container a span
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
 .red_button
 {
@@ -827,7 +893,7 @@ section
 	align-items: center;
 	width: auto;
 	height: 40px;
-	background: #fe4c50;
+	background: #0C356A;
 	border-radius: 3px;
 	-webkit-transition: all 0.3s ease;
 	-moz-transition: all 0.3s ease;
@@ -837,7 +903,7 @@ section
 }
 .red_button:hover
 {
-	background: #FE7C7F !important;
+	background: #279EFF !important;
 }
 .red_button a
 {
@@ -1015,7 +1081,7 @@ section
 }
 .product_sorting_container_bottom .pages .page_current
 {
-	background: #fe4c50;
+	background: #0C356A;
 	border: none;
 }
 .page_current span
@@ -1100,6 +1166,38 @@ section
 	font-size: 18px;
 	color: #51545f;
 }
+
+.page_prev {
+    display: inline-block;
+	line-height: 40px;
+	cursor: pointer;
+	margin-right: 10px;
+}
+.page_prev a, .page_next a {
+    color: #333;
+    text-decoration: none;
+}
+
+.page_prev:hover i
+{
+	color: #b5aec4;
+}
+.page_prev i
+{
+	font-size: 18px;
+	color: #51545f;
+}
+.page-link {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.page-link.disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 .showing_results
 {
 	font-size: 16px;
@@ -1144,39 +1242,55 @@ section
 
 .product_section_container
 {
-	margin-top: 150px;
+	margin-top: 180px;
+    /*padding: 0 40px;
+    display: flex;
+    /*margin-top: 180px;
+	margin-left: 40px; /* Semua sisi: 40px 
+	margin-right: 40px;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: wrap;*/
 }
 .product_section
 {
-
+	width: 100%;
 }
 .sidebar
 {
 	float: left;
 	width: 200px;
-	padding-right: 17px;
-}
+    padding-right: 20px;
+    flex-shrink: 0; /* Agar lebar tidak menyusut */
+	}
 .sidebar_section
 {
-	padding-bottom: 35px;
-	margin-bottom: 50px;
-	border-bottom: solid 1px #ebebeb;
+	padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+	/*padding-bottom: 30px;
+	margin-bottom: 30px;*/
 }
 .sidebar_title h5
 {
 	font-size: 18px;
-	margin-bottom: 21px;
+	margin-bottom: 15px;
+	
 }
 .sidebar_categories li.active a
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
 .sidebar_categories li.active:hover a
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
 .sidebar_categories li a
 {
+	/*color: #555;
+    text-decoration: none;
+    display: block;
+    padding: 5px 0;*/
 	font-size: 14px;
 	line-height: 40px;
 	color: #51545f;
@@ -1208,11 +1322,19 @@ section
 	text-align: center;
 	margin-top: 25px;
 	cursor: pointer;
-	-webkit-transition: all 0.3s ease;
+	webkit-transition: all 0.3s ease;
 	-moz-transition: all 0.3s ease;
 	-ms-transition: all 0.3s ease;
 	-o-transition: all 0.3s ease;
 	transition: all 0.3s ease;
+
+	/*background: #1e1e27;
+    color: white;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 15px;*/
 }
 .filter_button:hover
 {
@@ -1233,7 +1355,7 @@ section
 }
 .checkboxes li.active i
 {
-	color: #fe4c50;
+	color: #279EFF;
 	margin-right: 21px;
 }
 .checkboxes li.active i::after
@@ -1277,7 +1399,7 @@ section
 {
 	height: 40px;
 	line-height: 40px;
-	color: #fe4c50;
+	color: #279EFF;
 }
 .show_more span:first-child
 {
@@ -1290,13 +1412,26 @@ section
 
 .main_content
 {
+	/*flex: 1;
+	padding: 20px;
+	border-radius: 8px;*/
 	float: left;
 	width: calc(100% - 200px);
-	padding-left: 34px;
+	padding-left: 10px;
+
+	/*flex: 1;*/
+    /*background: #f9f9f9;
+    border-radius: 8px;
+    margin-left: 20px;
+    width: calc(100% - 240px);*/
 }
 
 .product-grid
 {
+	/*display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 kolom 
+    gap: 20px;
+    width: 100%;*/
 	width: 100%;
 	margin-top: 57px;
 }
@@ -1305,6 +1440,12 @@ section
 	width: 25%;
 	height: 380px;
 	cursor: pointer;
+	/*background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: calc(33.333% - 20px); /* 3 kolom per baris*/
+
 }
 .product-item::after
 {
@@ -1341,7 +1482,13 @@ section
 }
 .product_image img
 {
+	/*width: 100%;*/
 	width: 100%;
+    /*height: 180px; /* Fixed height untuk konsistensi 
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;*/
+
 }
 .product_info
 {
@@ -1369,7 +1516,7 @@ section
 .product_price
 {
 	font-size: 16px;
-	color: #fe4c50;
+	color: #0C356A;
 	font-weight: 600;
 }
 .product_price span
@@ -1419,7 +1566,7 @@ section
 }
 .product_bubble_red::after
 {
-	border-color: transparent transparent transparent #fe4c50;
+	border-color: transparent transparent transparent #279EFF;
 }
 .product_bubble_left::after
 {
@@ -1427,7 +1574,7 @@ section
 }
 .product_bubble_red
 {
-	background: #fe4c50;
+	background: #279EFF;
 }
 .product_bubble_green
 {
@@ -1491,7 +1638,7 @@ section
 {
 	font-family: 'FontAwesome';
 	content:'\f004';
-	color: #fe4c50;
+	color: #0C356A;
 }
 .favorite::after
 {
@@ -1500,61 +1647,133 @@ section
 }
 .favorite:hover::after
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
 
 /*********************************
 8. Benefit
 *********************************/
 
-.benefit
-{
-	margin-top: 74px;
+.benefit {
+    margin-top: 50px;
+	margin-right: 20px;
+	margin-left: 40px;
+    padding: 0;
+    width: 100%;
+    /*box-sizing: border-box;*/
+	overflow: hidden;
 }
-.benefit_row
-{
-	padding-left: 15px;
-	padding-right: 15px;
+
+.benefit .container {
+    max-width: 1200px;
+    margin:0;
+    padding: 0;
 }
-.benefit_col
-{
-	padding-left: 0px;
-	padding-right: 0px;
+
+.benefit_row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between; /* Lebih baik untuk responsivitas */
+    gap: 100px;
+    margin: 20px; /* Untuk mengimbangi margin kolom */
+	width: 100%;
 }
-.benefit_item
-{
-	height: 100px;
-	background: #f3f3f3;
-	border-right: solid 1px #FFFFFF;
-	padding-left: 25px;
+
+/* Menghapus dependency pada class Bootstrap */
+.benefit_col {
+    flex: 0 0 calc(25% - 20px); /* 4 kolom default */
+    min-width: 0;
+    padding: 0;
+    margin: 0 0.5px;
 }
-.benefit_col:last-child .benefit_item
-{
-	border-right: none;
+
+.benefit_col:first-child {
+    margin-left: 0;
 }
-.benefit_icon i
-{
-	font-size: 30px;
-	color: #fe4c50;
+        
+.benefit_col:last-child {
+    margin-right: 0;
 }
-.benefit_content
-{
-	padding-left: 22px;
+        
+.benefit_item {
+    height: 150px;
+    background: rgba(243, 243, 243, 0.2); /* Transparansi */
+	padding: 25px; /* PADDING DIPERBESAR */
+    display: flex;
+    align-items: center;
+    width: 350px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+	border-radius: 12px;
+    /*border: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Menggunakan lebar penuh kolom */
 }
-.benefit_content h6
-{
-	text-transform: uppercase;
-	line-height: 18px;
+
+.benefit_item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+	background: #ffffff;
+}
+
+.benefit_icon i {
+    font-size: 30px;
+    color: #0C356A;
+    min-width: 40px; /* Memberikan ruang konsisten untuk ikon */
+    text-align: center;
+}
+
+.benefit_content {
+    padding-left: 22px;
+}
+
+.benefit_content h6 {
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px; /* Memberikan jarak dengan paragraf */
+    color: #0C356A;
+    font-size: 18px; /* Ukuran eksplisit */
+	letter-spacing: 1px;
+}
+
+.benefit_content p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #279EFF;
+    margin: 0;
 	font-weight: 500;
-	margin-bottom: 0px;
 }
-.benefit_content p
-{
-	font-size: 12px;
-	line-height: 18px;
-	margin-bottom: 0px;
-	color: #51545f;
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .benefit_col {
+        flex: 1 0 calc(50% - 20px); /* 2 kolom pada tablet */
+    }
 }
+
+@media (max-width: 576px) {
+    .benefit_col {
+        flex: 1 0 100%; /* 1 kolom pada mobile */
+    }
+    
+    .benefit_item {
+        height: auto;
+        min-height: 120px;
+        padding: 15px 10px;
+    }
+    
+    .benefit_icon i {
+        font-size: 24px;
+    }
+    
+    .benefit_content h6 {
+        font-size: 14px;
+    }
+}
+
 
 /*********************************
 9. Newsletter
@@ -1563,7 +1782,7 @@ section
 .newsletter
 {
 	width: 100%;
-	background: #f2f2f2;
+	background: rgba(243, 243, 243, 0.3); /* Transparansi */
 	margin-top: 81px;
 }
 .newsletter_text
@@ -1579,7 +1798,7 @@ section
 {
 	margin-bottom: 0px;
 	line-height: 1.7;
-	color: #51545f;
+	color: #0C356A;
 }
 .newsletter_form
 {
@@ -1637,7 +1856,7 @@ section
 	width: 160px;
 	height: 46px;
 	border: none;
-	background: #fe4c50;
+	background: #0C356A;
 	color: #FFFFFF;
 	font-size: 14px;
 	font-weight: 500;
@@ -1646,7 +1865,7 @@ section
 }
 .newsletter_submit_btn:hover
 {
-	background: #FE7C7F;
+	background: #279EFF;
 }
 
 /*********************************
@@ -1683,7 +1902,7 @@ section
 }
 .footer_nav li a:hover, .cr a, .cr i
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
 .footer_social
 {
@@ -1714,12 +1933,13 @@ section
 }
 .footer_social ul li a:hover
 {
-	color: #fe4c50;
+	color: #0C356A;
 }
 
+/* Dark Mode Stylesheet */
 /* Dark Mode Styles */
 body.dark-mode {
-    background-color: #121212;
+    background-color: #000000;
     color: #e0e0e0;
 }
 
@@ -1727,7 +1947,7 @@ body.dark-mode {
 .dark-mode .top_nav,
 .dark-mode .main_nav_container,
 .dark-mode .footer {
-    background-color: #1e1e1e;
+    background-color: #040D12;
     color: #e0e0e0;
 }
 
@@ -1769,11 +1989,11 @@ body.dark-mode {
 }
 
 .dark-mode .newsletter {
-    background-color: #1e1e1e;
+    background-color: #000000;
 }
 
 .dark-mode .benefit {
-    background-color: #1e1e1e;
+    background-color: #000000;
 }
 
 .dark-mode .hamburger_menu {
@@ -1791,12 +2011,12 @@ body.dark-mode {
 
 /* Dark Mode Styles for Benefit Section */
 .dark-mode .benefit {
-    background-color: #2d2d2d;
+    background-color: #000000;
     border-top: 1px solid #444;
 }
 
 .dark-mode .benefit_item {
-    background-color: #333;
+    background-color: #000000;
     border-radius: 8px;
     padding: 15px;
     transition: all 0.3s ease;
@@ -1843,32 +2063,35 @@ body.dark-mode {
 /* Search Box Styles */
 .search-box {
     display: flex;
-    align-items: center;
+    malign-items: center;
     margin-left: 15px;
+	padding-bottom: 40px;
+	padding-left: 10px;
 }
 
 #search-input {
     padding: 8px 12px;
     border: 1px solid #e0e0e0;
-    border-radius: 20px 0 0 20px;
+    border-radius: 10px 0 0 20px;
     height: 36px;
-    width: 180px;
+    width: 550px;
     transition: all 0.3s ease;
     font-size: 14px;
     color: #333;
     background-color: #f8f8f8;
+	align-items: center;
 }
 
 #search-input:focus {
     width: 220px;
     outline: none;
-    border-color: #fe4c50;
+    border-color: #0C356A;
     background-color: #fff;
     box-shadow: 0 0 5px rgba(254, 76, 80, 0.3);
 }
 
 #search-button {
-    background: #fe4c50;
+    background: #0C356A;
     border: none;
     color: white;
     padding: 8px 12px;

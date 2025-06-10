@@ -111,7 +111,7 @@
 	display: block;
 	border: 0;
 	background-position: 0 0;
-	background-color: #fe4c50;
+	background-color: #0C356A;
 }
 
 /* support: IE8 - See #6727 */
@@ -207,7 +207,7 @@ works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
 	/*border: 1px solid #c5c5c5;*/
-	background: #fe4c50;
+	background: #0C356A;
 	font-weight: normal;
 	color: #454545;
 }
@@ -230,7 +230,7 @@ a:visited.ui-button,
 .ui-button:hover,
 .ui-button:focus {
 	/*border: 1px solid #cccccc;*/
-	background: #fe4c50;
+	background: #279EFF;
 	font-weight: normal;
 	color: #2b2b2b;
 	cursor:pointer;
@@ -259,7 +259,7 @@ a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
 	border: 1px solid #003eff;
-	background: #fe4c50;
+	background: #279EFF;
 	font-weight: normal;
 	color: #ffffff;
 }

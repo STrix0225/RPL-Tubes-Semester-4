@@ -50,6 +50,7 @@ COLOR PALETTE
 {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 }
 body
 {
@@ -134,7 +135,7 @@ h5{font-size: 16px;}
 h6{font-size: 14px;}
 h1, h2, h3, h4, h5, h6
 {
-	color: #282828;
+	color: #0C356A;
 	-webkit-font-smoothing: antialiased;
 	-webkit-text-shadow: rgba(0,0,0,.01) 0 0 1px;
 	text-shadow: rgba(0,0,0,.01) 0 0 1px;
@@ -273,14 +274,14 @@ section
 {
 	width: 100%;
 	height: 50px;
-	background: #1e1e27;
+	background: #0C356A;
 }
 .top_nav_left
 {
 	height: 50px;
 	line-height: 50px;
 	font-size: 13px;
-	color: #b5aec4;
+	color: #FFFFFF;
 	text-transform: uppercase;
 }
 
@@ -451,185 +452,248 @@ section
 /*********************************
 3.3 Account
 *********************************/
+.account {
+    position: relative;
+    display: inline-block;
+    min-width: 60px;
+}
 
-.account
-{
-	display: inline-block;
-	position: relative;
-	min-width: 50px;
-	padding-left: 20px;
-	text-align: center;
-	vertical-align: middle;
-	background: #1e1e27;
+.account > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    height: 50px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
 }
-.account > a
-{
-	display: block;
-	color: #b5aec4;
-	font-weight: 400;
-	height: 50px;
-	line-height: 50px;
-	font-size: 13px;
+
+.account > a > .fa-user {
+    font-size: 16px;
+    margin-right: 8px;
 }
-.account > a > i
-{
-	margin-left: 8px;
+
+.account > a > .fa-angle-down {
+    font-size: 14px;
+    margin-left: 3px;
 }
-.account:hover .account_selection
-{
-	visibility: visible;
-	opacity: 1;
-	top: 100%;
+
+.account_selection {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
-.account_selection
-{
-	display: block;
-	position: absolute;
-	right: 0;
-	top: 120%;
-	margin: 0;
-	width: 100%;
-	background: #FFFFFF;
-	visibility: hidden;
-	opacity: 0;
-	z-index: 1;
-	box-shadow: 0 0 25px rgba(63, 78, 100, 0.15);
-	-webkit-transition: opacity 0.3s ease;
-	-moz-transition: opacity 0.3s ease;
-	-ms-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: all 0.3s ease;
+
+.account:hover .account_selection {
+    display: block;
 }
-.account_selection li
-{
-	padding-left: 10px;
-	padding-right: 10px;
-	line-height: 50px;
+
+.account_selection li a {
+    display: flex;
+    align-items: center; /* Ini sudah benar untuk vertikal center */
+    padding: 10px 0px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    flex-direction: row; /* Pastikan flex direction row */
 }
-.account_selection li a
-{
-	display: block;
-	color: #232530;
-	border-bottom: solid 1px #dddddd;
-	font-size: 14px;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
+
+.account_selection li a:hover {
+    background: #f7f7f7;
+    color: #0C356A;
 }
-.account_selection li a:hover
-{
-	color: #b5aec4;
+
+.account_selection li:last-child a {
+    border-bottom: none;
 }
-.account_selection li:last-child a
-{
-	border-bottom: none;
+
+.account_selection li a i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0; /* Pastikan ikon tidak menyusut */
 }
-.account_selection li a i
-{
-	margin-right: 10px;
-}
+
 
 /*********************************
 3.4 Main Navigation
 *********************************/
 
-.main_nav_container
-{
-	width: 100%;
-	background:#FFFFFF;
-	box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
-}
-.navbar
-{
-	width: auto;
-	height: 100px;
-	float: right;
-	padding-left: 0px;
-	padding-right: 0px;
-}
-.navbar_menu li
-{
-	display: inline-block;
-}
-.navbar_menu li a
-{
-	display: block;
-	color: #1e1e27;
-	font-size: 13px;
-	font-weight: 500;
-	text-transform: uppercase;
-	padding: 20px;
-	-webkit-transition: color 0.3s ease;
-	-moz-transition: color 0.3s ease;
-	-ms-transition: color 0.3s ease;
-	-o-transition: color 0.3s ease;
-	transition: color 0.3s ease;
-}
-.navbar_menu li a:hover
-{
-	color: #b5aec4;
-}
-.navbar_user
-{
-	margin-left: 37px;
-}
-.navbar_user li
-{
-	display: inline-block;
-	text-align: center;
-}
-.navbar_user li a
-{
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	width: 40px;
-	height: 40px;
-	color: #1e1e27;
-	-webkit-transition: color 0.3s ease;
-	-moz-transition: color 0.3s ease;
-	-ms-transition: color 0.3s ease;
-	-o-transition: color 0.3s ease;
-	transition: color 0.3s ease;
-}
-.navbar_user li a:hover
-{
-	color: #b5aec4;
-}
-.checkout a
-{
-	background: #eceff6;
-	border-radius: 50%;
-}
-.checkout_items
-{
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	top: -9px;
-	left: 22px;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background: #fe4c50;
-	font-size: 12px;
-	color: #FFFFFF;
+.main_nav_container {
+    width: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
 }
 
+.navbar {
+    width: auto;
+    height: 100px;
+    float: right;
+    padding: 0;
+}
+
+.navbar_menu,
+.navbar_user {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.navbar_menu li {
+    display: inline-block;
+}
+
+.navbar_menu li a {
+    display: block;
+    color: #1e1e27;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navbar_menu li a:hover {
+    color: #b5aec4;
+}
+
+.navbar_user {
+    margin-left: 37px;
+}
+
+.navbar_user li {
+    display: inline-block;
+    text-align: center;
+}
+
+.navbar_user li a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    color: #0C356A;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navbar_user li a:hover {
+    color: #b5aec4;
+}
+
+.checkout a {
+    background: #eceff6;
+    border-radius: 50%;
+}
+
+.checkout_items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -9px;
+    left: 22px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0C356A;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+/* MODIFIED SECTION - Dropdown Vertikal untuk navbar_user */
+/* Tempatkan ini setelah .checkout_items atau di akhir section 3.4 */
+.navbar_user li.account {
+    position: relative;
+}
+
+.navbar_user li.account .account_selection {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 150px; /* Diperlebar untuk menampung teks */
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 5px 0; /* Tambahkan padding atas bawah */
+    margin: 0;
+    list-style: none;
+}
+
+.navbar_user li.account:hover .account_selection {
+    display: block;
+}
+
+.navbar_user li.account .account_selection li {
+    display: block;
+    width: 100%;
+}
+
+.navbar_user li.account .account_selection li a {
+    display: flex;
+    flex-direction: row; /* Pastikan row */
+    align-items: center;
+    padding: 8px 0px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.navbar_user li.account .account_selection li a:hover {
+    background: #f7f7f7;
+    color: #0C356A;
+}
+
+.navbar_user li.account .account_selection li:last-child a {
+    border-bottom: none;
+}
+
+.navbar_user li.account .account_selection li a i {
+    margin-right: 12px;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.navbar_user li.account > a {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 15px !important;
+}
+
+.navbar_user li.account > a i.fa-user {
+    margin-right: 8px;
+}
+
+.navbar_user li.account > a i.fa-angle-down {
+    margin-left: 5px;
+}
 /*********************************
 3.5 Hamburger Menu
 *********************************/
@@ -843,6 +907,13 @@ section
 {
 	font-weight: 400;
 	line-height: 1;
+		color: white;
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+        border-radius: 10px;
+        max-width: 800px;
+        margin: 0 auto;
 }
 .red_button
 {
@@ -863,6 +934,7 @@ section
 	-ms-transition: all 0.3s ease;
 	-o-transition: all 0.3s ease;
 	transition: all 0.3s ease;
+	margin-top: 100px;
 }
 .red_button:hover
 {
@@ -884,6 +956,71 @@ section
 	width: 140px;
 	margin-top: 32px;
 }
+
+/* Style untuk carousel */
+    .carousel {
+        position: relative;
+		margin-top: 150px;
+    }
+    
+    .carousel-item {
+        height: 600px; /* Sesuaikan tinggi sesuai kebutuhan */
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .carousel-control-prev, .carousel-control-next {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    /*.carousel:hover .carousel-control-prev,
+    .carousel:hover .carousel-control-next {
+        width: 40px;/* Lebar tombol 40px 
+    	height: 40px;/* Tinggi tombol 40px 
+    	background-color: rgba(255, 255, 255, 0.3); /* Warna putih dengan transparansi 30% 
+		border-radius: 50%;/* Membuat bentuk lingkaran sempurna 
+    	top: 50%;/* Posisi vertikal dimulai dari 50% tinggi parent 
+	}*/
+    .carousel-control-prev,
+	.carousel-control-next {
+		width: 40px;
+		height: 40px;
+		background-color: rgba(255, 255, 255, 0.3);
+		border-radius: 50%;
+		top: 50%;
+		transform: translateY(-50%);
+		opacity: 0;
+		transition: all 0.3s ease;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		filter: invert(1);
+	}
+	/* HOVER STATE */
+	.carousel-control-prev:hover,
+	.carousel-control-next:hover {
+		background-color: rgba(255, 255, 255, 0.7);
+	}
+
+	/* TAMPILKAN SAAT HOVER CAROUSEL */
+	.carousel:hover .carousel-control-prev,
+	.carousel:hover .carousel-control-next {
+		opacity: 1; /* HANYA KENDALIKAN OPACITY SAJA */
+	}
+
+	.carousel-control-prev {
+    left: 20px;  /* Jarak 20px dari sisi kiri */
+	}
+
+	.carousel-control-next {
+		right: 20px; /* Jarak 20px dari sisi kanan */
+	}
+
+	.carousel-control-prev:hover,
+	.carousel-control-next:hover {
+		background-color: rgba(255, 255, 255, 0.7); /* Warna lebih solid saat hover */
+	}
 
 /*********************************
 4. Banner
@@ -909,6 +1046,7 @@ section
 	background-size: cover;
 	background-position: center center;
 }
+
 .banner_category
 {
 	height: 50px;
@@ -951,6 +1089,30 @@ section
 	margin-top: 74px;
 }
 
+/* CSS untuk memperbaiki tampilan */
+.product_slider.no-transition .owl-stage {
+    transition: none !important;
+}
+
+.owl-item {
+    padding: 0 5px !important; /* Sedikit padding antar item */
+    box-sizing: border-box;
+}
+
+.owl-stage {
+    display: flex;
+    align-items: stretch;
+}
+
+.product-item {
+    height: 100%;
+}
+
+/* Pastikan container tidak overflow */
+.product_slider_container {
+    overflow: hidden;
+    width: 100%;
+}
 /*********************************
 5.1 New Arrivals Sorting
 *********************************/
@@ -1030,14 +1192,6 @@ section
     transform: scale(1);
     box-shadow: none;
 }
-/*.grid_sorting_button:hover {
-  background: #279EFF !important;
-  color: #FFFFFF;
-  border-color: #279EFF;
-  transform: scale(1.05);
-  box-shadow: 0 2px 5px rgba(39, 158, 255, 0.3);
-}*/
-
 
 /*********************************
 5.2 New Arrivals Products Grid
@@ -1262,7 +1416,7 @@ section
 {
 	width: 100%;
 	margin-top: 41px;
-	background: #f2f2f2;
+	background: #FFFFFF;
 }
 .deal_ofthe_week_img
 {
@@ -1307,12 +1461,13 @@ section
 }
 .timer li
 {
-	display: inline-block;
-	width: 120px;
-	height: 120px;
-	border-radius: 50%;
-	background: #FFFFFF;
-	margin-right: 10px;
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #FFFFFF; /* Warna background diubah ke putih */
+    border: 2px solid #000000; /* Menambahkan border hitam */
+    margin-right: 10px;
 }
 .timer li:last-child
 {
@@ -1433,6 +1588,8 @@ section
 *********************************/
 .benefit {
     margin-top: 50px;
+	margin-right: 20px;
+	margin-left: 40px;
     padding: 0;
     width: 100%;
     /*box-sizing: border-box;*/
@@ -1441,7 +1598,7 @@ section
 
 .benefit .container {
     max-width: 1200px;
-    margin: 0;
+    margin:0;
     padding: 0;
 }
 
@@ -1449,8 +1606,8 @@ section
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between; /* Lebih baik untuk responsivitas */
-    gap: 0px;
-    margin: 0; /* Untuk mengimbangi margin kolom */
+    gap: 100px;
+    margin: 20px; /* Untuk mengimbangi margin kolom */
 	width: 100%;
 }
 
@@ -1472,13 +1629,15 @@ section
         
 .benefit_item {
     height: 150px;
-    background: #f3f3f3;
+    background: rgba(243, 243, 243, 0.2); /* Transparansi */
 	padding: 25px; /* PADDING DIPERBESAR */
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 350px;
     border: 1px solid #e0e0e0;
     transition: all 0.3s ease;
+	border-radius: 12px;
+	border: 2px solid #F6F4F0;
     /*border: 8px;
     padding: 15px;
     transition: all 0.3s ease;
@@ -1509,12 +1668,12 @@ section
     font-weight: 700;
     margin-bottom: 12px; /* Memberikan jarak dengan paragraf */
     color: #0C356A;
-    font-size: 22px; /* Ukuran eksplisit */
+    font-size: 18px; /* Ukuran eksplisit */
 	letter-spacing: 1px;
 }
 
 .benefit_content p {
-    font-size: 18px;
+    font-size: 14px;
     line-height: 1.5;
     color: #279EFF;
     margin: 0;
@@ -1547,118 +1706,6 @@ section
         font-size: 14px;
     }
 }
-/*.benefit
-{
-	margin-top: 74px;
-	padding: 0px 20px; 
-	width: 100%; /* Pastikan mengambil lebar penuh
-	box-sizing: border-box;
-    /*max-width: 100vw; /* Maksimum lebar viewport 
-    /*overflow: hidden; /* Hindari overflow horizontal 
-}
-.benefit_row
-{
-	display: flex;
-    flex-wrap: wrap;
-	justify-content: center;
-	gap: 20px;
-    margin: 0 -15px; /* Negative margin untuk mengimbangi padding kolom 
-	max-width: 1200px;
-	/*padding: 0 15px; /* Padding untuk mengimbangi margin kolom 
-    overflow-x: auto; /* Scroll horizontal jika konten melebihi layar 
-    scrollbar-width: none; /* Sembunyikan scrollbar (untuk Firefox) 
-    -ms-overflow-style: none; /* Sembunyikan scrollbar (untuk IE) 
-
-	/*padding-left: 15px;
-	padding-right: 15px;
-	margin: 0 -15px;
-}
-
-.benefit_row::-webkit-scrollbar {
-    display: none;
-}
-
-.benefit_col
-{
-	flex: 1;
-	min-width: 250px; /* Minimum lebar sebelum wrap
-    box-sizing: border-box;
-	/*padding: 0 15px; /* Jarak antar kolom 
-    margin-bottom: 20px; /* Jarak bawah 
-    width: 300px; /* Ukuran minimum kolom */
-	/*padding-left: 0px;
-	padding-right: 0px;
-}
-.benefit_item
-{
-	height: 150px; /* Ubah dari fixed 100px ke auto
-    min-height: 150px; /* Tinggi minimum 
-    background: #f3f3f3;
-    border-radius: 8px; /* Tambahkan rounded corners
-    padding: 15px;
-    /*box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Efek shadow halus 
-    transition: all 0.3s ease; /* Animasi hover 
-	display: flex;
-    align-items: center; /* Vertikal center konten
-	width: 300px;
-	/*height: 100px;
-	background: #f3f3f3;
-	border-right: solid 1px #FFFFFF;
-	padding-left: 25px;
-}
-.benefit_item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.benefit_col:last-child .benefit_item
-{
-	border-right: none;
-}
-.benefit_icon i
-{
-	font-size: 30px;
-	color: #0C356A;
-}
-.benefit_content
-{
-	padding-left: 22px;
-}
-.benefit_content h6
-{
-	text-transform: uppercase;
-	line-height: 1.3;
-	/*line-height: 18px;
-	font-weight: 500;
-	margin-bottom: 0px;
-	color: #0C356A 
-}
-.benefit_content p
-{
-	font-size: 12px;
-	line-height: 18px;
-	/*margin-bottom: 0px;
-	color: #279EFF;
-}
-
-/* Responsive Adjustments 
-@media (max-width: 1024px) {
-    .benefit_col {
-        flex: 0 0 calc(25% - 20px); /* 4 kolom 
-    }
-}
-
-@media (max-width: 768px) {
-    .benefit_col {
-        flex: 0 0 calc(25% - 20px); /* 2 kolom 
-    }
-}
-
-@media (max-width: 480px) {
-    .benefit_col {
-        flex: 0 0 100%; /* 1 kolom 
-    }
-}*/
 /*********************************
 9. Blogs
 *********************************/
@@ -1755,7 +1802,7 @@ section
 .newsletter
 {
 	width: 100%;
-	background: #f2f2f2;
+	background: rgba(243, 243, 243, 0.3); /* Transparansi */
 	margin-top: 81px;
 }
 .newsletter_text
@@ -1771,7 +1818,7 @@ section
 {
 	margin-bottom: 0px;
 	line-height: 1.7;
-	color: #51545f;
+	color: #0C356A;
 }
 .newsletter_form
 {
@@ -1909,6 +1956,8 @@ section
 	color: #0C356A;
 }
 
+
+/* Dark Mode Stylesheet */
 /* Improved Dark Mode Styles */
 body.dark-mode {
     background-color: #000000;
@@ -1931,7 +1980,7 @@ body.dark-mode {
 }
 
 .dark-mode .product {
-    background-color: #393E46;
+    background-color: #000000;
     color: #f5f5f5;
     border: 1px solid #333;
 }
@@ -1961,7 +2010,7 @@ body.dark-mode {
 }
 
 .dark-mode .newsletter {
-    background-color: #040D12;
+    background-color: #000000;
     border-top: 1px solid #333;
 }
 
@@ -1970,7 +2019,7 @@ body.dark-mode {
 }
 
 .dark-mode input#newsletter_email {
-    background-color: #333;
+    background-color: #000000;
     color: #f5f5f5;
     border: 1px solid #444;
 }
@@ -2004,12 +2053,12 @@ body.dark-mode {
 }
 
 .dark-mode .arrivals_grid_sorting li {
-    color: #252525;
+    color: #000000;
     border: 1px solid #444;
 }
 
 .dark-mode .arrivals_grid_sorting li.is-checked {
-    background-color:  #0C356A;
+    background-color:  #000000;
     color: #FFFFFF !important;
 }
 
@@ -2027,23 +2076,23 @@ body.dark-mode {
 }
 
 .dark-mode #dark-mode-cart {
-    color: #222222;
+    color: #000000;
 }
 .dark-mode .deal_ofthe_week
 {
 	width: 100%;
 	margin-top: 41px;
-	background: #040D12;
+	background: #000000;
 }
 
 /* Dark Mode Styles for Benefit Section */
 .dark-mode .benefit {
-    background-color: #040D12;
+    background-color: #000000;
     border-top: 1px solid #444;
 }
 
 .dark-mode .benefit_item {
-    background-color: #393E46;
+    background-color: #000000;
     border-radius: 8px;
     padding: 15px;
     transition: all 0.3s ease;
