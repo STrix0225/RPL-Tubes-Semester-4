@@ -2,7 +2,7 @@
 -- Host:                         127.0.0.1
 -- Server version:               10.4.32-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.10.0.7000
+-- HeidiSQL Version:             12.8.0.6908
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -32,8 +32,9 @@ CREATE TABLE IF NOT EXISTS `admins` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Dumping data for table gems_web.admins: ~1 rows (approximately)
+DELETE FROM `admins`;
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_phone`, `admin_password`, `admin_photo`, `admin_photo2`) VALUES
-	(1, 'Khaleed', 'admin@gmail.com', '62897765432', '0287040c474dbf44cdeb17eebb99d828', 'admin_profile.jpg', 'admin_profile2.jpg');
+	(1, 'Khaleed', 'admin@gmail.com', '62897765432', '25d55ad283aa400af464c76d713c07ad', 'admin_profile.jpg', 'admin_profile2.jpg');
 
 -- Dumping structure for table gems_web.blogs
 CREATE TABLE IF NOT EXISTS `blogs` (
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `blogs` (
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Dumping data for table gems_web.blogs: ~29 rows (approximately)
+DELETE FROM `blogs`;
 INSERT INTO `blogs` (`blog_id`, `blog_title`, `blog_description`, `blog_quotes`, `blog_quotes_writer`, `blog_image`, `blog_image2`, `blog_tags`, `blog_date`, `admin_id`) VALUES
 	(1, 'What Curling Irons Are The Best Ones', 'Spesifikasi Technoplast GB-200:\nTerbuat dari bahan plastik berkualitas( Food Grade), serta bebas dari bahan-bahan berbahaya(BPA free)\n\nTersedia dalam warna hitam, biru, merah\n\nTumbler ini sangat cocok untuk kalian yang ingin memberikan souvenir perusahaan, hadiah wisuda, ulang tahun atau bahkan sebagai koleksi pribadi.\n\nKalian bisa menggunakan desain buatan kalian sendiri untuk botol minum kalian nih. Caranya dengan\n1. order via chat Whatsapp\n2. Kirim desain kalian via email mfbinary18@gmail.com.\n3. Desain yang kalian kirim hanya dalam bentuk .eps ya\n', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-1.jpg', 'banner1.jpg', '#Poster #Tumbler #2022\n', '2022-11-04', 1),
 	(2, 'Eternity Bands Do Last Forever', 'Spesifikasi Technoplast GS-400:\nTerbuat dari bahan plastik berkualitas( Food Grade), serta bebas dari bahan-bahan berbahaya(BPA free)\n\nTersedia dalam warna Hitam\n\nTumbler ini sangat cocok untuk kalian yang ingin memberikan souvenir perusahaan, hadiah wisuda, ulang tahun atau bahkan sebagai koleksi pribadi.\n\nKalian bisa menggunakan desain buatan kalian sendiri untuk botol minum kalian nih. Caranya dengan\n1. order via chat Whatsapp\n2. Kirim desain kalian via email mfbinary18@gmail.com.\n3. Desain yang kalian kirim hanya dalam bentuk .eps ya\n', '“When designing an advertisement for a particular product many things should be researched like where it should be displayed.”', 'JOHN SMITH', 'blog-2.jpg', 'banner1.jpg', '#Poster #Tumbler #Edukasi #2022\n', '2022-11-05', 1),
@@ -89,37 +91,18 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_email` varchar(100) NOT NULL,
   `customer_password` varchar(100) NOT NULL,
   `customer_phone` varchar(20) DEFAULT NULL,
-  `customer_address` varchar(255) DEFAULT NULL,
-  `customer_city` varchar(100) DEFAULT NULL,
+  `customer_city` varchar(255) DEFAULT NULL,
+  `customer_address` varchar(100) DEFAULT NULL,
   `customer_photo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dumping data for table gems_web.customers: ~23 rows (approximately)
-INSERT INTO `customers` (`customer_id`, `customer_name`, `customer_email`, `customer_password`, `customer_phone`, `customer_address`, `customer_city`, `customer_photo`) VALUES
-	(9, 'aaaaa', 'aaaa@gm', '$2y$10$3LbuzhXIotDBPgvTuCpNo.M/46fWkw.o4NtD2qwHNYjIqD.6XP/Ze', '12341412412', 'aaa', 'dadada', 'uploads/68334e29b14b5.png'),
-	(10, 'a', 'a@aa', '$2y$10$ZdwZ0tmFIWbqMnskxtjYJ.bFlACihU9E6To5xdVrHUkPKixioCZe.', '12121212121', 'w', 'w', 'uploads/68335339b3391.png'),
-	(11, 'aaa', 'b@b', '$2y$10$y83.OQzfS04IfKyCo1jO/eotoxFUqvaCFYTjAx8GbiuUBelXe9RA2', '525423423', 'q', 'q', 'uploads/683355165f23b.jpg'),
-	(12, 'William Salinas', 'brettchavez@yahoo.com', 'password1', '095.135.6806x68761', '11692 Christie Causeway Apt. 673, South Laurafort, IN 59768', 'Natalietown', 'cust1.jpg'),
-	(13, 'Jerry Berg', 'karenbennett@peterson.biz', 'password2', '978-814-0679', '865 Wilson Mission, Annatown, AZ 41893', 'Port Priscilla', 'cust2.jpg'),
-	(14, 'Lee Diaz', 'perezeric@ward.biz', 'password3', '963.433.2337x751', '929 Jason Lane, Toddhaven, AR 95244', 'West Allisonmouth', 'cust3.jpg'),
-	(15, 'Dr. Lisa Allison', 'marychang@gmail.com', 'password4', '(232)407-4370x0510', '805 Melanie Summit, Hughesville, CA 67234', 'Port Bobby', 'cust4.jpg'),
-	(16, 'Ryan Alvarez', 'nathan04@yahoo.com', 'password5', '610-444-4641x8362', '9009 Lindsey Parkway, South Katherine, NM 81834', 'Port Randy', 'cust5.jpg'),
-	(17, 'Dr. Brian Francis Jr.', 'christopher31@hotmail.com', 'password6', '149-908-6144x369', '21809 Holly Overpass Apt. 178, Port Jonathan, TN 47531', 'Lopezstad', 'cust6.jpg'),
-	(18, 'Darrell Diaz', 'ushaw@king-hansen.biz', 'password7', '(264)065-2731', '71547 Reynolds Via, Joanneside, KY 16437', 'Thomasberg', 'cust7.jpg'),
-	(19, 'Dustin Smith', 'johnwilliamson@franco.com', 'password8', '796-490-5128x540', '94012 Wilson Neck Apt. 853, Benjaminfort, NJ 24486', 'Martineztown', 'cust8.jpg'),
-	(20, 'Jennifer Castillo', 'michael98@gmail.com', 'password9', '766.247.2843x8754', '9326 Jones Terrace, North Christinaville, FL 77081', 'Carrolltown', 'cust9.jpg'),
-	(21, 'Michelle Perez DVM', 'michelle01@gmail.com', 'password10', '(939)604-5409', '0690 Blair Stravenue Apt. 976, Port Josephfurt, OK 78731', 'New Christophermouth', 'cust10.jpg'),
-	(22, 'Curtis Price', 'vtrujillo@roberts.info', 'password11', '+1-719-818-3536x9279', '9934 Nathan Rest, Port Douglasmouth, MN 99463', 'New Brianbury', 'cust11.jpg'),
-	(23, 'Aaron Anderson', 'dwilson@gmail.com', 'password12', '863.138.1403x771', '431 Morgan Street, Lake Nicholas, SD 54883', 'Gabriellefurt', 'cust12.jpg'),
-	(24, 'Jacob Herrera', 'jasonsharp@yahoo.com', 'password13', '+1-955-151-6131x8994', '8444 Ward Creek, Wagnershire, TX 65012', 'Port Cameronburgh', 'cust13.jpg'),
-	(25, 'Craig Gilbert', 'lbrown@martinez-thompson.com', 'password14', '+1-460-660-0426', '757 Susan Grove Suite 275, North Jacqueline, MN 35527', 'North Aaron', 'cust14.jpg'),
-	(26, 'Carla Evans', 'wmartinez@holmes-smith.com', 'password15', '+1-239-051-3338x2234', '994 Hines View, South Holly, AK 89893', 'Lake Meganfort', 'cust15.jpg'),
-	(27, 'Anne Dunn', 'hannahvaldez@gmail.com', 'password16', '404.683.7137', 'Unit 2418 Box 2200, DPO AP 05210', 'East Joseph', 'cust16.jpg'),
-	(28, 'Manuel Myers', 'bpeterson@jones.com', 'password17', '001-445-257-6115', 'Unit 4256 Box 0559, DPO AP 54541', 'Ortegachester', 'cust17.jpg'),
-	(29, 'Brian Barton', 'deanna90@gmail.com', 'password18', '001-935-781-0073x066', 'Unit 5641 Box 0309, DPO AE 44169', 'Lambertside', 'cust18.jpg'),
-	(30, 'Brian Castillo', 'nathanielrobinson@wright.biz', 'password19', '457.408.1876x4763', '7965 Duncan Shore, Schroedershire, AK 93588', 'East Robertbury', 'cust19.jpg'),
-	(31, 'John Davis', 'greendebra@sanchez.info', 'password20', '001-903-193-8104', '63367 Jackson Causeway Apt. 878, Lake Timothy, AK 06905', 'Lindaport', 'cust20.jpg');
+-- Dumping data for table gems_web.customers: ~3 rows (approximately)
+DELETE FROM `customers`;
+INSERT INTO `customers` (`customer_id`, `customer_name`, `customer_email`, `customer_password`, `customer_phone`, `customer_city`, `customer_address`, `customer_photo`) VALUES
+	(1, 'Adika', 'Adika@gmail.com', '25d55ad283aa400af464c76d713c07ad', '08996806320', 'Bandung', 'Ciguruwik', 'muka.jpg'),
+	(32, 'Lanz Alexander', 'Lanz@gmail.com', '$2y$10$6MtCG8UKKU4qYmUhW708lO7TVUc3zf3J5rmNPORGT5V58C/KpfJ1K', '0895411811612', 'Buitenzorg', 'JlCikutrano90', 'muka.jpg'),
+	(33, 'Haikal', 'Haikal@gmail.com', '$2y$10$orn6Gidrd.9s/l3A/eMiX.1RqI4SiHEF1s9a/Tpi1UhyQJgp/insK', '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', 'uploads/6846d7b859d5e.jpeg');
 
 -- Dumping structure for table gems_web.orders
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -131,35 +114,28 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `customer_city` varchar(255) NOT NULL,
   `customer_address` varchar(255) NOT NULL,
   `order_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `payment_method` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dumping data for table gems_web.orders: ~24 rows (approximately)
-INSERT INTO `orders` (`order_id`, `order_cost`, `order_status`, `customer_id`, `customer_phone`, `customer_city`, `customer_address`, `order_date`) VALUES
-	(1, 34.50, 'approved', 1, '08763655111', 'Bandung', 'Arcamanik Residence Regency, Bandung', '2023-03-12 11:46:53'),
-	(2, 48.00, 'rejected', 4, '08763655111', 'Bandung', 'Arcamanik Residence', '2023-03-13 09:17:54'),
-	(3, 43.00, 'missing', 1, '3242523423423', 'Garut', 'efrsfraddwadad', '2025-05-24 15:35:39'),
-	(4, 23.00, 'pending', 4, '4352423423', 'Subang', 'jdbguisbfu', '2025-05-24 15:36:30'),
-	(5, 1454.94, 'on_hold', 8, '066-954-4738x80', 'North Michaelshire', '51545 Mario Point', '2023-09-30 05:02:53'),
-	(6, 1465.84, 'shipped', 13, '4883467295', 'East Christian', '926 Laura Landing Suite 994', '2024-02-09 07:43:35'),
-	(7, 1397.96, 'on_hold', 12, '+1-090-322-3709', 'Brendaport', '43353 Savage Plains', '2024-09-09 05:01:04'),
-	(8, 811.15, 'shipped', 5, '221-677-1127', 'New Stephanietown', '78615 Jeffrey Brooks', '2024-05-07 23:01:42'),
-	(9, 1234.24, 'shipped', 1, '375.337.2380', 'Port Brianville', '0383 David Green Suite 382', '2024-04-25 17:51:30'),
-	(10, 1455.55, 'processing', 14, '523-565-4471', 'Erikaview', '55378 Simmons Ports', '2024-01-30 04:07:18'),
-	(11, 1478.10, 'shipped', 5, '171-411-5878x69', 'Youngmouth', '708 Kelly Port Suite 373', '2024-11-03 09:48:50'),
-	(12, 1105.62, 'shipped', 19, '001-496-468-280', 'Jessicaview', '4027 Brandi Harbor Apt. 065', '2023-10-21 13:32:25'),
-	(13, 295.87, 'processing', 10, '+1-951-027-9325', 'Michaelton', '2011 Clayton Track', '2024-01-22 16:31:50'),
-	(14, 610.27, 'processing', 2, '379-817-3585x72', 'Jonesside', '33492 George Common Apt. 041', '2023-10-08 22:39:42'),
-	(15, 1372.38, 'processing', 8, '(740)288-0667', 'Scotthaven', '63408 Scott Views Apt. 360', '2023-10-06 11:50:23'),
-	(16, 835.81, 'shipped', 11, '8414822987', 'New Markhaven', '8728 Hurst Trail Apt. 212', '2023-09-24 08:51:09'),
-	(17, 1075.11, 'shipped', 3, '(714)480-7941', 'Danielleberg', '6817 James Dam Apt. 990', '2025-03-14 13:07:21'),
-	(18, 631.77, 'processing', 16, '001-073-335-332', 'Stephanieville', '149 Vasquez Terrace', '2025-01-06 21:54:50'),
-	(19, 1266.02, 'processing', 20, '351.425.9025x58', 'New Johnnyland', '2425 Zamora Square', '2025-01-05 12:04:18'),
-	(20, 335.02, 'on_hold', 4, '3038160173', 'Davidbury', '348 Vanessa Lodge', '2025-02-02 12:25:15'),
-	(21, 650.70, 'shipped', 17, '+1-193-339-1287', 'Danielleside', '761 Henry Springs Suite 595', '2025-01-11 02:29:09'),
-	(22, 1091.05, 'processing', 9, '983.231.3933', 'Crystalborough', '0889 Curry Glens', '2023-12-19 09:18:17'),
-	(23, 1357.36, 'on_hold', 1, '922-110-6561', 'Janebury', '39106 Evans Via', '2024-10-13 07:41:01'),
-	(24, 1016.92, 'processing', 12, '065.443.4118', 'Raybury', '8099 Kathryn Trafficway Apt. 800', '2024-08-10 19:24:15');
+-- Dumping data for table gems_web.orders: ~15 rows (approximately)
+DELETE FROM `orders`;
+INSERT INTO `orders` (`order_id`, `order_cost`, `order_status`, `customer_id`, `customer_phone`, `customer_city`, `customer_address`, `order_date`, `payment_method`) VALUES
+	(25, 6460.00, 'pending', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-01 23:28:34', 'paypal'),
+	(26, 900.00, 'cancelled', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-02 00:09:40', 'paypal'),
+	(27, 600.00, 'completed', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-02 00:11:01', 'paypal'),
+	(28, 600.00, 'completed', 32, '0895411811612', 'Buitenzorg', 'JlCikutrano90', '2025-06-03 07:25:58', 'paypal'),
+	(29, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:01:54', 'paypal'),
+	(30, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:02:42', 'paypal'),
+	(31, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:04:17', 'paypal'),
+	(32, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:05:20', 'paypal'),
+	(33, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:06:13', 'paypal'),
+	(34, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:07:44', 'paypal'),
+	(35, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:10:55', 'paypal'),
+	(36, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:15:08', 'paypal'),
+	(37, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 15:19:15', 'paypal'),
+	(38, 24734.06, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 16:08:32', 'paypal'),
+	(39, 22800.00, 'pending', 33, '08996806320', 'Bandung', 'Jl. Soekarno Hatta No.KM. 10, Jatisari, Kec. Buahbatu, Kota Bandung, Jawa Barat', '2025-06-09 16:20:01', 'paypal');
 
 -- Dumping structure for table gems_web.order_items
 CREATE TABLE IF NOT EXISTS `order_items` (
@@ -170,39 +146,54 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `product_image` varchar(255) NOT NULL,
   `product_price` decimal(10,2) NOT NULL,
   `product_quantity` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
   `order_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `product_color` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dumping data for table gems_web.order_items: ~26 rows (approximately)
-INSERT INTO `order_items` (`item_id`, `order_id`, `product_id`, `product_name`, `product_image`, `product_price`, `product_quantity`, `user_id`, `order_date`) VALUES
-	(1, 1, '1', 'Sepatu Sneakers Pria Import Original Khamzo D05Terbaru', 'product-1.jpg', 20.00, 1, 1, '2023-03-12 11:46:53'),
-	(2, 1, '7', 'AD012 Pashmina Cashmere Syal Scarf Shawl Kasmir Bahan Viscose', 'product-6.jpg', 14.50, 1, 1, '2023-03-12 11:46:53'),
-	(3, 2, '3', 'Jaket pria kantor formal casual TRENDY', 'product-2.jpg', 13.50, 1, 1, '2023-03-13 09:17:54'),
-	(4, 2, '7', 'AD012 Pashmina Cashmere Syal Scarf Shawl Kasmir Bahan Viscose', 'product-6.jpg', 14.50, 1, 1, '2023-03-13 09:17:54'),
-	(5, 2, '1', 'Sepatu Sneakers Pria Import Original Khamzo D05Terbaru', 'product-1.jpg', 20.00, 1, 1, '2023-03-13 09:17:54'),
-	(6, 3, '1', 'Sepatu Sneakers Pria Import Original Khamzo D05Terbaru', 'product-1.jpg', 20.00, 1, 1, '2023-03-19 01:01:33'),
-	(7, 20, '5', 'Gadget 5', 'p5_1.jpg', 634.76, 2, 12, '2025-02-03 20:27:30'),
-	(8, 14, '9', 'Gadget 9', 'p9_1.jpg', 733.36, 1, 10, '2024-01-17 01:32:36'),
-	(9, 14, '17', 'Gadget 17', 'p17_1.jpg', 901.87, 5, 3, '2025-03-15 06:46:48'),
-	(10, 7, '19', 'Gadget 19', 'p19_1.jpg', 256.05, 4, 7, '2025-02-28 11:00:48'),
-	(11, 4, '18', 'Gadget 18', 'p18_1.jpg', 786.55, 2, 8, '2024-06-26 10:01:55'),
-	(12, 7, '17', 'Gadget 17', 'p17_1.jpg', 833.54, 1, 15, '2025-04-30 12:26:50'),
-	(13, 5, '20', 'Gadget 20', 'p20_1.jpg', 533.96, 2, 9, '2024-08-22 03:29:30'),
-	(14, 2, '16', 'Gadget 16', 'p16_1.jpg', 418.70, 5, 3, '2024-03-11 02:53:54'),
-	(15, 1, '13', 'Gadget 13', 'p13_1.jpg', 866.35, 2, 8, '2023-12-05 11:40:48'),
-	(16, 11, '11', 'Gadget 11', 'p11_1.jpg', 196.49, 2, 19, '2023-06-22 20:08:06'),
-	(17, 12, '13', 'Gadget 13', 'p13_1.jpg', 177.42, 2, 8, '2025-01-11 09:02:04'),
-	(18, 12, '8', 'Gadget 8', 'p8_1.jpg', 664.54, 2, 7, '2024-02-05 12:00:03'),
-	(19, 19, '7', 'Gadget 7', 'p7_1.jpg', 501.45, 4, 4, '2024-08-23 20:45:44'),
-	(20, 12, '12', 'Gadget 12', 'p12_1.jpg', 718.21, 4, 1, '2025-02-12 09:21:53'),
-	(21, 15, '12', 'Gadget 12', 'p12_1.jpg', 419.79, 5, 12, '2023-06-30 04:13:37'),
-	(22, 9, '16', 'Gadget 16', 'p16_1.jpg', 438.64, 5, 4, '2025-01-11 16:47:05'),
-	(23, 3, '18', 'Gadget 18', 'p18_1.jpg', 951.67, 3, 15, '2023-06-22 17:10:07'),
-	(24, 3, '6', 'Gadget 6', 'p6_1.jpg', 586.71, 1, 19, '2024-05-26 07:30:10'),
-	(25, 18, '12', 'Gadget 12', 'p12_1.jpg', 196.21, 2, 2, '2024-01-17 09:00:20'),
-	(26, 7, '4', 'Gadget 4', 'p4_1.jpg', 921.56, 3, 7, '2023-09-17 06:24:08');
+-- Dumping data for table gems_web.order_items: ~12 rows (approximately)
+DELETE FROM `order_items`;
+INSERT INTO `order_items` (`item_id`, `order_id`, `product_id`, `product_name`, `product_image`, `product_price`, `product_quantity`, `customer_id`, `order_date`, `product_color`) VALUES
+	(27, 25, '2', 'J11', 'product2.jpeg', 900.00, 1, 32, '2025-06-01 23:28:34', NULL),
+	(28, 25, '4', 'IPhone 14', 'product1.jpeg', 780.00, 2, 32, '2025-06-01 23:28:34', NULL),
+	(29, 25, '5', 'Hetzer', 'Headphone1.webp', 600.00, 4, 32, '2025-06-01 23:28:34', NULL),
+	(30, 25, '6', 'Funiculi ', 'ACER2.jpeg', 1600.00, 1, 32, '2025-06-01 23:28:34', NULL),
+	(31, 26, '2', 'J11', 'product2.jpeg', 900.00, 1, 32, '2025-06-02 00:09:40', NULL),
+	(32, 27, '5', 'Hetzer', 'Headphone1.webp', 600.00, 1, 32, '2025-06-02 00:11:01', NULL),
+	(33, 28, '5', 'Hetzer', 'Headphone1.webp', 600.00, 1, 32, '2025-06-03 07:25:58', NULL),
+	(34, 37, '47', 'MacBook Air M3', 'macbook_air_m31.jpeg', 22800.00, 1, 33, '2025-06-09 15:19:15', 'black'),
+	(35, 38, '15', 'Acer Swift GO 14 AI OLED EVO SFG14 73 56A7', 'acerswift1.png', 1151.04, 1, 33, '2025-06-09 16:08:32', 'Grey'),
+	(36, 38, '21', 'Xiaomi 15 Ultra', 'xiaomi15ultra1.png', 783.02, 1, 33, '2025-06-09 16:08:32', 'Grey'),
+	(37, 38, '47', 'MacBook Air M3', 'macbook_air_m31.jpeg', 22800.00, 1, 33, '2025-06-09 16:08:32', 'blue'),
+	(38, 39, '47', 'MacBook Air M3', 'macbook_air_m31.jpeg', 22800.00, 1, 33, '2025-06-09 16:20:01', 'purple');
+
+-- Dumping structure for table gems_web.order_stock
+CREATE TABLE IF NOT EXISTS `order_stock` (
+  `id_stock` int(11) NOT NULL AUTO_INCREMENT,
+  `id_supplier` int(11) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `product_name` varchar(100) DEFAULT NULL,
+  `product_brand` varchar(100) DEFAULT NULL,
+  `product_category` varchar(100) DEFAULT NULL,
+  `product_color` varchar(50) DEFAULT NULL,
+  `product_qty` int(11) DEFAULT NULL,
+  `product_ori_price` decimal(10,2) DEFAULT NULL,
+  `total_restock_price` decimal(10,2) DEFAULT NULL,
+  `order_date` date DEFAULT curdate(),
+  `status_order` varchar(20) DEFAULT 'pending',
+  `catatan` text DEFAULT NULL,
+  PRIMARY KEY (`id_stock`),
+  KEY `id_supplier` (`id_supplier`),
+  CONSTRAINT `order_stock_ibfk_1` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table gems_web.order_stock: ~3 rows (approximately)
+DELETE FROM `order_stock`;
+INSERT INTO `order_stock` (`id_stock`, `id_supplier`, `product_id`, `product_name`, `product_brand`, `product_category`, `product_color`, `product_qty`, `product_ori_price`, `total_restock_price`, `order_date`, `status_order`, `catatan`) VALUES
+	(2, 1, 32, 'HP-15 db006wm', 'HP', 'Laptop', 'Black', 10, 5000600.00, 50006000.00, '2025-06-07', 'processing', 'Pajak 20%'),
+	(4, 2, 34, 'MacBook Air M3', 'Apple', 'Laptop', 'white', 10, 24999000.00, 99999999.99, '2025-06-07', 'completed', 'Gaji bulanan dipotong'),
+	(5, 2, 34, 'MacBook Air M3', 'Apple', 'Laptop', 'white', 1, 99999999.99, 99999999.99, '2025-06-09', 'pending', 'Update Harga Nambah 1 Stok');
 
 -- Dumping structure for table gems_web.payments
 CREATE TABLE IF NOT EXISTS `payments` (
@@ -214,6 +205,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dumping data for table gems_web.payments: ~22 rows (approximately)
+DELETE FROM `payments`;
 INSERT INTO `payments` (`payment_id`, `order_id`, `user_id`, `transaction_id`, `payment_date`) VALUES
 	(0, 1, 1, '5GF373104L5481926', '2023-03-12 23:47:35'),
 	(0, 3, 1, '4EA15211WD712624R', '2023-03-19 13:03:05'),
@@ -254,16 +246,77 @@ CREATE TABLE IF NOT EXISTS `products` (
   `product_discount` decimal(10,2) DEFAULT NULL,
   `product_color` varchar(50) DEFAULT NULL,
   `product_sold` int(11) DEFAULT NULL,
+  `product_qty` int(11) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table gems_web.products: ~5 rows (approximately)
-INSERT INTO `products` (`product_id`, `product_name`, `product_brand`, `product_category`, `product_description`, `product_criteria`, `product_image1`, `product_image2`, `product_image3`, `product_image4`, `product_price`, `product_discount`, `product_color`, `product_sold`) VALUES
-	(1, 'Nitro 5 Pro', 'ACER', 'Laptop', 'usgfuipbaougbuaoicbuaouyheiaohcabouahfoia', 'New', 'ACER2.jpeg', NULL, NULL, NULL, 1000.00, 20.00, NULL, 1),
-	(2, 'J11', 'SAMSUNG', 'Handphone', 'dsuigsughsoiioshfiosdadadwagucuaca', 'Non', 'product2.jpeg', NULL, NULL, NULL, 1000.00, 10.00, NULL, 3),
-	(3, 'ZT95', 'ROG', 'Laptop', 'u9sgh9f8sghvuobouishvsvssfsers', 'New', 'ROG2.jpeg', NULL, NULL, NULL, 1500.00, 50.00, NULL, 2),
-	(4, 'IPhone 14', 'Apple', 'Handphone', 'idusgbu9sofusabfuofabfouah', 'New', 'product1.jpeg', NULL, NULL, NULL, 2000.00, 2.00, NULL, 4),
-	(5, 'Hetzer', 'LADA', 'Accessories', 'dfghjkl;adeawtghyjumadsadwa', 'Non', 'Headphone1.webp', NULL, NULL, NULL, 600.00, NULL, NULL, 2);
+-- Dumping data for table gems_web.products: ~22 rows (approximately)
+DELETE FROM `products`;
+INSERT INTO `products` (`product_id`, `product_name`, `product_brand`, `product_category`, `product_description`, `product_criteria`, `product_image1`, `product_image2`, `product_image3`, `product_image4`, `product_price`, `product_discount`, `product_color`, `product_sold`, `product_qty`) VALUES
+	(1, 'Asus ROG Zephyrus G14', 'Asus', 'Laptop', 'Spesifikasi : Asus ROG Zephyrus G14 OLED GA403UU R7 8845HS RTX4050 16GB 1TB 14"QHD\r\nPartnumber : GA403UU-R745OL6G-OM (Black) \r\nDisplay : 14" QHD IPS Display \r\nProcessor : AMD Ryzen 7 8845HS CPU\r\nGraphic : Nvidia RTX4050 6GB GPU\r\nMemory : 16GB Memory 1x16\r', 'Favorite', 'asusROGG141.jpg', 'asusROGG142.jpg', 'asusROGG143.jpg', NULL, 1999.00, 5.00, 'Black', 10, 0),
+	(2, 'Acer Nitro V16', 'Acer', 'Laptop', 'Spesifikasi : AMD Ryzen 7 8845HS Processor 3.8GHz\r\nGraphics : NVIDIA GeForce RTX4050 6GB GDDR6 (Max Power : 140W)\r\nDisplay : 16" 165Hz WUXGA Ultra Slim Design sRGB 100% IPS Display\r\nMemory : 16GB DDR5 5600Mhz (2x8GB - DDR5-5200 - 2x SODIMM Slot)\r\nStorage ', 'Favorite', 'NITROV16.jpg', 'nitrov162.jpg', 'nitrov163.webp', NULL, 1599.00, 10.00, 'Black', 15, 0),
+	(3, 'Lenovo Legion Pro 5i', 'Lenovo', 'Laptop', 'Spesifikasi:\r\nGraphics :NVIDIA GeForce RTX 4060 8GB GDDR6, Boost Clock 2370MHz, TGP 140W, 233 AI TOPS\r\nProcessor :Intel Core i7-13650HX, 14C (6P + 8E) / 20T, P-core 2.6 / 4.9GHz, E-core 1.9 / 3.6GHz, 24MB\r\nMemory : 24GB RAM (2x 12GB SO-DIMM DDR5-4800)\r\nSt', 'Non-Favorite', 'legionpro5i1.avif', 'legionpro5i2.jpg', 'legionpro5i3.jpg', NULL, 2099.00, 10.00, 'Grey', 5, 0),
+	(4, 'Lenovo LOQ 15IAX9', 'Lenovo', 'Laptop', 'Spesifikasi:\r\nProcessor: Intel Core i5-12450HX, 8C (4P + 4E) / 12T, P-core up to 4.4GHz, E-core up to 3.1GHz, 12MB\r\nAI PC Category: AI-Powered Gaming PC\r\nGraphics: NVIDIA GeForce RTX 3050 6GB GDDR6, Boost Clock 1432MHz, TGP 65W, 142 AI TOPS\r\nMemory : 12GB', 'Favorite', 'LOQ1.jpg', 'LOQ2.avif', 'LOQ3.png', NULL, 1099.00, 2.00, 'Grey', 20, 0),
+	(5, 'HP Victus 15', 'HP', 'Laptop', 'Spesifikasi :\r\nProcessor : AMD Ryzen 7 8845HS Processor 3.8GHz (24MB Cache, up to 5.1 GHz, 8 cores, 16 Threads)\r\nGraphics : NVIDIA GeForce RTX 4050 Laptop GPU (6 GB GDDR6 dedicated)\r\nMemory : 8GB DDR5-5600 MHz RAM\r\nStorage : 512GB PCIe Gen4 NVMe TLC M.2 S', 'Non-Favorite', 'Victus15_1.png', 'victus152.webp', NULL, NULL, 1299.00, 10.00, 'Black', 8, 0),
+	(6, 'Asus ROG Zephyrus G16', 'Asus', 'Laptop', 'Spesifikasi :\r\nGrafis : NVIDIA GeForce RTX 5070 Laptop GPU\r\nROG Boost: 1595MHz* at 105W (1545MHz Boost Clock+50MHz OC, 90W+15W Dynamic Boost)\r\n8GB GDDR7\r\nProsesor : Intel Core Ultra 9 Processor 285H 2.9 GHz (24MB Cache, up to 5.4 GHz, 16 cores, 16 Threads', 'Non-Favorite', 'rogg162.png', 'rogg163.jpeg', 'rogg164.jpg', NULL, 2299.00, 10.00, 'Grey', 3, 0),
+	(7, 'iPhone 16', 'Apple', 'Handphone', 'Spesifikasi :\r\nDisplay : Super Retina XDR OLED, 6.1 inches, 91.7 cm2, 1179 x 2556 pixels, 19.5:9 ratio\r\nPlatform : Apple A18 (3 nm), Apple GPU (5-core graphics)\r\nMemory : 128GB 8GB RAM, 256GB 8GB RAM, 512GB 8GB RAM NVMe\r\nCamera : 48 MP, f/1.6, 26mm (wide)', 'Favorite', 'IP2.webp', 'IP3.webp', 'IP4.webp', NULL, 899.00, 3.00, 'Purple', 20, 0),
+	(8, 'Samsung S25', 'Samsung', 'Handphone', 'Spesifikasi :\r\nDisplay : Dynamic LTPO AMOLED 2X, 120Hz, HDR10+, 2600 nits, 6.2 inches, 94.4 cm2 (~91.1% screen-to-body ratio), 1080 x 2340 pixels, 19.5:9 ratio\r\nPlatform : Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm), Adreno 830\r\nMemory : 128GB 12GB RAM, ', 'Favorite', 'samsungs251.jpg', 'samsungs252.png', 'samsungs253.png', NULL, 859.00, 2.00, 'Grey', 15, 0),
+	(9, 'Samsung A56', 'Samsung', 'Handphone', 'Spesifikasi :\r\nDisplay : Super AMOLED, 120Hz, HDR10+, 1200 nits (HBM), 1900 nits (peak), 6.7 inches, 110.2 cm2, 1080 x 2340 pixels, 19.5:9 ratio\r\nPlatform : Exynos 1580 (4 nm), Xclipse 540\r\nMemory : 128GB 6GB RAM, 128GB 8GB RAM, 256GB 6GB RAM, 256GB 8GB R', 'Favorite', 'A56.jpg', 'samsunga561.avif', 'samsunga562.avif', NULL, 799.00, 2.00, 'Pink', 30, 0),
+	(10, 'Vivo X200', 'Vivo', 'Handphone', 'Spesifikasi :\r\nDisplay : AMOLED, 1B colors, 120Hz, HDR10+, 4500 nits (peak), 6.67 inches, 107.4 cm2, 1260 x 2800 pixels, 20:9 ratio\r\nPlatform : Mediatek Dimensity 9400 (3 nm), Immortalis-G925\r\nMemory : 256GB 12GB RAM, 512GB 12GB RAM, 512GB 16GB RAM, 1TB 1', 'Non-Favorite', 'Vivox200.png', 'vivox2001.jpg', 'vivox2002.jpg', NULL, 1099.00, 8.00, 'Green', 10, 0),
+	(11, 'Vivo X200 Pro', 'Vivo', 'Handphone', 'Spesifikasi :\r\nDisplay : LTPO AMOLED, 1B colors, 120Hz, HDR10+, Dolby Vision, 4500 nits (peak), 6.78 inches, 111.5 cm2, 1260 x 2800 pixels, 20:9 ratio\r\nPlatform : Mediatek Dimensity 9400 (3 nm), Immortalis-G925\r\nMemory : 256GB 12GB RAM, 512GB 16GB RAM, 1T', 'Non-Favorite', 'vivox200pro1.jpg', 'vivox200pro2.jpg', 'vivox200pro3.jpg', NULL, 1499.00, 8.00, 'Blue', 5, 0),
+	(12, 'Oppo Find X8', 'Oppo', 'Handphone', 'Spesifikasi :\r\nDisplay : AMOLED, 1B colors, 120Hz, Dolby Vision, HDR10+, 800 nits (typ), 1600 nits (HBM), 4500 nits (peak), 6.59 inches, 105.6 cm2, 1256 x 2760 pixels\r\nPlatform : Mediatek Dimensity 9400 (3 nm), Immortalis-G925\r\nMemory : 256GB 12GB RAM, 25', 'Non-Favorite', 'oppox81.png', 'oppox82.jpg', 'oppox83.jpg', NULL, 1599.00, 5.00, 'White', 2, 0),
+	(13, 'Asus Zenbook 14 UM3406HA', 'Asus', 'Laptop', 'Spesifikasi :\r\nProcessor : AMD Ryzen 7 8840HS Processor 3.3GHz\r\nGraphics : AMD Radeon Graphics\r\nDisplay : 14" OLED WUXGA Bend Glare Non-touch, 400nits(HDR), DCI-P3:100%\r\nMemory : 16GB LPDDR5X 2x8GB Soldered\r\nStorage : SSD 512GB', 'Favorite', 'asuszenbook141.jpg', 'asuszenbook142.jpg', 'asuszenbook143.jpg', NULL, 1399.00, 3.00, 'Black', 10, 0),
+	(14, 'Asus Vivobook S15 S5506MA', 'Asus', 'Laptop', 'Spesifikasi :\r\nProcessor : Intel Core Ultra 7-155H 1.4 GHz (24MB Cache, up to 4.8G GHz, 16 Cores, 22 Threads)\r\nGraphics : Intel Arc Graphics\r\nDisplay : 15.6” 3K OLED (2880 x 1620) 16:9 120Hz NanoEdge display, 100% RGB color gamut, and 500 nits peak bright', 'Favorite', 'asusvivobooks151.jpeg', 'asusvivobooks152.webp', 'asusvivobook153.webp', NULL, 1199.00, 5.00, 'Black', 15, 0),
+	(15, 'Acer Swift GO 14 AI OLED EVO SFG14 73 56A7', 'Acer', 'Laptop', 'Spesifikasi :\r\nProcessor : Intel Core Ultra 5 processor 125H with AI Boost (Intel Evo)\r\nDisplay : 14.0" OLED, 2.8K (2880 x 1800), high-brightness (400 nits)\r\nMemory : 32 GB LPDDR5X Dual Channel Onboard Memory\r\nStorage : 512 GB SSD NVMe Gen4 (2 slot for up', 'Favorite', 'acerswift1.png', 'acerswift2.jpg', 'acerswift3.webp', NULL, 1199.00, 4.00, 'Grey', 10, 0),
+	(16, 'MSI Katana 15', 'MSI', 'Laptop', 'Spesifikasi :\r\nProcessor : Intel I7 14650HX\r\nGraphics : NVIDIA GeForce RTX 5070 8GB Laptop GPU powers advanced AI with 798 AI TOPS\r\nDisplay : 15.6" QHD(2560x1440), 165Hz Refresh Rate, IPS-Level, 100% DCI-P3\r\nMemory : 16GB ( 8GB*2 DDR5-5600,Up to DDR5-5600', 'Non-Favorite', 'msikatana151.webp', 'msikatana152.png', 'msikatana153.png', NULL, 999.00, 8.00, 'Black', 10, 0),
+	(17, 'MSI Prestige 14 Ai Studio', 'MSI', 'Laptop', 'Spesifikasi :\r\nProcessor : Intel Ultra 7 155H\r\nGraphic : RTX 4050 Laptop GPU 6GB GDDR6\r\nMemory : 16GB DDR5-5600 2 Slots\r\nStorage : 1TB 1x M.2 SSD slot (NVMe PCIe Gen4)\r\nDisplay : 14” 2.8K (2880x1800)\r\nBattery : 4-Cell, 90 Battery (Whr)', 'Non-Favorite', 'msiprestige1411.webp', 'msiprestige142.jpeg', 'msiprestige143.jpg', NULL, 1399.00, 3.00, 'Black', 4, 0),
+	(18, 'ASUS Gaming V16 V3607VJ', 'Asus', 'Laptop', 'Spesifikasi : \r\nProcessor : Intel Core 5 Processor 210H\r\nGraphics : NVIDIA GeForce RTX 3050 6GB Laptop GPU Graphics\r\nMemory : 16GB DDR5 SO-DIMM\r\nStorage : 512GB M.2 NVMe PCIe 4.0 SSD\r\nBattery : 63WHrs, 3S1P, 3-cell Li-ion', 'Favorite', 'AsusgamingV161.jpg', 'asusgamingv162.jpg', 'asusgamingv163.jpg', NULL, 1199.00, 3.00, 'Grey', 6, 0),
+	(19, 'iPhone 15', 'Apple ', 'Handphone', 'Spesifikasi :\r\nDisplay : Super Retina XDR OLED, HDR10, Dolby Vision, 1000 nits (HBM), 2000 nits (peak), 6.1 inches, 91.3 cm2 (~86.4% screen-to-body ratio), 1179 x 2556 pixels, 19.5:9 ratio (~461 ppi density)\r\nPlatform : Apple A16 Bionic (4 nm)\r\nMemory : 1', 'Favorite', 'iphone15blue.webp', 'iphone15blue2.webp', 'iphone15blue3.webp', NULL, 799.00, 2.00, 'Blue', 25, 0),
+	(20, 'iPhone 16e', 'Apple', 'Handphone', 'Spesifikasi : \r\nDisplay : Super Retina XDR OLED, HDR10, 800 nits (HBM), 1200 nits (peak), 6.1 inches, 91.4 cm2, 1170 x 2532 pixels, 19.5:9 ratio\r\nPlatform : Apple A18 (3 nm), Hexa-core (2x4.04 GHz + 4x2.20 GHz)\r\nCamera : 48 MP, f/1.6, 26mm (wide), 1/2.55"', 'Non-Favorite', 'iphone16e1.webp', 'iphone16e2.webp', 'iphone16e3.webp', NULL, 599.00, 3.00, 'Black', 15, 0),
+	(21, 'Xiaomi 15 Ultra', 'Xiaomi', 'Handphone', 'Spesifikasi :\r\nDisplay : LTPO AMOLED, 68B colors, 120Hz, 1920Hz PWM, Dolby Vision, HDR10+, HDR Vivid, 3200 nits (peak), 6.73 inches, 108.9 cm2, 1440 x 3200 pixels, 20:9 ratio\r\nPlatform : Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm), Octa-core (2x4.32 GHz ', 'Favorite', 'xiaomi15ultra1.png', 'xiaomi15ultra2.png', NULL, NULL, 799.00, 2.00, 'Grey', 10, 0),
+	(47, 'MacBook Air M3', 'Apple', 'Laptop', 'Bagus bat dah ', 'Non-Favorite', 'macbook_air_m31.jpeg', 'macbook_air_m32.jpeg', 'macbook_air_m33.jpeg', 'macbook_air_m34.jpeg', 24000.00, 5.00, 'black, red, blue, purple', 0, 0);
+
+-- Dumping structure for table gems_web.reviews
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `review_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `rating` tinyint(1) NOT NULL CHECK (`rating` between 1 and 5),
+  `review_text` text DEFAULT NULL,
+  `review_date` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`review_id`),
+  KEY `product_id` (`product_id`),
+  KEY `customer_id` (`customer_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table gems_web.reviews: ~1 rows (approximately)
+DELETE FROM `reviews`;
+INSERT INTO `reviews` (`review_id`, `product_id`, `customer_id`, `rating`, `review_text`, `review_date`) VALUES
+	(1, 32, 32, 3, 'Lapto nya gampang overheat', '2025-06-08 10:58:09');
+
+-- Dumping structure for table gems_web.supplier
+CREATE TABLE IF NOT EXISTS `supplier` (
+  `id_supplier` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_PT_supplier` varchar(100) NOT NULL,
+  `alamat_supplier` text NOT NULL,
+  `contact_PT` varchar(20) NOT NULL,
+  `email_supplier` varchar(100) DEFAULT NULL,
+  `sales_name` varchar(50) DEFAULT NULL,
+  `contact_person` varchar(100) DEFAULT NULL,
+  `product_brand` varchar(100) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id_supplier`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table gems_web.supplier: ~2 rows (approximately)
+DELETE FROM `supplier`;
+INSERT INTO `supplier` (`id_supplier`, `nama_PT_supplier`, `alamat_supplier`, `contact_PT`, `email_supplier`, `sales_name`, `contact_person`, `product_brand`, `status`, `created_at`, `updated_at`) VALUES
+	(1, ' PT Sat Nusapersada Tbk', 'Jl. Pelita VI No. 99, Kelurahan Kampung Pelita, Kecamatan Lubuk Baja, Kota Batam', '(0778) 5708888', 'corporate.secretary@satnusa.com', 'Jamals', '08974520321', 'HP', 1, '2025-06-07 13:06:04', '2025-06-07 13:06:04'),
+	(2, 'PT Data Citra Mandiri', 'Jln.Bandengan Selatan No. 19-20, Pekojan, Jakarta Barat 11240. ', '08216915401', 'corporate@ibox.co.id', 'Herman', '081478650', 'Apple', 1, '2025-06-07 14:23:18', '2025-06-07 14:23:18');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

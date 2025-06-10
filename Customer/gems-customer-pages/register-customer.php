@@ -101,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="card col-lg-4 mx-auto">
               <div class="card-body px-5 py-5">
                 <h3 class="card-title text-left mb-3">Register</h3>
-                <form id="registrationForm" action="../gems-login/register-customer.php" method="POST" enctype="multipart/form-data" novalidate>
+                <form id="registrationForm" action="register-customer.php" method="POST" enctype="multipart/form-data" novalidate>
                   <div class="form-group">
                     <label>Nama</label>
                     <input type="text" name="customer_name" class="form-control p_input" required>

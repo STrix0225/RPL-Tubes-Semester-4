@@ -1,289 +1,233 @@
 <?php
-    session_start();
-    if (!isset($_SESSION['login_success'])) {
-    header('Location: ../login.php');
-    exit();
-}
-    include ('../Database/connection.php');
- 
-?>
-
-<?php
-    $query_total_orders = "SELECT COUNT(*) AS total_orders FROM orders";
-    $stmt_total_orders = $conn->prepare($query_total_orders);
-    $stmt_total_orders->execute();
-    $stmt_total_orders->bind_result($total_orders);
-    $stmt_total_orders->store_result();
-    $stmt_total_orders->fetch();
-
-    $query_total_payments = "SELECT SUM(o.order_cost) AS total_payments FROM payments p, orders o WHERE p.order_id = o.order_id";
-    $stmt_total_payments = $conn->prepare($query_total_payments);
-    $stmt_total_payments->execute();
-    $stmt_total_payments->bind_result($total_payments);
-    $stmt_total_payments->store_result();
-    $stmt_total_payments->fetch();
-
-    $query_total_paid = "SELECT COUNT(*) AS total_paid FROM orders WHERE order_status = 'delivered' OR order_status = 'shipped' OR order_status = 'paid'";
-    $stmt_total_paid = $conn->prepare($query_total_paid);
-    $stmt_total_paid->execute();
-    $stmt_total_paid->bind_result($total_paid);
-    $stmt_total_paid->store_result();
-    $stmt_total_paid->fetch();
-
-    $query_total_not_paid = "SELECT COUNT(*) AS total__not_paid FROM orders WHERE order_status = 'not paid'";
-    $stmt_total_not_paid = $conn->prepare($query_total_not_paid);
-    $stmt_total_not_paid->execute();
-    $stmt_total_not_paid->bind_result($total_not_paid);
-    $stmt_total_not_paid->store_result();
-    $stmt_total_not_paid->fetch();
-
-    $kurs_dollar = 15722;
-
-$query_total_brands = "SELECT COUNT(DISTINCT product_brand) AS total_brands FROM products";
-$stmt_total_brands = $conn->prepare($query_total_brands);
-$stmt_total_brands->execute();
-$stmt_total_brands->bind_result($total_brands);
-$stmt_total_brands->store_result();
-$stmt_total_brands->fetch();
-
-$query_total_products = "SELECT COUNT(*) AS total_products FROM products";
-$stmt_total_products = $conn->prepare($query_total_products);
-$stmt_total_products->execute();
-$stmt_total_products->bind_result($total_products);
-$stmt_total_products->store_result();
-$stmt_total_products->fetch();
-
-    function setRupiah($price)
-    {
-        $result = "Rp".number_format($price, 0, ',', '.');
-        return $result;
-    }
-
-$query_sold_by_brand = "
-    SELECT 
-        COALESCE(p.product_brand, 'Unknown') AS product_brand, 
-        COUNT(*) AS total_sold 
-    FROM order_items oi
-    JOIN products p ON oi.product_id = p.product_id
-    JOIN orders o ON oi.order_id = o.order_id
-    WHERE o.order_status IN ('delivered', 'shipped', 'paid') 
-    GROUP BY p.product_brand
-    ORDER BY total_sold DESC
-";
-
-$brand_names = [];
-$brand_totals = [];
-
-if ($result_sold_by_brand = $conn->query($query_sold_by_brand)) {
-    while ($row = $result_sold_by_brand->fetch_assoc()) {
-        $brand_names[] = htmlspecialchars($row['product_brand']);
-        $brand_totals[] = (int)$row['total_sold'];
-    }
-    $result_sold_by_brand->free();
-} else {
-    error_log("Query failed: " . $conn->error);
+if (!isset($conn)) {
+    require_once '../Database/connection.php';
 }
 
+if (!isAdminLoggedIn()) {
+    redirect('login.php');
+}
+
+// Statistik
+$stats = [
+    'total_products' => 0,
+    'active_suppliers' => 0,
+    'pending_orders' => 0,
+    'total_customers' => 0
+];
+
+// Total produk
+$result = $conn->query("SELECT COUNT(*) AS count FROM products");
+if ($result) {
+    $stats['total_products'] = (int)$result->fetch_assoc()['count'];
+}
+
+// Supplier aktif
+$result = $conn->query("SELECT COUNT(*) AS count FROM supplier WHERE status = 1");
+if ($result) {
+    $stats['active_suppliers'] = (int)$result->fetch_assoc()['count'];
+}
+
+// Pesanan tertunda
+$result = $conn->query("SELECT COUNT(*) AS count FROM orders WHERE order_status = 'pending'");
+if ($result) {
+    $stats['pending_orders'] = (int)$result->fetch_assoc()['count'];
+}
+
+// Total pelanggan
+$result = $conn->query("SELECT COUNT(*) AS count FROM customers");
+if ($result) {
+    $stats['total_customers'] = (int)$result->fetch_assoc()['count'];
+}
+
+// Pesanan terbaru (5)
+$recent_orders = [];
+$result = $conn->query("
+    SELECT o.order_id, o.order_cost, o.order_status, o.order_date, c.customer_name 
+    FROM orders o 
+    JOIN customers c ON o.customer_id = c.customer_id 
+    ORDER BY o.order_date DESC 
+    LIMIT 5
+");
+if ($result) {
+    $recent_orders = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+$header_data = [
+    'pending_orders' => $stats['pending_orders'],
+    'recent_orders' => array_slice($recent_orders, 0, 5)
+];
+
+$product_sales = [];
+$result = $conn->query("
+    SELECT product_name, SUM(product_quantity) AS total_sales
+    FROM order_items
+    GROUP BY product_name
+    ORDER BY total_sales DESC
+    LIMIT 10
+");
+if ($result) {
+    $product_sales = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+$order_status_distribution = [];
+$result = $conn->query("
+    SELECT order_status, COUNT(*) AS total
+    FROM orders
+    GROUP BY order_status
+");
+if ($result) {
+    $order_status_distribution = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+
 ?>
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEMS Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <?php include 'Layout/sidebar.php'; ?>
+    <div id="content">
+        <?php include 'Layout/header.php'; ?>
 
-<?php include('layouts/header.php'); ?>
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
+        <div class="container-fluid mt-4">
+            <!-- Stats Cards -->
+            <div class="row">
+                <?php
+                $cards = [
+                    ['title' => 'Total Customers', 'value' => $stats['total_customers'], 'icon' => 'fa-users', 'color' => 'primary', 'link' => 'listCustomers.php'],
+                    ['title' => 'Total Products', 'value' => $stats['total_products'], 'icon' => 'fa-boxes', 'color' => 'success', 'link' => 'listProducts.php'],
+                    ['title' => 'Pending Orders', 'value' => $stats['pending_orders'], 'icon' => 'fa-clock', 'color' => 'warning', 'link' => 'listOrder.php'],
+                    ['title' => 'Active Suppliers', 'value' => $stats['active_suppliers'], 'icon' => 'fa-truck', 'color' => 'info', 'link' => 'listSupplier.php']
+                ];
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                foreach ($cards as $card): ?>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="../../admin/Pages/<?= $card['link'] ?>" class="card-link" style="text-decoration: none;">
+                            <div class="card border-left-<?= $card['color'] ?> shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-<?= $card['color'] ?> text-uppercase mb-1">
+                                                <?= $card['title'] ?>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= htmlspecialchars($card['value']) ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas <?= $card['icon'] ?> fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div href="orders.php" class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="text-decoration: none;">    Total Orders</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php if (isset($total_orders)) { echo $total_orders; } ?></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-shopping-bag fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Total Income</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php if (isset($total_payments)) { echo setRupiah(($total_payments * $kurs_dollar)); } ?></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Paid</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php if (isset($total_paid)) { echo $total_paid; } ?></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-receipt fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Not Paid</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php if (isset($total_not_paid)) { echo $total_not_paid; } ?></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments-dollar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Total Brands -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Total Product Brands</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_brands; ?></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-tags fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Products -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Total Products</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_products; ?></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-box-open fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- HTML -->
-                    <div class="row justify-content-center">
-                    <div class="col-xl-6 col-lg-8 col-md-10">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6  class="m-0 font-weight-bold text-primary">Sold Brand</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-pie" style="width: 100%; min-height: 300px;">
-                                    <canvas id="brandPieChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <style>
-                .chart-pie {
-                    position: relative;
-                    margin: 0 auto;
-                }
-                </style>
-
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-                <script>
-                    // Data dari PHP
-                    const brandLabels = <?php echo json_encode($brand_names); ?> || [];
-                    const brandData = <?php echo json_encode($brand_totals); ?> || [];
-
-                    // Warna dinamis
-                    const backgroundColors = [
-                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
-                        '#e74a3b', '#858796', '#5a5c69', '#fd7e14',
-                        '#20c997', '#6610f2', '#6f42c1', '#d63384'
-                    ];
-
-                    const colors = brandLabels.map((_, i) => backgroundColors[i % backgroundColors.length]);
-
-                    const dataBrand = {
-                        labels: brandLabels,
-                        datasets: [{
-                            data: brandData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: colors.map(c => c + 'cc'),
-                            hoverBorderColor: "rgba(234, 236, 244, 1)"
-                        }],
-                    };
-
-                    const config = {
-                        type: 'pie',
-                        data: dataBrand,
-                        options: {
-                            maintainAspectRatio: false,
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        boxWidth: 20,
-                                        padding: 15,
-                                    }
-                                },
-                                tooltip: {
-                                    enabled: true
-                                }
-                            }
-                        }
-                    };
-
-                    const ctx = document.getElementById('brandPieChart').getContext('2d');
-                    new Chart(ctx, config);
-                </script>
-
-                    <!-- Content Row -->
-                </div>
-                <!-- /.container-fluid -->
+                <?php endforeach; ?>
             </div>
-            <!-- End of Main Content -->
+            <!-- Charts -->
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="m-0">Sales by Product</h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="salesByProductChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="m-0">Order Status Distribution</h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="orderStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<?php include('layouts/footer.php'); ?>
+        <?php include 'Layout/footer.php'; ?>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/sidebar.js"></script>
+<script>
+    const salesByProductData = {
+        labels: <?= json_encode(array_column($product_sales, 'product_name')) ?>,
+        datasets: [{
+            label: 'Total Sales',
+            data: <?= json_encode(array_map('intval', array_column($product_sales, 'total_sales'))) ?>,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const orderStatusData = {
+        labels: <?= json_encode(array_column($order_status_distribution, 'order_status')) ?>,
+        datasets: [{
+            label: 'Order Status',
+            data: <?= json_encode(array_map('intval', array_column($order_status_distribution, 'total'))) ?>,
+            backgroundColor: [
+                'rgba(255, 205, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(153, 102, 255, 0.7)'
+            ],
+            borderColor: [
+                'rgba(255, 205, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(153, 102, 255, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+</script>
+<script src="js/script.js"></script>
+<script>
+    const ctxSales = document.getElementById('salesByProductChart').getContext('2d');
+    const salesChart = new Chart(ctxSales, {
+        type: 'bar',
+        data: salesByProductData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Sales by Product' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const ctxOrder = document.getElementById('orderStatusChart').getContext('2d');
+    const orderChart = new Chart(ctxOrder, {
+        type: 'doughnut',
+        data: orderStatusData,
+        options: {
+            responsive: true,
+            plugins: {
+                title: { display: true, text: 'Order Status Distribution' }
+            }
+        }
+    });
+</script>
+</body>
+</html>
