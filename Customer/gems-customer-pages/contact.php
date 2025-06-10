@@ -90,14 +90,11 @@ if (!empty($_SESSION['cart'])) {
 
 <body>
 
-<div class="super_container">
+	<div class="super_container">
 
 	<!-- Header -->
-
 	<header class="header trans_300">
-
 		<!-- Top Navigation -->
-
 		<div class="top_nav">
 			<div class="container">
 				<div class="row">
@@ -107,29 +104,13 @@ if (!empty($_SESSION['cart'])) {
 					<div class="col-md-6 text-right">
 						<div class="top_nav_right">
 							<ul class="top_nav_menu">
-
-								<!-- Currency / Language / My Account -->
-
-								<li class="account">
-									<a href="#">
-										My Account
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="account_selection">
-                                            <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
-                                            <?php else: ?>
-                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-                                            <?php endif; ?>
-                                        </ul>
-								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
 		<!-- Main Navigation -->
 		<div class="main_nav_container">
 			<div class="container">
@@ -144,9 +125,24 @@ if (!empty($_SESSION['cart'])) {
 								<li><a href="shop.php">shop</a></li>															
 								<li><a href="contact.php">contact</a></li>
 							</ul>
-							<ul class="navbar_user">
-									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-									<li class="checkout">
+                                <ul class="navbar_user">
+                                    <li class="account">
+                                        <a href="#">
+                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                        </a>
+                                        <ul class="account_selection">
+                                            <?php if (isset($_SESSION['customer_id'])): ?>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                                                <li><a href="change-account.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
+                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
+                                            <?php else: ?>
+                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </li>
+                                    <li class="checkout">
 										<a href="cart.php">
 											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
 											<span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
@@ -158,8 +154,6 @@ if (!empty($_SESSION['cart'])) {
 										</a>
 									</li>
 								</ul>
-								
-							</ul>
 							<div class="hamburger_container">
 								<i class="fa fa-bars" aria-hidden="true"></i>
 							</div>

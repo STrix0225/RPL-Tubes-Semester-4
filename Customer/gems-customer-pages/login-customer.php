@@ -1,41 +1,74 @@
 <?php
-include '../../Database/connection.php';
+// Mulai output buffering untuk menghindari error headers already sent
+ob_start();
 
+// Aktifkan error reporting untuk debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Inisialisasi session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Include koneksi database
+require_once '../../Database/connection.php';
+
+// Inisialisasi variabel
 $error = "";
-$redirect_url = 'dashboard.php'; // default ke dashboard
+$redirect_url = 'dashboard.php'; // default redirect
 
+// Handle redirect URL
 if (isset($_GET['redirect'])) {
     $redirect_url = urldecode($_GET['redirect']);
 }
 
+// Generate CSRF token jika belum ada
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Proses form login
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi CSRF token
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || 
+        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = "Invalid CSRF token!";
     } else {
+        // Sanitasi input
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password_input = $_POST['password'];
 
-        // Ambil data customer berdasarkan email
-        $query_customer = mysqli_query($conn, "SELECT * FROM customers WHERE customer_email='$email'");
+        // Query ke database
+        $query = "SELECT * FROM customers WHERE customer_email=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if (mysqli_num_rows($query_customer) > 0) {
-            $data = mysqli_fetch_assoc($query_customer);
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
 
             // Verifikasi password
             if (password_verify($password_input, $data['customer_password'])) {
+                // Set session variables
                 $_SESSION['login_type'] = 'customer';
                 $_SESSION['user'] = $data;
-                $_SESSION['customer_id'] = $data['customer_id']; // TAMBAHKAN INI
+                $_SESSION['customer_id'] = $data['customer_id'];
+                $_SESSION['last_activity'] = time();
 
-                // Redirect ke URL yang diminta atau default
-                header("Location: $redirect_url");
-                exit;
+                // Regenerate session ID untuk mencegah fixation
+                session_regenerate_id(true);
+
+                // Redirect
+                header("Location: " . filter_var($redirect_url, FILTER_SANITIZE_URL));
+                exit();
             }
         }
         $error = "Email atau password salah!";
     }
 }
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>

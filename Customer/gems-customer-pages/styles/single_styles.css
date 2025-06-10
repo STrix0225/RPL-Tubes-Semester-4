@@ -263,24 +263,24 @@ section
 	top: 0;
 	left: 0;
 	width: 100%;
-	background: #FFFFFF;
+	background: #EEF5FF;
+
 	z-index: 10;
 }
 .top_nav
 {
 	width: 100%;
 	height: 50px;
-	background: #1e1e27;
+	background: #0C356A;
 }
 .top_nav_left
 {
 	height: 50px;
 	line-height: 50px;
 	font-size: 13px;
-	color: #b5aec4;
+	color: #FFFFFF;
 	text-transform: uppercase;
 }
-
 /*********************************
 3.1 Currency
 *********************************/
@@ -448,183 +448,247 @@ section
 /*********************************
 3.3 Account
 *********************************/
+.account {
+    position: relative;
+    display: inline-block;
+    min-width: 60px;
+}
 
-.account
-{
-	display: inline-block;
-	position: relative;
-	min-width: 50px;
-	padding-left: 20px;
-	text-align: center;
-	vertical-align: middle;
-	background: #1e1e27;
+.account > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    height: 50px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
 }
-.account > a
-{
-	display: block;
-	color: #b5aec4;
-	font-weight: 400;
-	height: 50px;
-	line-height: 50px;
-	font-size: 13px;
+
+.account > a > .fa-user {
+    font-size: 16px;
+    margin-right: 8px;
 }
-.account > a > i
-{
-	margin-left: 8px;
+
+.account > a > .fa-angle-down {
+    font-size: 14px;
+    margin-left: 3px;
 }
-.account:hover .account_selection
-{
-	visibility: visible;
-	opacity: 1;
-	top: 100%;
+
+.account_selection {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
-.account_selection
-{
-	display: block;
-	position: absolute;
-	right: 0;
-	top: 120%;
-	margin: 0;
-	width: 100%;
-	background: #FFFFFF;
-	visibility: hidden;
-	opacity: 0;
-	z-index: 1;
-	box-shadow: 0 0 25px rgba(63, 78, 100, 0.15);
-	-webkit-transition: opacity 0.3s ease;
-	-moz-transition: opacity 0.3s ease;
-	-ms-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: all 0.3s ease;
+
+.account:hover .account_selection {
+    display: block;
 }
-.account_selection li
-{
-	padding-left: 10px;
-	padding-right: 10px;
-	line-height: 50px;
+
+.account_selection li a {
+    display: flex;
+    align-items: center; /* Ini sudah benar untuk vertikal center */
+    padding: 10px 0px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    flex-direction: row; /* Pastikan flex direction row */
 }
-.account_selection li a
-{
-	display: block;
-	color: #232530;
-	border-bottom: solid 1px #dddddd;
-	font-size: 14px;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
+
+.account_selection li a:hover {
+    background: #f7f7f7;
+    color: #0C356A;
 }
-.account_selection li a:hover
-{
-	color: #b5aec4;
+
+.account_selection li:last-child a {
+    border-bottom: none;
 }
-.account_selection li:last-child a
-{
-	border-bottom: none;
+
+.account_selection li a i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0; /* Pastikan ikon tidak menyusut */
 }
-.account_selection li a i
-{
-	margin-right: 10px;
-}
+
 
 /*********************************
 3.4 Main Navigation
 *********************************/
 
-.main_nav_container
-{
-	width: 100%;
-	background: #FFFFFF;
-	box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
+.main_nav_container {
+    width: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
 }
-.navbar
-{
-	width: auto;
-	height: 100px;
-	float: right;
-	padding-left: 0px;
-	padding-right: 0px;
+
+.navbar {
+    width: auto;
+    height: 100px;
+    float: right;
+    padding: 0;
 }
-.navbar_menu li
-{
-	display: inline-block;
+
+.navbar_menu,
+.navbar_user {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
-.navbar_menu li a
-{
-	display: block;
-	color: #1e1e27;
-	font-size: 13px;
-	font-weight: 500;
-	text-transform: uppercase;
-	padding: 20px;
-	-webkit-transition: color 0.3s ease;
-	-moz-transition: color 0.3s ease;
-	-ms-transition: color 0.3s ease;
-	-o-transition: color 0.3s ease;
-	transition: color 0.3s ease;
+
+.navbar_menu li {
+    display: inline-block;
 }
-.navbar_menu li a:hover
-{
-	color: #b5aec4;
+
+.navbar_menu li a {
+    display: block;
+    color: #1e1e27;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
-.navbar_user
-{
-	margin-left: 37px;
+
+.navbar_menu li a:hover {
+    color: #b5aec4;
 }
-.navbar_user li
-{
-	display: inline-block;
-	text-align: center;
+
+.navbar_user {
+    margin-left: 37px;
 }
-.navbar_user li a
-{
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	width: 40px;
-	height: 40px;
-	color: #1e1e27;
-	-webkit-transition: color 0.3s ease;
-	-moz-transition: color 0.3s ease;
-	-ms-transition: color 0.3s ease;
-	-o-transition: color 0.3s ease;
-	transition: color 0.3s ease;
+
+.navbar_user li {
+    display: inline-block;
+    text-align: center;
 }
-.navbar_user li a:hover
-{
-	color: #b5aec4;
+
+.navbar_user li a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    color: #0C356A;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
-.checkout a
-{
-	background: #eceff6;
-	border-radius: 50%;
+
+.navbar_user li a:hover {
+    color: #b5aec4;
 }
-.checkout_items
-{
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	top: -9px;
-	left: 22px;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background: #fe4c50;
-	font-size: 12px;
-	color: #FFFFFF;
+
+.checkout a {
+    background: #eceff6;
+    border-radius: 50%;
+}
+
+.checkout_items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -9px;
+    left: 22px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0C356A;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+/* MODIFIED SECTION - Dropdown Vertikal untuk navbar_user */
+/* Tempatkan ini setelah .checkout_items atau di akhir section 3.4 */
+.navbar_user li.account {
+    position: relative;
+}
+
+.navbar_user li.account .account_selection {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 150px; /* Diperlebar untuk menampung teks */
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 5px 0; /* Tambahkan padding atas bawah */
+    margin: 0;
+    list-style: none;
+}
+
+.navbar_user li.account:hover .account_selection {
+    display: block;
+}
+
+.navbar_user li.account .account_selection li {
+    display: block;
+    width: 100%;
+}
+
+.navbar_user li.account .account_selection li a {
+    display: flex;
+    flex-direction: row; /* Pastikan row */
+    align-items: center;
+    padding: 8px 0px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.navbar_user li.account .account_selection li a:hover {
+    background: #f7f7f7;
+    color: #0C356A;
+}
+
+.navbar_user li.account .account_selection li:last-child a {
+    border-bottom: none;
+}
+
+.navbar_user li.account .account_selection li a i {
+    margin-right: 12px;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.navbar_user li.account > a {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 15px !important;
+}
+
+.navbar_user li.account > a i.fa-user {
+    margin-right: 8px;
+}
+
+.navbar_user li.account > a i.fa-angle-down {
+    margin-left: 5px;
 }
 
 /*********************************
@@ -808,98 +872,14 @@ section
 .logo_container a
 {
 	font-size: 24px;
-	color: #1e1e27;
+	color:#0C356A;
 	font-weight: 700;
 	text-transform: uppercase;
 }
 .logo_container a span
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
-.red_button
-{
-	display: -webkit-inline-box;
-	display: -moz-inline-box;
-	display: -ms-inline-flexbox;
-	display: -webkit-inline-flex;
-	display: inline-flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: auto;
-	height: 40px;
-	background: #fe4c50;
-	border-radius: 3px;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
-}
-.red_button:hover
-{
-	background: #FE7C7F !important;
-}
-.red_button a
-{
-	display: block;
-	color: #FFFFFF;
-	text-transform: uppercase;
-	font-size: 12px;
-	font-weight: 500;
-	text-align: center;
-	line-height: 40px;
-	width: 100%;
-}
-
-.red_button add_to_cart_button{
-	display: block;
-	color: #FFFFFF;
-	text-transform: uppercase;
-	font-size: 12px;
-	font-weight: 500;
-	text-align: center;
-	line-height: 40px;
-	width: 100%;
-}
-
-
-
-.shop_now_button
-{
-	width: 140px;
-	margin-top: 32px;
-}
-.section_title
-{
-	display: inline-block;
-	text-align: center;
-}
-.section_title h2
-{
-	display: inline-block;
-}
-.section_title::after
-{
-	display: block;
-	position: absolute;
-	top: calc(100% + 13px);
-	left: 50%;
-	-webkit-transform: translateX(-50%);
-	-moz-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	-o-transform: translateX(-50%);
-	transform: translateX(-50%);
-	width: 60px;
-	height: 5px;
-	background: #fe4c50;
-	content: '';
-}
-.product_details_title p
-{
-	color: #e5e5e5;
-}
-
 /*********************************
 4. Breadcrumbs
 *********************************/
@@ -1771,3 +1751,4 @@ body, .header, .product_details, .tab_container {
         margin-bottom: 10px;
     }
 }
+

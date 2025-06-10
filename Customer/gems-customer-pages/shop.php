@@ -1,88 +1,139 @@
 <?php
 include('../../Database/connection.php');
+session_start();
 
-// === AMBIL DATA PRODUK SESUAI KATEGORI (OPSIONAL) ===
-if (isset($_POST['search']) && isset($_POST['product_category'])) {
-	$category = $_POST['product_category'];
-	$query_products = "SELECT * FROM products WHERE product_category = ?";
-	$stmt_products = $conn->prepare($query_products);
-	$stmt_products->bind_param('s', $category);
-	$stmt_products->execute();
-	$products = $stmt_products->get_result();
-} else {
-	$query_products = "SELECT * FROM products";
-	$stmt_products = $conn->prepare($query_products);
-	$stmt_products->execute();
-	$shop_products = $stmt_products->get_result();
-}
-
-// === INISIALISASI KERANJANG ===
-if (!isset($_SESSION['cart'])) {
-	$_SESSION['cart'] = [];
-}
-
-// === HAPUS ITEM DARI KERANJANG ===
-if (isset($_GET['remove']) && isset($_SESSION['cart'][$_GET['remove']])) {
-	unset($_SESSION['cart'][$_GET['remove']]);
-	header("Location: cart.php");
-	exit();
-}
-
-// === UPDATE KUANTITAS ITEM ===
-if (isset($_POST['update_quantity'])) {
-	foreach ($_POST['quantity'] as $id => $quantity) {
-		if (isset($_SESSION['cart'][$id])) {
-			$_SESSION['cart'][$id]['quantity'] = max(1, (int)$quantity);
-		}
-	}
-	header("Location: cart.php");
-	exit();
-}
-
-// === HITUNG TOTAL KERANJANG ===
-$subtotal = 0;
+// Inisialisasi variabel default
+$products = [];
+$per_page = 12;
+$page = 1;
+$total_pages = 1;
 $cart_items = [];
+$subtotal = 0;
+$error = null;
 
-if (!empty($_SESSION['cart'])) {
-	// Ambil semua ID produk dari keranjang
-	$ids = array_column($_SESSION['cart'], 'product_id');
-	$placeholders = implode(',', array_fill(0, count($ids), '?'));
+try {
+    // Handle pencarian produk
+    if (isset($_POST['search']) && isset($_POST['product_category'])) {
+        $category = $_POST['product_category'];
+        $query_products = "SELECT * FROM products WHERE product_category = ?";
+        $stmt_products = $conn->prepare($query_products);
+        $stmt_products->bind_param('s', $category);
+        $stmt_products->execute();
+        $result = $stmt_products->get_result();
+        $products = $result->fetch_all(MYSQLI_ASSOC);
+    } 
+    // Handle pagination
+    else {
+        // Validasi input halaman
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $start = ($page - 1) * $per_page;
 
-	// Ambil info produk dari database
-	$stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-	$stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
-	$stmt->execute();
-	$products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        // Query untuk produk dengan pagination
+        $sql = "SELECT * FROM products LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ii', $start, $per_page);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $products = $result->fetch_all(MYSQLI_ASSOC);
 
-	// Siapkan item keranjang untuk ditampilkan
-	foreach ($products as $product) {
-		$product_id = $product['product_id'];
+        // Hitung total halaman
+        $total_result = $conn->query("SELECT COUNT(*) FROM products");
+        $total_products = $total_result ? $total_result->fetch_row()[0] : 0;
+        $total_pages = ceil($total_products / $per_page);
+    }
 
-		if (!isset($_SESSION['cart'][$product_id])) continue;
+    // Inisialisasi keranjang belanja
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
 
-		$cart_item = $_SESSION['cart'][$product_id];
+    // Handle penghapusan item dari keranjang
+    if (isset($_GET['remove'])) {
+        $remove_id = (int)$_GET['remove'];
+        if (isset($_SESSION['cart'][$remove_id])) {
+            unset($_SESSION['cart'][$remove_id]);
+            header("Location: cart.php");
+            exit();
+        }
+    }
 
-		$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-		$price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
-		$total = $price * $cart_item['quantity'];
+    // Handle update quantity
+    if (isset($_POST['update_quantity'])) {
+        foreach ($_POST['quantity'] as $id => $quantity) {
+            $id = (int)$id;
+            $quantity = max(1, (int)$quantity);
+            if (isset($_SESSION['cart'][$id])) {
+                $_SESSION['cart'][$id]['quantity'] = $quantity;
+            }
+        }
+        header("Location: cart.php");
+        exit();
+    }
 
-		$cart_items[] = [
-			'id' => $product_id,
-			'name' => $product['product_name'],
-			'image' => $product['product_image1'],
-			'price' => $product['product_price'],
-			'discounted_price' => $price,
-			'quantity' => $cart_item['quantity'],
-			'total' => $total,
-			'has_discount' => $has_discount,
-			'discount' => $product['product_discount'],
-			'color' => $cart_item['color'] ?? ''
-		];
+    // Hitung total belanja
+    if (!empty($_SESSION['cart'])) {
+        $ids = array_column($_SESSION['cart'], 'product_id');
+        if (!empty($ids)) {
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $types = str_repeat('i', count($ids));
+            
+            $stmt = $conn->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
+            $stmt->bind_param($types, ...$ids);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $cart_products = $result->fetch_all(MYSQLI_ASSOC);
 
-		$subtotal += $total;
-	}
+            foreach ($cart_products as $product) {
+    $product_id = $product['product_id'] ?? null; // Tambahkan null coalescing
+    
+    // Periksa apakah session cart ada dan merupakan array
+    $cart = $_SESSION['cart'] ?? [];
+    $cart_item_key = false;
+    
+    if (!empty($cart) && is_array($cart)) {
+        $cart_item_key = array_search($product_id, array_column($cart, 'product_id'));
+    }
+    
+    if ($cart_item_key !== false && isset($cart[$cart_item_key])) {
+        $cart_item = $cart[$cart_item_key];
+        $quantity = $cart_item['quantity'] ?? 0; // Default quantity 0 jika tidak ada
+
+        // Hitung harga diskon dengan pengecekan yang aman
+        $discount = $product['product_discount'] ?? 0;
+        $has_discount = ($discount > 0);
+        
+        $product_price = $product['product_price'] ?? 0;
+        $price = $has_discount 
+            ? $product_price * (1 - $discount / 100) 
+            : $product_price;
+
+        $total = $price * $quantity;
+
+        $cart_items[] = [
+            'id' => $product_id,
+            'name' => $product['product_name'] ?? '',
+            'image' => $product['product_image1'] ?? '',
+            'price' => $product_price,
+            'discounted_price' => $price,
+            'quantity' => $quantity,
+            'total' => $total,
+            'has_discount' => $has_discount,
+            'discount' => $discount
+        ];
+
+        $subtotal += $total;
+    }
 }
+        }
+    }
+} catch (Exception $e) {
+    $error = "Terjadi kesalahan: " . $e->getMessage();
+}
+
+// Tutup koneksi database
+$conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -102,100 +153,84 @@ if (!empty($_SESSION['cart'])) {
 	<link rel="stylesheet" type="text/css" href="styles/categories_styles.css">
 	<link rel="stylesheet" type="text/css" href="styles/categories_responsive.css">
 	<link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
 
 	<div class="super_container">
 
-		<!-- Header -->
-
+	<!-- Header -->
 		<header class="header trans_300">
-
-			<!-- Top Navigation -->
-
-			<div class="top_nav">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="top_nav_left">free shipping around the world orders over $50</div>
-						</div>
-						<div class="col-md-6 text-right">
-							<div class="top_nav_right">
-								<ul class="top_nav_menu">
-
-									<!-- My Account -->
-
-									<li class="account">
-										<a href="#">
-											My Account
-											<i class="fa fa-angle-down"></i>
-										</a>
-										<ul class="account_selection">
-                                            <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
-                                            <?php else: ?>
-                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-                                            <?php endif; ?>
-                                        </ul>
-									</li>
-								</ul>
-							</div>
+		<!-- Top Navigation -->
+		<div class="top_nav">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="top_nav_left">free shipping around the world orders over $50</div>
+					</div>
+					<div class="col-md-6 text-right">
+						<div class="top_nav_right">
+							<ul class="top_nav_menu">
+							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<!-- Main Navigation -->
-
-			<!-- Main Navigation -->
-			<div class="main_nav_container">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-12 text-right">
-							<div class="logo_container">
-								<a href="#">Gadget<span>MS</span></a>
-							</div>
-							<nav class="navbar">
-								<ul class="navbar_menu">
-									<li><a href="dashboard.php">home</a></li>
-									<li><a href="shop.php">shop</a></li>
-									<li><a href="contact.php">contact</a></li>
-								</ul>
-								<ul class="navbar_user">
-									<li>
-										<div class="search-box">
-											<input type="text" id="search-input" placeholder="Search products..." aria-label="Search products">
-											<button id="search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
-										</div>
-									</li>
-									<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-									<li class="checkout">
+		<!-- Main Navigation -->
+		<div class="main_nav_container">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-right">
+						<div class="logo_container">
+							<a href="#">Gadget<span>MS</span></a>
+						</div>
+						<nav class="navbar">
+							<ul class="navbar_menu">
+								<li><a href="dashboard.php">home</a></li>
+								<li><a href="shop.php">shop</a></li>															
+								<li><a href="contact.php">contact</a></li>
+							</ul>
+                                <ul class="navbar_user">
+                                    <li class="account">
+                                        <a href="#">
+                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                        </a>
+                                        <ul class="account_selection">
+                                            <?php if (isset($_SESSION['customer_id'])): ?>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                                                <li><a href="change-account.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
+                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
+                                            <?php else: ?>
+                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </li>
+                                    <li class="checkout">
 										<a href="cart.php">
 											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
 											<span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
 										</a>
 									</li>
 									<li>
-										<a href="#" id="dark-mode-toggle" title="Toggle Dark Mode">
+										<a href="#" id="dark-mode-toggle">
 											<i class="fa fa-moon-o" aria-hidden="true"></i>
 										</a>
 									</li>
 								</ul>
-
-								</ul>
-								<div class="hamburger_container">
-									<i class="fa fa-bars" aria-hidden="true"></i>
-								</div>
-							</nav>
-						</div>
+							<div class="hamburger_container">
+								<i class="fa fa-bars" aria-hidden="true"></i>
+							</div>
+						</nav>
 					</div>
 				</div>
 			</div>
-
-		</header>
-
+		</div>
+	</header>
 		<div class="fs_menu_overlay"></div>
 
 		<!-- Hamburger Menu -->
@@ -223,19 +258,8 @@ if (!empty($_SESSION['cart'])) {
 
 		<div class="container product_section_container">
 			<div class="row">
-				<div class="col product_section clearfix">
-
-					<!-- Breadcrumbs -->
-
-					<div class="breadcrumbs d-flex flex-row align-items-center">
-						<ul>
-							<li><a href="dashboard.php">Home</a></li>
-							<li><a href="shop.php"><i></i>shop</a></li>
-						</ul>
-					</div>
-
+				<div class="col product_section">
 					<!-- Sidebar -->
-
 					<div class="sidebar">
 						<div class="sidebar_section">
 							<div class="sidebar_title">
@@ -253,30 +277,28 @@ if (!empty($_SESSION['cart'])) {
 								<h5>Filter by Price</h5>
 							</div>
 							<p>
-								<input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+								<input type="text" id="amount" readonly style="border:0; font-weight:bold;">
 							</p>
 							<div id="slider-range"></div>
 							<div class="filter_button" onclick="window.location.href='shop.php';">
 								<span>Clear filter</span>
 							</div>
 						</div>
-
-
-
 					</div>
 
 					<!-- Main Content -->
-
 					<div class="main_content">
-
 						<!-- Products -->
-
 						<div class="products_iso">
 							<div class="row">
 								<div class="col">
+									<!-- Search Bar -->
+										<div class="search-box">
+											<input type="text" id="search-input" placeholder="Search products..." aria-label="Search products">
+											<button id="search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+										</div>
 
 									<!-- Product Sorting -->
-
 									<div class="product_sorting_container product_sorting_container_top">
 										<ul class="product_sorting">
 											<li>
@@ -290,80 +312,120 @@ if (!empty($_SESSION['cart'])) {
 											</li>
 											<li>
 												<span>Show</span>
-												<span class="num_sorting_text">6</span>
+												<span class="num_sorting_text">12</span>
 												<i class="fa fa-angle-down"></i>
 												<ul class="sorting_num">
-													<li class="num_sorting_btn"><span>6</span></li>
 													<li class="num_sorting_btn"><span>12</span></li>
 													<li class="num_sorting_btn"><span>24</span></li>
+													<li class="num_sorting_btn"><span>28</span></li>
 												</ul>
 											</li>
 										</ul>
 										<div class="pages d-flex flex-row align-items-center">
+											<!-- Previous Button - Always Visible -->
+											<div id="prev_page" class="page_prev mr-2">
+												<a href="?page=<?php echo $page > 1 ? $page - 1 : 1; ?>" class="<?php echo $page <= 1 ? 'disabled-link' : ''; ?>">
+													<i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+												</a>
+											</div>
+											
+											<!-- Current Page -->
 											<div class="page_current">
-												<span>1</span>
+												<span><?php echo $page; ?></span>
 												<ul class="page_selection">
-													<li><a href="#">1</a></li>
-													<li><a href="#">2</a></li>
-													<li><a href="#">3</a></li>
+													<?php for ($i = 1; $i <= $total_pages; $i++): ?>
+														<li><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+													<?php endfor; ?>
 												</ul>
 											</div>
-											<div class="page_total"><span>of</span> 3</div>
-											<div id="next_page" class="page_next"><a href="#"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a></div>
+											
+											<!-- Page Total -->
+											<div class="page_total mx-2"><span>of</span> <?php echo $total_pages; ?></div>
+											
+											<!-- Next Button - Always Visible -->
+											<div id="next_page" class="page_next ml-2">
+												<a href="?page=<?php echo $page < $total_pages ? $page + 1 : $total_pages; ?>" class="<?php echo $page >= $total_pages ? 'disabled-link' : ''; ?>">
+													<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+												</a>
+											</div>
 										</div>
-
 									</div>
 
 									<!-- Product Grid -->
-									<div class="product-grid">
-										<?php while ($product = $shop_products->fetch_assoc()):
-											// Calculate discount if exists
-											$has_discount = !empty($product['product_discount']) && $product['product_discount'] > 0;
-											$discounted_price = $has_discount ? $product['product_price'] * (1 - $product['product_discount'] / 100) : $product['product_price'];
-											$discount_amount = $has_discount ? $product['product_price'] - $discounted_price : 0;
-											$is_new = empty($product['product_sold']) || $product['product_sold'] == 0;
-										?>
-											<div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'])); ?>">
-												<div class="product discount product_filter">
-													<div class="product_image">
-														<img src="images/<?php echo htmlspecialchars($product['product_image1']); ?>"
-															alt="<?php echo htmlspecialchars($product['product_name']); ?>">
-													</div>
-													<div class="favorite favorite_left"></div>
+<div class="product-grid">
+    <?php 
+    // Konversi hasil query ke array jika perlu
+    $products_array = [];
+    if ($products instanceof mysqli_result) {
+        while ($row = $products->fetch_assoc()) {
+            $products_array[] = $row;
+        }
+    } elseif (is_array($products)) {
+        $products_array = $products;
+    }
+    
+    if (!empty($products_array)) : 
+        foreach ($products_array as $product) :
+            // Calculate discount if exists
+            $discount_val = $product['product_discount'] ?? 0;
+            $has_discount = ($discount_val > 0);
+            
+            $product_price = $product['product_price'] ?? 0;
+            $discounted_price = $has_discount 
+                ? $product_price * (1 - $discount_val / 100) 
+                : $product_price;
+                
+            $discount_amount = $has_discount 
+                ? $product_price - $discounted_price 
+                : 0;
+                
+            $is_new = empty($product['product_sold']) || ($product['product_sold'] ?? 0) == 0;
+    ?>
+        <div class="product-item <?php echo htmlspecialchars(strtolower($product['product_category'] ?? '')); ?>">
+            <div class="product discount product_filter">
+                <div class="product_image">
+                    <img src="images/<?php echo htmlspecialchars($product['product_image1'] ?? ''); ?>"
+                        alt="<?php echo htmlspecialchars($product['product_name'] ?? ''); ?>">
+                </div>
+                <div class="favorite favorite_left"></div>
 
-													<?php if ($has_discount): ?>
-														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
-															<span>-$<?php echo number_format($discount_amount, 0); ?></span>
-														</div>
-													<?php endif; ?>
+                <?php if ($has_discount): ?>
+                    <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+                        <span>-$<?php echo number_format($discount_amount, 0); ?></span>
+                    </div>
+                <?php endif; ?>
 
-													<?php if ($is_new): ?>
-														<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center">
-															<span>new</span>
-														</div>
-													<?php endif; ?>
+                <?php if ($is_new): ?>
+                    <div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center">
+                        <span>new</span>
+                    </div>
+                <?php endif; ?>
 
-													<div class="product_info">
-														<h6 class="product_name">
-															<a href="single.php?id=<?php echo $product['product_id']; ?>">
-																<?php echo htmlspecialchars($product['product_name']); ?>
-															</a>
-														</h6>
-														<div class="product_price">
-															$<?php echo number_format($discounted_price, 2); ?>
-															<?php if ($has_discount): ?>
-																<span>$<?php echo number_format($product['product_price'], 2); ?></span>
-															<?php endif; ?>
-														</div>
-													</div>
-												</div>
-												<div class="red_button add_to_cart_button">
-													<a href="shop-detail.php?id=<?php echo $product['product_id']; ?>">add to cart</a>
-												</div>
-											</div>
-										<?php endwhile; ?>
-									</div>
-
+                <div class="product_info">
+                    <h6 class="product_name">
+                        <a href="single.php?id=<?php echo $product['product_id'] ?? ''; ?>">
+                            <?php echo htmlspecialchars($product['product_name'] ?? ''); ?>
+                        </a>
+                    </h6>
+                    <div class="product_price">
+                        $<?php echo number_format($discounted_price, 2); ?>
+                        <?php if ($has_discount): ?>
+                            <span>$<?php echo number_format($product_price, 2); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="red_button add_to_cart_button">
+                <a href="shop-detail.php?id=<?php echo $product['product_id'] ?? ''; ?>">add to cart</a>
+            </div>
+        </div>
+    <?php 
+        endforeach;
+    else: 
+    ?>
+        <p class="text-center py-5">No products found</p>
+    <?php endif; ?>
+</div>
 								</div>
 							</div>
 						</div>
@@ -615,6 +677,13 @@ if (!empty($_SESSION['cart'])) {
 			document.querySelector('.filter_button')?.addEventListener('click', function() {
 				searchInput.value = '';
 				performSearch();
+			});
+		});
+
+				document.querySelectorAll('.num_sorting_btn').forEach(btn => {
+			btn.addEventListener('click', function() {
+				const perPage = this.querySelector('span').textContent;
+				window.location.href = `?page=1&per_page=${perPage}`;
 			});
 		});
 	</script>

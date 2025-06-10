@@ -29,15 +29,13 @@ if (isset($_POST['update_quantity'])) {
 if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
     $product_id = (int)$_POST['product_id'];
     $quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
-    $color = isset($_POST['selected_color']) ? $_POST['selected_color'] : '';
 
     if (isset($_SESSION['cart'][$product_id])) {
         $_SESSION['cart'][$product_id]['quantity'] += $quantity;
     } else {
         $_SESSION['cart'][$product_id] = [
             'product_id' => $product_id,
-            'quantity' => $quantity,
-            'color' => $color
+            'quantity' => $quantity
         ];
     }
 
@@ -59,7 +57,6 @@ if (!empty($_SESSION['cart'])) {
     $stmt->execute();
     $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-    // In the cart.php file, modify the cart items processing
     foreach ($products as $product) {
         $product_id = $product['product_id'];
         $cart_item = $_SESSION['cart'][$product_id];
@@ -77,8 +74,7 @@ if (!empty($_SESSION['cart'])) {
             'quantity' => $cart_item['quantity'],
             'total' => $total,
             'has_discount' => $has_discount,
-            'discount' => $product['product_discount'],
-            'color' => $_SESSION['cart'][$product_id]['color'] ?? ''
+            'discount' => $product['product_discount']
         ];
 
         $subtotal += $total;
@@ -113,77 +109,79 @@ $total = $subtotal + $shipping;
 
     <div class="super_container">
 
-        <!-- Header -->
-        <header class="header trans_300">
-            <!-- Top Navigation -->
-            <div class="top_nav">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="top_nav_left">free shipping around the world orders over $50</div>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <div class="top_nav_right">
-                                <ul class="top_nav_menu">
-                                    <!-- Currency / Language / My Account -->
+<!-- Header -->
+	<header class="header trans_300">
+		<!-- Top Navigation -->
+		<div class="top_nav">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="top_nav_left">free shipping around the world orders over $50</div>
+					</div>
+					<div class="col-md-6 text-right">
+						<div class="top_nav_right">
+							<ul class="top_nav_menu">
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Navigation -->
+		<div class="main_nav_container">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-right">
+						<div class="logo_container">
+							<a href="#">Gadget<span>MS</span></a>
+						</div>
+						<nav class="navbar">
+							<ul class="navbar_menu">
+								<li><a href="dashboard.php">home</a></li>
+								<li><a href="shop.php">shop</a></li>															
+								<li><a href="contact.php">contact</a></li>
+							</ul>
+                                <ul class="navbar_user">
                                     <li class="account">
                                         <a href="#">
-                                            My Account
-                                            <i class="fa fa-angle-down"></i>
+                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
                                         </a>
                                         <ul class="account_selection">
                                             <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                                                <li><a href="change-account.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
+                                                <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                                             <?php else: ?>
-                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+                                                <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
+                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
                                             <?php endif; ?>
                                         </ul>
                                     </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Navigation -->
-            <div class="main_nav_container">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 text-right">
-                            <div class="logo_container">
-                                <a href="#">Gadget<span>ms</span></a>
-                            </div>
-                            <nav class="navbar">
-                                <ul class="navbar_menu">
-                                    <li><a href="dashboard.php">home</a></li>
-                                    <li><a href="shop.php">shop</a></li>
-                                    <li><a href="contact.php">contact</a></li>
-                                </ul>
-                                <ul class="navbar_user">
-                                    <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
                                     <li class="checkout">
-                                        <a href="cart.php">
-                                            <i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
-                                            <span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" id="dark-mode-toggle" title="Toggle Dark Mode">
-                                            <i class="fa fa-moon-o" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="hamburger_container">
-                                    <i class="fa fa-bars" aria-hidden="true"></i>
-                                </div>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+										<a href="cart.php">
+											<i class="fa fa-shopping-cart" aria-hidden="true" id="dark-mode-cart"></i>
+											<span id="checkout_items" class="checkout_items"><?= count($_SESSION['cart']) ?></span>
+										</a>
+									</li>
+									<li>
+										<a href="#" id="dark-mode-toggle">
+											<i class="fa fa-moon-o" aria-hidden="true"></i>
+										</a>
+									</li>
+								</ul>
+							<div class="hamburger_container">
+								<i class="fa fa-bars" aria-hidden="true"></i>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+
 
         <div class="fs_menu_overlay"></div>
 
@@ -249,29 +247,6 @@ $total = $subtotal + $shipping;
                                                             <div class="cart_item_title">Quantity</div>
                                                             <div class="cart_item_text">
                                                                 <input type="number" class="quantity_input" name="quantity[<?= $item['id'] ?>]" value="<?= $item['quantity'] ?>" min="1">
-                                                            </div>
-                                                        </div>
-                                                        <div class="cart_item_color cart_info_col">
-                                                            <div class="cart_item_title">Color</div>
-                                                            <div class="cart_item_text">
-                                                                <?php 
-                                                                $color = $_SESSION['cart'][$item['id']]['color'] ?? '';
-                                                                if (!empty($color)): 
-                                                                    $hex_color = match(strtolower($color)) {
-                                                                        'black' => '#252525',
-                                                                        'white' => '#ffffff',
-                                                                        'red' => '#e54e5d',
-                                                                        'blue' => '#60b3f3',
-                                                                        'green' => '#4CAF50',
-                                                                        'yellow' => '#FFEB3B',
-                                                                        'purple' => '#9C27B0',
-                                                                        'grey', 'gray' => '#9E9E9E',
-                                                                        default => '#607D8B'
-                                                                    };
-                                                                ?>
-                                                                <span class="color-display" style="display: inline-block; width: 20px; height: 20px; background-color: <?= $hex_color ?>; border-radius: 50%; vertical-align: middle; margin-right: 5px;"></span>
-                                                                <?= htmlspecialchars(ucfirst($color)) ?>
-                                                                <?php endif; ?>
                                                             </div>
                                                         </div>
                                                         <div class="cart_item_total cart_info_col">
