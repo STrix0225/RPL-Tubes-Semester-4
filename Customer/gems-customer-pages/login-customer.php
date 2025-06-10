@@ -1,5 +1,6 @@
 <?php
-include '../../Database/connection.php';
+// Mulai output buffering untuk menghindari error headers already sent
+ob_start();
 
 // Aktifkan error reporting untuk debugging
 error_reporting(E_ALL);

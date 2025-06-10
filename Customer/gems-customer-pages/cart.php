@@ -29,15 +29,13 @@ if (isset($_POST['update_quantity'])) {
 if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
     $product_id = (int)$_POST['product_id'];
     $quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
-    $color = isset($_POST['selected_color']) ? $_POST['selected_color'] : '';
 
     if (isset($_SESSION['cart'][$product_id])) {
         $_SESSION['cart'][$product_id]['quantity'] += $quantity;
     } else {
         $_SESSION['cart'][$product_id] = [
             'product_id' => $product_id,
-            'quantity' => $quantity,
-            'color' => $color
+            'quantity' => $quantity
         ];
     }
 
@@ -59,7 +57,6 @@ if (!empty($_SESSION['cart'])) {
     $stmt->execute();
     $products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-    // In the cart.php file, modify the cart items processing
     foreach ($products as $product) {
         $product_id = $product['product_id'];
         $cart_item = $_SESSION['cart'][$product_id];
@@ -77,8 +74,7 @@ if (!empty($_SESSION['cart'])) {
             'quantity' => $cart_item['quantity'],
             'total' => $total,
             'has_discount' => $has_discount,
-            'discount' => $product['product_discount'],
-            'color' => $_SESSION['cart'][$product_id]['color'] ?? ''
+            'discount' => $product['product_discount']
         ];
 
         $subtotal += $total;
@@ -251,29 +247,6 @@ $total = $subtotal + $shipping;
                                                             <div class="cart_item_title">Quantity</div>
                                                             <div class="cart_item_text">
                                                                 <input type="number" class="quantity_input" name="quantity[<?= $item['id'] ?>]" value="<?= $item['quantity'] ?>" min="1">
-                                                            </div>
-                                                        </div>
-                                                        <div class="cart_item_color cart_info_col">
-                                                            <div class="cart_item_title">Color</div>
-                                                            <div class="cart_item_text">
-                                                                <?php 
-                                                                $color = $_SESSION['cart'][$item['id']]['color'] ?? '';
-                                                                if (!empty($color)): 
-                                                                    $hex_color = match(strtolower($color)) {
-                                                                        'black' => '#252525',
-                                                                        'white' => '#ffffff',
-                                                                        'red' => '#e54e5d',
-                                                                        'blue' => '#60b3f3',
-                                                                        'green' => '#4CAF50',
-                                                                        'yellow' => '#FFEB3B',
-                                                                        'purple' => '#9C27B0',
-                                                                        'grey', 'gray' => '#9E9E9E',
-                                                                        default => '#607D8B'
-                                                                    };
-                                                                ?>
-                                                                <span class="color-display" style="display: inline-block; width: 20px; height: 20px; background-color: <?= $hex_color ?>; border-radius: 50%; vertical-align: middle; margin-right: 5px;"></span>
-                                                                <?= htmlspecialchars(ucfirst($color)) ?>
-                                                                <?php endif; ?>
                                                             </div>
                                                         </div>
                                                         <div class="cart_item_total cart_info_col">

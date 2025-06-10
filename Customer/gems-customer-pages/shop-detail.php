@@ -23,10 +23,7 @@ if (isset($_GET['id'])) {
 		$product['product_image3']
 	];
 
-	// Process product colors
-$colors = explode(',', $product['product_color']);
-$clean_colors = array_map('trim', $colors);
-$clean_colors = array_filter($clean_colors); // Remove empty values
+
 
 
 	// Calculate discount
@@ -47,23 +44,27 @@ if (!isset($_SESSION['cart'])) {
 
 // Handle add to cart action
 if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
-    $product_id = (int)$_POST['product_id'];
-    $quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
-    $color = isset($_POST['selected_color']) ? $_POST['selected_color'] : '';
+	$product_id = $_POST['product_id'];
+	$quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
 
-    if (isset($_SESSION['cart'][$product_id])) {
-        $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-    } else {
-        $_SESSION['cart'][$product_id] = [
-            'product_id' => $product_id,
-            'quantity' => $quantity,
-            'color' => $color
-        ];
-    }
+	// Initialize cart if not exists
+	if (!isset($_SESSION['cart'])) {
+		$_SESSION['cart'] = [];
+	}
 
-    $_SESSION['message'] = 'Product added to cart successfully!';
-    header("Location: cart.php");
-    exit();
+	// Add or update item in cart
+	if (isset($_SESSION['cart'][$product_id])) {
+		$_SESSION['cart'][$product_id]['quantity'] += $quantity;
+	} else {
+		$_SESSION['cart'][$product_id] = [
+			'product_id' => $product_id,
+			'quantity' => $quantity
+		];
+	}
+
+	// Redirect to cart page
+	header("Location: cart.php");
+	exit();
 }
 
 ?>
@@ -86,7 +87,6 @@ if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
 	<link rel="stylesheet" type="text/css" href="plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 	<link rel="stylesheet" type="text/css" href="styles/single_styles.css">
 	<link rel="stylesheet" type="text/css" href="styles/single_responsive.css">
-	<link rel="stylesheet" type="text/css" href="styles/pilih_warna_product.css">
 	<link rel="shortcut icon" href="../gems-customer-pages/images/Background3.jpg" />
 </head>
 
@@ -278,45 +278,27 @@ if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
 							<li><i class="fa fa-star" aria-hidden="true"></i></li>
 							<li><i class="fa fa-star-o" aria-hidden="true"></i></li>
 						</ul>
-						<form method="POST" action="">
+						<div class="product_color">
+							<span>Select Color:</span>
+							<ul>
+								<li style="background: #e54e5d"></li>
+								<li style="background: #252525"></li>
+								<li style="background: #60b3f3"></li>
+							</ul>
+						</div>
+						<!-- Replace the quantity div and add to cart button with this form -->
+						<form method="POST" action="cart.php">
 							<input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
-							<input type="hidden" name="selected_color" id="selected_color" value="">
 							<input type="hidden" name="add_to_cart" value="1">
-
-							<div class="product_color"> 
-								<span>Select Color:</span>
-								<ul>
-									<?php foreach ($clean_colors as $color): 
-										$hex_color = match(strtolower($color)) {
-											'black' => '#252525',
-											'white' => '#ffffff',
-											'red' => '#e54e5d',
-											'blue' => '#60b3f3',
-											'green' => '#4CAF50',
-											'yellow' => '#FFEB3B',
-											'purple' => '#9C27B0',
-											'grey', 'gray' => '#9E9E9E',
-											default => '#607D8B'
-										};
-									?>
-									<li style="background: <?php echo $hex_color; ?>" 
-										data-color="<?php echo htmlspecialchars($color); ?>"
-										title="<?php echo htmlspecialchars($color); ?>"></li>
-									<?php endforeach; ?>
-								</ul>
-							</div>
-
 							<div class="quantity">
 								<div class="pro-qty">
 									<input type="number" name="quantity" value="1" min="1">
 								</div>
 							</div>
-
-							<button type="submit" class="primary-btn">
+							<button type="submit" name="add_to_cart" class="primary-btn">
 								<i class="fa fa-shopping-cart fa-2x"></i> add to cart
 							</button>
 						</form>
-
 					</div>
 				</div>
 			</div>
@@ -703,23 +685,6 @@ if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
 		});
 	</script>
 
-	<script>
-document.addEventListener('DOMContentLoaded', function () {
-	const colorItems = document.querySelectorAll('.product_color ul li');
-	const selectedColorInput = document.getElementById('selected_color');
-
-	colorItems.forEach(item => {
-		item.addEventListener('click', function () {
-			const selectedColor = this.getAttribute('data-color');
-
-			selectedColorInput.value = selectedColor;
-
-			colorItems.forEach(i => i.classList.remove('active'));
-			this.classList.add('active');
-		});
-	});
-});
-</script>
 
 </body>
 

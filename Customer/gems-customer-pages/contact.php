@@ -65,6 +65,7 @@ if (!empty($_SESSION['cart'])) {
         $subtotal += $total;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
