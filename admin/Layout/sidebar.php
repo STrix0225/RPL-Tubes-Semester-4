@@ -49,6 +49,6 @@
     </ul>
     <button type="button" id="sidebarCollapse" 
         class="btn btn-sm btn-outline-secondary position-absolute start-50 translate-middle-x mt-3">
-        <i class="fas fa-bars"></i>
+        <i class="fas fa-arrow-left"></i>
     </button>
 </nav>
