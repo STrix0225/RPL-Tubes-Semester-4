@@ -91,11 +91,9 @@ if (isset($_POST['update_status'])) {
                                         <th>Status</th>
                                         <th>Payment Method</th>
                                         <th>Order Date</th>
-                                        <th>City</th>
                                         <th>Address</th>
-                                        <th>Phone</th>
                                         <th>Actions</th>
-                                    </tr>
+                                    </tr>   
                                 </thead>
                                 <tbody>
                                     <?php foreach ($orders as $index => $order): ?>
@@ -120,9 +118,7 @@ if (isset($_POST['update_status'])) {
                                         </td>
                                         <td><?php echo htmlspecialchars($order['payment_method'] ?? 'N/A'); ?></td>
                                         <td><?php echo date('M d, Y H:i', strtotime($order['order_date'])); ?></td>
-                                        <td><?php echo htmlspecialchars($order['customer_city']); ?></td>
                                         <td><?php echo htmlspecialchars($order['customer_address']); ?></td>
-                                        <td><?php echo htmlspecialchars($order['customer_phone']); ?></td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
