@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $product_sold = 0;
     $product_qty = 0;
 
-    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
     $upload_dir = '../../Customer/gems-customer-pages/images/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 

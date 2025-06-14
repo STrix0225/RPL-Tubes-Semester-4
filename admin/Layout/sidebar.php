@@ -45,10 +45,10 @@
                 <li><a href="../../admin/Pages/riviewCustomer.php"><i class="fas fa-star"></i> Review Coment</a></li>
             </ul>
         </li>
-        <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
     </ul>
     <button type="button" id="sidebarCollapse" 
         class="btn btn-sm btn-outline-secondary position-absolute start-50 translate-middle-x mt-3">
         <i class="fas fa-arrow-left"></i>
     </button>
 </nav>
+

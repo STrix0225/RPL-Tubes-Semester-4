@@ -4,6 +4,8 @@ if (!isAdminLoggedIn()) {
     redirect('../login.php');
 }
 
+$highlight = $_GET['highlight'] ?? '';
+
 // Handle AJAX request for chart data
 if (isset($_GET['kategori']) && isset($_GET['ajax'])) {
     header('Content-Type: application/json');
@@ -205,33 +207,34 @@ if ($result) {
                                 </thead>
                                 <tbody>
                                     <?php foreach ($products as $index => $product): ?>
-                                    <tr>
-                                        <td><?php echo $index + 1; ?></td>
-                                        <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($product['product_name']); ?></td>
-                                        <td><?php echo htmlspecialchars($product['product_brand']); ?></td>
-                                        <td><?php echo htmlspecialchars($product['product_category']); ?></td>
-                                        <td><?php echo htmlspecialchars($product['product_color']); ?></td>
-                                        <td>
-                                            <img src="../../Customer/gems-customer-pages/images/<?php echo htmlspecialchars($product['product_image1']); ?>" 
-                                                 alt="Product Image" class="product-img">
-                                        </td>
-                                        <td>$<?php echo number_format($product['product_price'], 2); ?></td>
-                                        <td><?php echo htmlspecialchars($product['product_qty'] ?? 'N/A'); ?></td>
-                                        <td class="action-btns">
-                                            <button 
-                                            class="btn btn-sm btn-outline-primary rounded-circle edit-btn" 
-                                            title="Edit"
-                                            data-id="<?php echo $product['product_id']; ?>">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                            <button class="btn btn-sm btn-outline-danger rounded-circle delete-btn" 
-                                                title="Delete"
-                                                data-id="<?php echo $product['product_id']; ?>">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        </td>
-                                    </tr>
+                        <tr class="<?= ($highlight && stripos($product['product_name'], $highlight) !== false) ? 'table-warning' : '' ?>">
+                            <td><?php echo $index + 1; ?></td>
+                            <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                            <td><?php echo htmlspecialchars($product['product_name']); ?></td>
+                            <td><?php echo htmlspecialchars($product['product_brand']); ?></td>
+                            <td><?php echo htmlspecialchars($product['product_category']); ?></td>
+                            <td><?php echo htmlspecialchars($product['product_color']); ?></td>
+                            <td>
+                                <img src="../../Customer/gems-customer-pages/images/<?php echo htmlspecialchars($product['product_image1']); ?>" 
+                                     alt="Product Image" class="product-img">
+                            </td>
+                            <td>$<?php echo number_format($product['product_price'], 2); ?></td>
+                            <td><?php echo htmlspecialchars($product['product_qty'] ?? 'N/A'); ?></td>
+                            <td class="action-btns">
+                                <button 
+                                    class="btn btn-sm btn-outline-primary rounded-circle edit-btn" 
+                                    title="Edit"
+                                    data-id="<?php echo $product['product_id']; ?>">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button 
+                                    class="btn btn-sm btn-outline-danger rounded-circle delete-btn" 
+                                    title="Delete"
+                                    data-id="<?php echo $product['product_id']; ?>">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
@@ -349,7 +352,7 @@ if ($result) {
                 <div class="col-md-6">
                   <label for="editProductPrice" class="form-label">Price <span class="text-danger">*</span></label>
                   <div class="input-group">
-                    <span class="input-group-text">Rp</span>
+                    <span class="input-group-text">$</span>
                     <input type="number" step="0.01" class="form-control" id="editProductPrice" name="editProductPrice" required>
                   </div>
                 </div>
@@ -357,7 +360,7 @@ if ($result) {
                 <div class="col-md-6">
                   <label for="editProductDiscount" class="form-label">Discount</label>
                   <div class="input-group">
-                    <span class="input-group-text">Rp</span>
+                    <span class="input-group-text">%</span>
                     <input type="number" step="0.01" class="form-control" id="editProductDiscount" name="editProductDiscount">
                   </div>
                 </div>
@@ -450,7 +453,19 @@ if ($result) {
       </div>
     </div>
     <!-- End Edit Product Modal -->
-
+    <!-- Success Toast Template -->
+    <div id="successToast" class="success-toast" style="display: none;">
+        <div class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body text-center">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h5 class="mb-0">Success!</h5>
+                <p class="mb-0" id="successMessage">Supplier updated successfully</p>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -600,6 +615,17 @@ $(document).ready(function () {
     loadChart();
 });
 </script>
-
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const highlight = urlParams.get('highlight');
+    if (highlight) {
+        const rows = document.querySelectorAll('#productsTable tbody tr');
+        rows.forEach(row => {
+            if (row.innerText.toLowerCase().includes(highlight.toLowerCase())) {
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+</script>
 </body>
 </html>

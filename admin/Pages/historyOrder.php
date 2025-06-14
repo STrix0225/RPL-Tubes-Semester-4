@@ -21,11 +21,12 @@ if ($result) {
     $header_data['recent_orders'] = $result->fetch_all(MYSQLI_ASSOC);
 }
 
+// Get weekly summaries with proper execution
 $weeklySummaries = [];
 $query = "
     SELECT 
         YEAR(order_date) AS year,
-        WEEK(order_date) AS week,
+        WEEK(order_date, 3) AS week_number,
         MIN(DATE(order_date)) AS start_date,
         MAX(DATE(order_date)) AS end_date,
         COUNT(*) AS total_orders,
@@ -33,10 +34,15 @@ $query = "
         AVG(order_cost) AS avg_order_value
     FROM orders
     WHERE order_status IN ('completed', 'cancelled')
-    GROUP BY YEAR(order_date), WEEK(order_date)
-    ORDER BY year DESC, week DESC
+    GROUP BY YEAR(order_date), WEEK(order_date, 3)
+    ORDER BY year DESC, week_number DESC
 ";
+$result = $conn->query($query);
+if ($result) {
+    $weeklySummaries = $result->fetch_all(MYSQLI_ASSOC);
+}
 
+// Get monthly summaries with proper execution
 $monthlySummaries = [];
 $query = "
     SELECT 
@@ -51,7 +57,12 @@ $query = "
     GROUP BY YEAR(order_date), MONTH(order_date)
     ORDER BY year DESC, month DESC
 ";
+$result = $conn->query($query);
+if ($result) {
+    $monthlySummaries = $result->fetch_all(MYSQLI_ASSOC);
+}
 
+// Get yearly summaries
 $yearlySummaries = [];
 $query = "
     SELECT 
@@ -182,26 +193,30 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($weeklySummaries as $summary): ?>
-                                            <tr>
-                                                <td>Week <?php echo $summary['week']; ?>, <?php echo $summary['year']; ?></td>
-                                                <td>
-                                                    <?php 
-                                                        echo date('M d', strtotime($summary['start_date'])) . ' - ' . 
-                                                             date('M d', strtotime($summary['end_date'])); 
-                                                    ?>
-                                                </td>
-                                                <td><?php echo $summary['total_orders']; ?></td>
-                                                <td>$<?php echo number_format($summary['total_revenue'], 2); ?></td>
-                                                <td>$<?php echo number_format($summary['avg_order_value'], 2); ?></td>
-                                                <td>
-                                                    <a href="?week=<?php echo $summary['week']; ?>&year=<?php echo $summary['year']; ?>" 
-                                                       class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-search me-1"></i> View
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <?php endforeach; ?>
+                                            <?php if (empty($weeklySummaries)): ?>
+                                                <tr><td colspan="6" class="text-center">No weekly data available</td></tr>
+                                            <?php else: ?>
+                                                <?php foreach ($weeklySummaries as $summary): ?>
+                                                <tr>
+                                                    <td>Week <?php echo $summary['week_number']; ?>, <?php echo $summary['year']; ?></td>
+                                                    <td>
+                                                        <?php 
+                                                            echo date('M j', strtotime($summary['start_date'])) . ' - ' . 
+                                                                 date('M j', strtotime($summary['end_date'])); 
+                                                        ?>
+                                                    </td>
+                                                    <td><?php echo $summary['total_orders']; ?></td>
+                                                    <td>$<?php echo number_format($summary['total_revenue'], 2); ?></td>
+                                                    <td>$<?php echo number_format($summary['avg_order_value'], 2); ?></td>
+                                                    <td>
+                                                        <a href="?week=<?php echo $summary['week_number']; ?>&year=<?php echo $summary['year']; ?>" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-search me-1"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -226,21 +241,25 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($monthlySummaries as $summary): ?>
-                                            <tr>
-                                                <td><?php echo $summary['month_name']; ?></td>
-                                                <td><?php echo $summary['year']; ?></td>
-                                                <td><?php echo $summary['total_orders']; ?></td>
-                                                <td>$<?php echo number_format($summary['total_revenue'], 2); ?></td>
-                                                <td>$<?php echo number_format($summary['avg_order_value'], 2); ?></td>
-                                                <td>
-                                                    <a href="?month=<?php echo $summary['month']; ?>&year=<?php echo $summary['year']; ?>" 
-                                                       class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-search me-1"></i> View
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <?php endforeach; ?>
+                                            <?php if (empty($monthlySummaries)): ?>
+                                                <tr><td colspan="6" class="text-center">No monthly data available</td></tr>
+                                            <?php else: ?>
+                                                <?php foreach ($monthlySummaries as $summary): ?>
+                                                <tr>
+                                                    <td><?php echo $summary['month_name']; ?></td>
+                                                    <td><?php echo $summary['year']; ?></td>
+                                                    <td><?php echo $summary['total_orders']; ?></td>
+                                                    <td>$<?php echo number_format($summary['total_revenue'], 2); ?></td>
+                                                    <td>$<?php echo number_format($summary['avg_order_value'], 2); ?></td>
+                                                    <td>
+                                                        <a href="?month=<?php echo $summary['month']; ?>&year=<?php echo $summary['year']; ?>" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-search me-1"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -264,20 +283,24 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($yearlySummaries as $summary): ?>
-                                            <tr>
-                                                <td><?php echo $summary['year']; ?></td>
-                                                <td><?php echo $summary['total_orders']; ?></td>
-                                                <td>$<?php echo number_format($summary['total_revenue'], 2); ?></td>
-                                                <td>$<?php echo number_format($summary['avg_order_value'], 2); ?></td>
-                                                <td>
-                                                    <a href="?year=<?php echo $summary['year']; ?>" 
-                                                       class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-search me-1"></i> View
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <?php endforeach; ?>
+                                            <?php if (empty($yearlySummaries)): ?>
+                                                <tr><td colspan="5" class="text-center">No yearly data available</td></tr>
+                                            <?php else: ?>
+                                                <?php foreach ($yearlySummaries as $summary): ?>
+                                                <tr>
+                                                    <td><?php echo $summary['year']; ?></td>
+                                                    <td><?php echo $summary['total_orders']; ?></td>
+                                                    <td>$<?php echo number_format($summary['total_revenue'], 2); ?></td>
+                                                    <td>$<?php echo number_format($summary['avg_order_value'], 2); ?></td>
+                                                    <td>
+                                                        <a href="?year=<?php echo $summary['year']; ?>" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-search me-1"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -332,11 +355,12 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
                                                             <i class="fas fa-cog"></i>
                                                         </button>
                                                         <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a class="dropdown-item" href="orderDetails.php?id=<?php echo $order['order_id']; ?>">
-                                                                    <i class="fas fa-eye me-2"></i>View Details
-                                                                </a>
-                                                            </li>
+                                                            <li><button class="dropdown-item btn-view-order" 
+                                                                data-id="<?php echo $order['order_id']; ?>" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#orderDetailsModal">
+                                                                <i class="fas fa-eye me-2"></i>View Details
+                                                            </button></li>
                                                             <li><hr class="dropdown-divider"></li>
                                                             <li>
                                                                 <form method="post" class="px-2 py-1">
@@ -370,6 +394,24 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
         </div>
     </div>
 
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsContent">
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-primary"></div>
+                        <p class="mt-3">Loading data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -378,25 +420,52 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
     <script src="../js/script.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize DataTables
+            // Initialize DataTables with responsive settings
             $('#weeklyTable').DataTable({
                 responsive: true,
-                order: [[0, 'desc']]
+                order: [[0, 'desc']],
+                pageLength: 10
             });
             
             $('#monthlyTable').DataTable({
                 responsive: true,
-                order: [[1, 'desc'], [0, 'desc']]
+                order: [[1, 'desc'], [0, 'desc']],
+                pageLength: 10
             });
             
             $('#yearlyTable').DataTable({
                 responsive: true,
-                order: [[0, 'desc']]
+                order: [[0, 'desc']],
+                pageLength: 10
             });
             
             $('#detailedTable').DataTable({
                 responsive: true,
-                order: [[1, 'desc']]
+                order: [[1, 'desc']],
+                pageLength: 25
+            });
+
+            // Order details modal handler
+            $('.btn-view-order').on('click', function() {
+                const orderId = $(this).data('id');
+                $('#orderDetailsContent').html(`
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-primary"></div>
+                        <p class="mt-3">Loading data...</p>
+                    </div>
+                `);
+
+                $.ajax({
+                    url: 'orderDetails.php',    
+                    method: 'GET',
+                    data: { id: orderId },
+                    success: function(response) {
+                        $('#orderDetailsContent').html(response);
+                    },
+                    error: function() {
+                        $('#orderDetailsContent').html('<div class="alert alert-danger m-3">Failed to load order details.</div>');
+                    }
+                });
             });
 
             // Export to CSV
@@ -550,7 +619,8 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
                     body: data,
                     startY: 20,
                     theme: 'grid',
-                    headStyles: { fillColor: [41, 128, 185] }
+                    headStyles: { fillColor: [41, 128, 185] },
+                    styles: { fontSize: 8 }
                 });
                 
                 doc.save('order_history_' + activeTab + '.pdf');

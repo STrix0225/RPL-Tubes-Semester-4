@@ -113,9 +113,9 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                             <?php endif; ?>
                                         </td>
                                         <td class="action-btns">
-                                            <a href="editSupplier.php?id=<?php echo $supplier['id_supplier']; ?>" 
-                                               class="btn btn-sm btn-outline-primary rounded-circle" 
-                                               title="Edit">
+                                            <a href="#" class="btn btn-sm btn-outline-primary rounded-circle edit-btn" 
+                                            title="Edit"
+                                            data-id="<?php echo $supplier['id_supplier']; ?>">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <button class="btn btn-sm btn-outline-danger rounded-circle delete-btn" 
@@ -158,7 +158,63 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
             <?php include '../Layout/footer.php'; ?>
         </div>
     </div>
-
+    <!-- Edit Supplier Modal -->
+    <div class="modal fade" id="editSupplierModal" tabindex="-1" aria-labelledby="editSupplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSupplierModalLabel">Edit Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editSupplierForm" action="updateSupplier.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="id_supplier" id="edit_id_supplier">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="edit_nama_PT_supplier" class="form-label">Company Name</label>
+                                <input type="text" class="form-control" id="edit_nama_PT_supplier" name="nama_PT_supplier" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_product_brand" class="form-label">Product Brand</label>
+                                <input type="text" class="form-control" id="edit_product_brand" name="product_brand">
+                            </div>
+                            <div class="col-12">
+                                <label for="edit_alamat_supplier" class="form-label">Address</label>
+                                <textarea class="form-control" id="edit_alamat_supplier" name="alamat_supplier" rows="3" required></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_contact_PT" class="form-label">Company Contact</label>
+                                <input type="text" class="form-control" id="edit_contact_PT" name="contact_PT" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_email_supplier" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="edit_email_supplier" name="email_supplier">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_sales_name" class="form-label">Sales Name</label>
+                                <input type="text" class="form-control" id="edit_sales_name" name="sales_name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_contact_person" class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" id="edit_contact_person" name="contact_person">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_status" class="form-label">Status</label>
+                                <select class="form-select" id="edit_status" name="status">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="saveSupplierBtn" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -184,19 +240,106 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="../js/sidebar.js"></script>
     <script>
-        $(document).ready(function() {
-            // Initialize DataTable
-            $('#suppliersTable').DataTable({
-                responsive: true
-            });
+      $(document).ready(function() {
+    // Initialize DataTable
+    $('#suppliersTable').DataTable({
+        responsive: true
+    });
 
-            // Delete button click handler
-            $('.delete-btn').click(function() {
-                var supplierId = $(this).data('id');
-                $('#confirmDelete').attr('href', 'listSupplier.php?delete=' + supplierId);
-                $('#deleteModal').modal('show');
-            });
+    // Delete button click handler
+    $('.delete-btn').click(function() {
+        var supplierId = $(this).data('id');
+        $('#confirmDelete').attr('href', 'listSupplier.php?delete=' + supplierId);
+        $('#deleteModal').modal('show');
+    });
+
+    // Edit button click handler - load data via AJAX
+    $(document).on('click', '.edit-btn', function() {
+        var supplierId = $(this).data('id');
+        
+        $.ajax({
+            url: 'getSupplierData.php',
+            type: 'GET',
+            data: { id: supplierId },
+            dataType: 'json',
+            success: function(response) {
+                console.log('AJAX Response:', response); // Debugging line
+                if (response.success) {
+                    $('#edit_id_supplier').val(response.data.id_supplier);
+                    $('#edit_nama_PT_supplier').val(response.data.nama_PT_supplier);
+                    $('#edit_alamat_supplier').val(response.data.alamat_supplier);
+                    $('#edit_contact_PT').val(response.data.contact_PT);
+                    $('#edit_email_supplier').val(response.data.email_supplier);
+                    $('#edit_sales_name').val(response.data.sales_name);
+                    $('#edit_contact_person').val(response.data.contact_person);
+                    $('#edit_product_brand').val(response.data.product_brand);
+                    $('#edit_status').val(response.data.status);
+                    
+                    $('#editSupplierModal').modal('show');
+                } else {
+                    alert('Error loading supplier data: ' + (response.message || 'Unknown error'));
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', status, error); // Debugging line
+                alert('Error loading supplier data. Check console for details.');
+            }
         });
+    });
+
+    // Add this before the form submission handler
+$('#editSupplierForm').on('submit', function(e) {
+    // Simple validation example
+    if ($('#edit_nama_PT_supplier').val().trim() === '') {
+        alert('Company Name is required');
+        return false;
+    }
+    // Add more validations as needed
+});
+
+    // Form submission handler
+    $('#editSupplierForm').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted'); // Debugging line
+        
+        // Show loading state
+        var submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                console.log('Update Response:', response); // Debugging line
+                try {
+                    var result = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (result.success) {
+                        // Show success message and reload
+                        alert('Supplier updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error updating supplier: ' + (result.message || 'Unknown error'));
+                    }
+                } catch (e) {
+                    console.error('JSON Parse Error:', e);
+                    alert('Error parsing server response. Check console for details.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Update Error:', status, error); // Debugging line
+                alert('Error updating supplier. Check console for details.');
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).html('Save Changes');
+            }
+        });
+    });
+    
+    $('#saveSupplierBtn').click(function() {
+    $('#editSupplierForm').submit();
+    });
+});
     </script>
     <script src="../js/script.js"></script>
 </body>

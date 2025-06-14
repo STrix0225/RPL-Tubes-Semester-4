@@ -232,14 +232,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="col-md-4">
                                     <label class="form-label">Original Price (per unit) <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
+                                        <span class="input-group-text">$</span>
                                         <input type="number" class="form-control" name="product_ori_price" step="0.01" min="0" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Selling Price (20% markup)</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
+                                        <span class="input-group-text">$</span>
                                         <input type="text" class="form-control" id="sellingPrice" readonly>
                                     </div>
                                 </div>
