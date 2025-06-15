@@ -1,6 +1,12 @@
 <?php
 require_once '../../Database/connection.php';
 
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 $order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$order_id) {

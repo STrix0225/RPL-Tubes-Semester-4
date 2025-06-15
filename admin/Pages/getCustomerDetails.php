@@ -1,9 +1,9 @@
 <?php
 require_once '../../Database/connection.php';
 
-if (!isAdminLoggedIn()) {
-    http_response_code(403);
-    echo "<div class='alert alert-danger'>Access denied. Please login as admin.</div>";
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
     exit();
 }
 

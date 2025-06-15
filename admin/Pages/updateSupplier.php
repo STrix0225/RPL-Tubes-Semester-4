@@ -1,6 +1,10 @@
 <?php
 require_once '../../Database/connection.php';
 
+if (!isAdminLoggedIn()) {
+    redirect('../login.php');
+}
+
 header('Content-Type: application/json');
 
 // Check if required fields are present

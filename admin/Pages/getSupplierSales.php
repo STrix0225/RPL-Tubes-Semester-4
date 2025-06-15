@@ -1,9 +1,10 @@
 <?php
 require_once '../../Database/connection.php';
 
-if (!isAdminLoggedIn()) {
-    http_response_code(403);
-    exit('<div class="alert alert-danger">Unauthorized access</div>');
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
 }
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {

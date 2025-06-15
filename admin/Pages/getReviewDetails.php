@@ -5,8 +5,9 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die('<div class="alert alert-danger">Invalid review ID</div>');
 }
 
+// Pastikan admin sudah login
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: ../login.php');
+    header("Location: ../login.php");
     exit();
 }
 

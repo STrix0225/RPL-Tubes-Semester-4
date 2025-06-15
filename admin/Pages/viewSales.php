@@ -2,8 +2,7 @@
 require_once '../../Database/connection.php';
 
 if (!isAdminLoggedIn()) {
-    http_response_code(403);
-    exit('Unauthorized');
+    redirect('../login.php');
 }
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {

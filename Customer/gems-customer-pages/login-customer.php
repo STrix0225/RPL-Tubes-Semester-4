@@ -123,7 +123,7 @@ ob_end_flush();
                     <input type="checkbox" class="form-check-input" id="showPassword" onclick="togglePassword()">
                     <label class="form-check-label" for="showPassword">Tampilkan Password</label>
                   </div>
-                  <a href="forgot-password.php" class="forgot-pass">Lupa password?</a>
+                  
                 </div>
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>

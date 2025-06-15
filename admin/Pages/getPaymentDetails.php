@@ -1,6 +1,12 @@
 <?php
 require_once '../../Database/connection.php';
 
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 // Check if payment_id is provided
 if (!isset($_GET['payment_id']) || !is_numeric($_GET['payment_id'])) {
     die('<div class="alert alert-danger">Invalid payment ID</div>');

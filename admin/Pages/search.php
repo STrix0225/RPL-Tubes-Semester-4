@@ -1,6 +1,10 @@
 <?php
 require_once '../../Database/connection.php';
 
+if (!isAdminLoggedIn()) {
+    redirect('../login.php');
+}
+
 $query = $_GET['q'] ?? '';
 $results = [];
 
