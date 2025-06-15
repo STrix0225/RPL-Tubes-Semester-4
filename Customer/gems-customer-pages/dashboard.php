@@ -1,5 +1,10 @@
 <?php
 include('../../Database/connection.php');
+session_start();
+
+// Query khusus untuk New Arrivals (5 produk terbaru)
+$query_new_arrivals = "SELECT * FROM products ORDER BY product_id DESC LIMIT 5";
+$new_arrivals = $conn->query($query_new_arrivals);
 
 // Query khusus untuk New Arrivals (5 produk terbaru)
 $query_new_arrivals = "SELECT * FROM products ORDER BY product_id DESC LIMIT 5";

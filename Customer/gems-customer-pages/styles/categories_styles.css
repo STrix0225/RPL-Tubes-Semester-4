@@ -1417,6 +1417,14 @@ section
 	-ms-transition: all 0.3s ease;
 	-o-transition: all 0.3s ease;
 	transition: all 0.3s ease;
+
+	/*background: #1e1e27;
+    color: white;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 15px;*/
 }
 
 .filter_button:hover
@@ -1494,6 +1502,9 @@ section
 *********************************/
 .main_content
 {
+	/*flex: 1;
+	padding: 20px;
+	border-radius: 8px;*/
 	float: left;
 	width: calc(100% - 200px);
 	padding-left: 10px;
@@ -1504,7 +1515,6 @@ section
 
 .product-grid
 {
-	
 	width: 100%;
 	margin-top: 10px;
 	display: grid;
@@ -1620,7 +1630,6 @@ section
 	box-shadow: 0 25px 29px rgba(63, 78, 100, 0.15);
 	border: solid 2px rgba(235,235,235,1);
 }
-
 .product_name a
 {
 	color: #1e1e27;
@@ -1881,6 +1890,27 @@ section
     margin: 0;
 	font-weight: 500;
 }
+
+@media (max-width: 576px) {
+    .benefit_col {
+        flex: 1 0 100%; /* 1 kolom pada mobile */
+    }
+    
+    .benefit_item {
+        height: auto;
+        min-height: 120px;
+        padding: 15px 10px;
+    }
+    
+    .benefit_icon i {
+        font-size: 24px;
+    }
+    
+    .benefit_content h6 {
+        font-size: 14px;
+    }
+}
+
 
 /*********************************
 9. Newsletter
@@ -2156,7 +2186,7 @@ body.dark-mode {
 /* Search Box Styles */
 .search-box {
     display: flex;
-    align-items: center;
+    malign-items: center;
     margin-left: 15px;
 	padding-bottom: 40px;
 	padding-left: 10px;

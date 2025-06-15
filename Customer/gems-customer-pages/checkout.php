@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('../../Database/connection.php');
 
 // Handle PayPal callback
