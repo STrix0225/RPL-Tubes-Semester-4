@@ -6,7 +6,6 @@ if (!isset($conn)) {
 if (!isAdminLoggedIn()) {
     redirect('login.php');
 }
-// Statistik
 $stats = [
     'total_products' => 0,
     'active_suppliers' => 0,
