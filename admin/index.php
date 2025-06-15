@@ -3,7 +3,9 @@ if (!isset($conn)) {
     require_once '../Database/connection.php';
 }
 
-
+if (!isAdminLoggedIn()) {
+    redirect('login.php');
+}
 // Statistik
 $stats = [
     'total_products' => 0,

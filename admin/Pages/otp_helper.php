@@ -1,6 +1,12 @@
 <?php
 require_once '../Database/connection.php';
 
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 function generateOTP() {
     return strval(rand(100000, 999999));
 }

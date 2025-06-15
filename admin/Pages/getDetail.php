@@ -1,6 +1,12 @@
 <?php
 require_once '../../Database/connection.php';
 
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 $type = $_GET['type'] ?? '';
 $id = $_GET['id'] ?? 0;
 

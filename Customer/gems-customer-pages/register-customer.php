@@ -118,10 +118,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="error-message" id="password-error"></div>
                   </div>
                   <div class="form-group">
-                    <label>Telepon</label>
-                    <input type="text" name="customer_phone" class="form-control p_input" required>
-                    <div class="error-message" id="phone-error"></div>
-                  </div>
+                  <label>Telepon</label>
+                  <input type="text" name="customer_phone" id="phoneInput" class="form-control p_input" required>
+                  <div class="error-message" id="phone-error"></div>
+                </div>
+                <script>
+                  document.getElementById('phoneInput').addEventListener('input', function(e) {
+                    // Hanya biarkan angka
+                    this.value = this.value.replace(/[^0-9]/g, '');
+
+                    // Validasi tambahan jika perlu
+                    if (this.value.length < 10) {
+                      document.getElementById('phone-error').textContent = 'Nomor telepon harus minimal 10 digit';
+                    } else {
+                      document.getElementById('phone-error').textContent = '';
+                    }
+                  });
+                </script>
                   <div class="form-group">
                     <label>Alamat</label>
                     <input type="text" name="customer_address" class="form-control p_input" required>

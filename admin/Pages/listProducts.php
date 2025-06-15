@@ -1,7 +1,9 @@
 <?php
 require_once '../../Database/connection.php';
-if (!isAdminLoggedIn()) {
-    redirect('../login.php');
+// Pastikan admin sudah login
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
 }
 
 $highlight = $_GET['highlight'] ?? '';
