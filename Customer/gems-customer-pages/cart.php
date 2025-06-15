@@ -152,6 +152,7 @@ $total = $subtotal + $shipping;
                                         </a>
                                         <ul class="account_selection">
                                             <?php if (isset($_SESSION['customer_id'])): ?>
+
                                                 <li><a href="login-customer.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
                                                 <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                                             <?php else: ?>

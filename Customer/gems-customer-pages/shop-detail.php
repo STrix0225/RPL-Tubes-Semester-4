@@ -388,8 +388,6 @@ $avg_rating = round($avg_rating, 1);
     </div>
   </div>
 </div>
-
-
 				<div class="col-lg-5">
 							<div class="product_details">
 								<div class="original_price">$<?php echo number_format($product['product_price'], 2); ?></div>
@@ -1167,7 +1165,6 @@ function getTextColor($colorName) {
 			display: flex;
 			align-items: center;
 		}
-
 		.dark-mode .admin_reply {
 			background: #2d2d2d;
 			border-left-color: #388E3C;
@@ -1229,6 +1226,7 @@ function getTextColor($colorName) {
     width: 0;
     height: 0;
 }
+
 
 .color-option-text.selected {
     background: #4CAF50; /* Warna hijau saat dipilih */

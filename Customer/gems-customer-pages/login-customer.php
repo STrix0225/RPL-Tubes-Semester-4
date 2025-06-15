@@ -24,7 +24,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 
 // Proses form login
-// Proses form login
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi CSRF token
     if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || 
@@ -34,7 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Sanitasi input
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password_input = $_POST['password'];
-
         // Validasi khusus untuk login admin
         if (strtolower(trim($email)) === "login admin" && $password_input === "123") {
             header("Location: ../../admin/login.php");

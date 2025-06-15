@@ -1,5 +1,6 @@
 <?php
 include('../../Database/connection.php');
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
     $productId = $_POST['product_id'] ?? 0;
@@ -115,7 +116,6 @@ try {
         exit();
     }
 
-    // Calculate shopping total
     if (!empty($_SESSION['cart'])) {
         $ids = array_column($_SESSION['cart'], 'product_id');
         if (!empty($ids)) {
@@ -172,9 +172,9 @@ try {
     $error = "Terjadi kesalahan: " . $e->getMessage();
 }
 
-// Close database connection
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -221,7 +221,6 @@ $conn->close();
 </head>
 
 <body>
-
     <div class="super_container">
 
     <!-- Header -->
