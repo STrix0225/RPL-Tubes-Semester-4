@@ -41,6 +41,11 @@ $recent_orders_notif = $header_data['recent_orders'] ?? [];
 </div>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="../../Customer/gems-customer-pages/dashboard.php" title="Go to Customer Dashboard">
+                    <i class="fas fa-store"></i>
+                </a>
+            </li>
             <!-- Notifikasi -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -134,16 +139,12 @@ $recent_orders_notif = $header_data['recent_orders'] ?? [];
         background-color: #f8f9fa;
     }
 </style>
-
-<!-- Add this JavaScript for live search functionality -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('globalSearchForm');
     const searchInput = document.getElementById('globalSearch');
     const searchResults = document.getElementById('searchResults');
     const searchDropdown = document.getElementById('searchResultsDropdown');
-
-    // Handle form submission
     searchForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const query = searchInput.value.trim();
@@ -151,8 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = `../../admin/Pages/search.php?q=${encodeURIComponent(query)}`;
         }
     });
-
-    // Handle live search
     searchInput.addEventListener('input', function(e) {
         const query = e.target.value.trim();
         

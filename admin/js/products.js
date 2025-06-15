@@ -97,48 +97,49 @@ $(document).ready(function () {
 
     // Submit form edit produk
     // Edit Product Form Submission
+const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+
+// Edit Product Form Submission
 $('#editProductForm').on('submit', function(e) {
     e.preventDefault();
     
-    // Show loading state
     const submitBtn = $(this).find('button[type="submit"]');
     submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
     
-    // Create FormData object for file uploads
     const formData = new FormData(this);
     
     $.ajax({
-        url: 'updateProduct.php', // Make sure this endpoint exists
+        url: 'editProduct.php',
         type: 'POST',
         data: formData,
         processData: false,
         contentType: false,
         success: function(response) {
-            console.log('Update Response:', response);
             try {
                 const result = typeof response === 'string' ? JSON.parse(response) : response;
                 if (result.success) {
-                    // Show success toast
+                    // Update success message
                     $('#successMessage').text(result.message || 'Product updated successfully');
-                    $('#successToast').fadeIn();
                     
-                    // Hide after 3 seconds and reload
-                    setTimeout(function() {
-                        $('#successToast').fadeOut(function() {
-                            location.reload();
-                        });
-                    }, 3000);
+                    // Show toast with animation
+                    successToast.show();
+                    
+                    // Hide modal
+                    $('#editProductModal').modal('hide');
+                    
+                    // Reload after 2 seconds
+                    setTimeout(() => location.reload(), 2000);
                 } else {
-                    alert('Error updating product: ' + (result.message || 'Unknown error'));
+                    alert('Error: ' + (result.message || 'Failed to update product'));
                 }
             } catch (e) {
                 console.error('JSON Parse Error:', e);
-                alert('Error parsing server response. Check console for details.');
+                alert('Error parsing server response');
             }
         },
         error: function(xhr, status, error) {
-            console.error('Update Error:', status, error);
-            alert('Error updating product. Check console for details.');
+            console.error('AJAX Error:', status, error);
+            alert('Error: ' + error);
         },
         complete: function() {
             submitBtn.prop('disabled', false).html('Save Changes');

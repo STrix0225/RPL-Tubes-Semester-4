@@ -49,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle image uploads
         $upload_dir = '../../Customer/gems-customer-pages/images/';
-        $image_fields = ['product_image1', 'product_image2', 'product_image3'];
+        // In the image handling section, add product_image4 to the fields array:
+        $image_fields = ['product_image1', 'product_image2', 'product_image3', 'product_image4'];
         
         foreach ($image_fields as $index => $field) {
             if (!empty($_FILES[$field]['name'])) {

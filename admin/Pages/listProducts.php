@@ -454,18 +454,30 @@ if ($result) {
     </div>
     <!-- End Edit Product Modal -->
     <!-- Success Toast Template -->
-    <div id="successToast" class="success-toast" style="display: none;">
-        <div class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-body text-center">
-                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-                </svg>
-                <h5 class="mb-0">Success!</h5>
-                <p class="mb-0" id="successMessage">Supplier updated successfully</p>
+    <!-- Success Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-shrink-0">
+            <div class="success-animation">
+              <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+              </svg>
             </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6 class="mb-0">Success!</h6>
+            <small id="successMessage">Product updated successfully</small>
+          </div>
         </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
+  </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

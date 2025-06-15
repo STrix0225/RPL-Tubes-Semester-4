@@ -1,6 +1,11 @@
 <?php
 require_once '../../Database/connection.php';
 
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if (!isAdminLoggedIn()) {
     redirect('../login.php');
 }
@@ -25,28 +30,62 @@ if ($result) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_text'])) {
     $review_id = (int)$_POST['review_id'];
     $reply_text = trim($_POST['reply_text']);
+    $admin_id = $_SESSION['admin_id'];
     
     if (!empty($reply_text)) {
-        $stmt = $conn->prepare("UPDATE reviews SET admin_reply = ?, reply_date = NOW() WHERE review_id = ?");
-        $stmt->bind_param("si", $reply_text, $review_id);
+        // First get the product_id from the original review
+        $stmt = $conn->prepare("SELECT product_id FROM reviews WHERE review_id = ?");
+        $stmt->bind_param("i", $review_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         
-        if ($stmt->execute()) {
-            header("Location: reviewCustomer.php?success=Reply+submitted+successfully");
-            exit();
-        } else {
-            header("Location: reviewCustomer.php?error=Failed+to+submit+reply");
+        if ($result->num_rows === 0) {
+            header("Location: reviewCustomer.php?error=Review+not+found");
             exit();
         }
+        
+        $review_data = $result->fetch_assoc();
+        $product_id = $review_data['product_id'];
+        
+        // Insert the reply (admin response)
+        $stmt = $conn->prepare("INSERT INTO reviews 
+                              (product_id, admin_id, review_text, review_reply_id) 
+                              VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("iisi", $product_id, $admin_id, $reply_text, $review_id);
+        
+        if ($stmt->execute()) {
+            header("Location: riviewCustomer.php?success=Reply+submitted+successfully");
+            exit();
+        } else {
+            header("Location: riviewCustomer.php?error=Failed+to+submit+reply");
+            exit();
+        }
+    } else {
+        header("Location: riviewCustomer.php?error=Reply+text+cannot+be+empty");
+        exit();
     }
 }
 
 // Get all reviews with customer and product info
 $reviews = [];
-$query = "SELECT r.*, c.customer_name, c.customer_photo, p.product_name, p.product_image1 
+$query = "SELECT 
+            r.review_id,
+            r.product_id,
+            r.customer_id,
+            r.rating,
+            r.review_text,
+            r.review_date,
+            c.customer_name,
+            c.customer_photo,
+            p.product_name,
+            p.product_image1,
+            (SELECT COUNT(*) FROM reviews reply WHERE reply.review_reply_id = r.review_id) AS has_reply
           FROM reviews r
-          JOIN customers c ON r.customer_id = c.customer_id
-          JOIN products p ON r.product_id = p.product_id
+          INNER JOIN customers c ON r.customer_id = c.customer_id
+          INNER JOIN products p ON r.product_id = p.product_id
+          WHERE r.review_reply_id IS NULL  -- Only show original reviews, not replies
           ORDER BY r.review_date DESC";
+          
 $result = $conn->query($query);
 if ($result) {
     $reviews = $result->fetch_all(MYSQLI_ASSOC);
@@ -168,14 +207,18 @@ if ($result) {
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge badge-rating text-white">
-                                                <?php echo htmlspecialchars($review['rating']); ?> <i class="fas fa-star"></i>
-                                            </span>
+                                            <?php if ($review['rating']): ?>
+                                                <span class="badge badge-rating text-white">
+                                                    <?php echo htmlspecialchars($review['rating']); ?> <i class="fas fa-star"></i>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="badge bg-secondary">No rating</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td><?php echo nl2br(htmlspecialchars(substr($review['review_text'], 0, 50) . (strlen($review['review_text']) > 50 ? '...' : ''))); ?></td>
                                         <td><?php echo date('M d, Y', strtotime($review['review_date'])); ?></td>
                                         <td>
-                                            <?php if (!empty($review['admin_reply'])): ?>
+                                            <?php if ($review['has_reply'] > 0): ?>
                                                 <span class="badge bg-success">Replied</span>
                                             <?php else: ?>
                                                 <span class="badge bg-warning text-dark">Pending</span>
@@ -230,7 +273,7 @@ if ($result) {
             $('#reviewsTable').DataTable();
             
             // Handle view review button click
-            $('.view-review-btn').click(function() {
+            $(document).on('click', '.view-review-btn', function() {
                 const reviewId = $(this).data('id');
                 $.ajax({
                     url: 'getReviewDetails.php',

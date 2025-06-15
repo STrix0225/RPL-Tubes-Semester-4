@@ -327,7 +327,7 @@ $('#editSupplierForm').on('submit', function(e) {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Update Error:', status, error); // Debugging line
+                console.error('Update Error:', status, error);
                 alert('Error updating supplier. Check console for details.');
             },
             complete: function() {
