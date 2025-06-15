@@ -1,7 +1,6 @@
 <?php
 
 include('../../Database/connection.php');
-session_start();
 
 // Initialize cart if not exists
 if (!isset($_SESSION['cart'])) {
@@ -122,19 +121,19 @@ if (!empty($_SESSION['cart'])) {
 						<nav class="navbar">
 							<ul class="navbar_menu">
 								<li><a href="dashboard.php">home</a></li>
-								<li><a href="shop.php">shop</a></li>															
-								<li><a href="contact.php">contact</a></li>
+                                <li><a href="shop.php">shop</a></li>
+                                <li><a href="contact.php">contact</a></li>
+                                <li><a href="order.php" class="active">my orders</a></li>
 							</ul>
                                 <ul class="navbar_user">
                                     <li class="account">
-                                        <a href="#">
+                                        <a href="profile.php">
                                             <i class="fa fa-user" aria-hidden="true"></i>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
                                         </a>
                                         <ul class="account_selection">
                                             <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
-                                                <li><a href="change-account.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
+                                                <li><a href="login-customer.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
                                                 <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                                             <?php else: ?>
                                                 <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>

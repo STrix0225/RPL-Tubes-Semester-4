@@ -96,31 +96,56 @@ $(document).ready(function () {
     });
 
     // Submit form edit produk
-    $('#editProductForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
+    // Edit Product Form Submission
+const successToast = new bootstrap.Toast(document.getElementById('successToast'));
 
-        $.ajax({
-            url: 'editProduct.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function (res) {
-                if (res.success) {
+// Edit Product Form Submission
+$('#editProductForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = $(this).find('button[type="submit"]');
+    submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+    
+    const formData = new FormData(this);
+    
+    $.ajax({
+        url: 'editProduct.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            try {
+                const result = typeof response === 'string' ? JSON.parse(response) : response;
+                if (result.success) {
+                    // Update success message
+                    $('#successMessage').text(result.message || 'Product updated successfully');
+                    
+                    // Show toast with animation
+                    successToast.show();
+                    
+                    // Hide modal
                     $('#editProductModal').modal('hide');
-                    alert(res.message);
-                    location.reload();
+                    
+                    // Reload after 2 seconds
+                    setTimeout(() => location.reload(), 2000);
                 } else {
-                    alert(res.message || 'Failed to update product');
+                    alert('Error: ' + (result.message || 'Failed to update product'));
                 }
-            },
-            error: function (xhr) {
-                alert('Error while updating product. ' + xhr.responseText);
+            } catch (e) {
+                console.error('JSON Parse Error:', e);
+                alert('Error parsing server response');
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+            alert('Error: ' + error);
+        },
+        complete: function() {
+            submitBtn.prop('disabled', false).html('Save Changes');
+        }
     });
+});
 
     // Preview gambar saat input file berubah
     $('input[type="file"]').on('change', function () {

@@ -18,11 +18,11 @@
         </li>
         <li>
             <a href="#supplayerMenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <i class="fas fa-truck"></i> Supplayer
+                <i class="fas fa-truck"></i> Supplier
             </a>
             <ul class="collapse list-unstyled ps-3" id="supplayerMenu">
-                <li><a href="../../admin/Pages/addSupplier.php"><i class="fas fa-user"></i> Add Supplayers</a></li>
-                <li><a href="../../admin/Pages/listSupplier.php"><i class="fas fa-users"></i> List Suplayers</a></li>
+                <li><a href="../../admin/Pages/addSupplier.php"><i class="fas fa-user"></i> Add Supplier</a></li>
+                <li><a href="../../admin/Pages/listSupplier.php"><i class="fas fa-users"></i> List Suppliers</a></li>
                 <li><a href="../../admin/Pages/restockProduct.php"><i class="fas fa-truck"></i> Restock Products</a></li>
                 <li><a href="../../admin/Pages/historyRestock.php"><i class="fas fa-history"></i> History Restock</a></li>
             </ul>
@@ -34,6 +34,7 @@
             <ul class="collapse list-unstyled ps-3" id="orderMenu">
                 <li><a href="../../admin/Pages/listOrder.php"><i class="fas fa-list-alt"></i> List Orders</a></li>
                 <li><a href="../../admin/Pages/historyOrder.php"><i class="fas fa-history"></i> History Orders</a></li>
+                <li><a href="../../admin/Pages/paymentCustomer.php"><i class="fas fa-wallet"></i> Payment</a></li>
             </ul>
         </li>
         <li>
@@ -45,10 +46,10 @@
                 <li><a href="../../admin/Pages/riviewCustomer.php"><i class="fas fa-star"></i> Review Coment</a></li>
             </ul>
         </li>
-        <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
     </ul>
     <button type="button" id="sidebarCollapse" 
         class="btn btn-sm btn-outline-secondary position-absolute start-50 translate-middle-x mt-3">
         <i class="fas fa-arrow-left"></i>
     </button>
 </nav>
+

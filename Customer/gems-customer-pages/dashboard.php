@@ -6,6 +6,10 @@ session_start();
 $query_new_arrivals = "SELECT * FROM products ORDER BY product_id DESC LIMIT 5";
 $new_arrivals = $conn->query($query_new_arrivals);
 
+// Query khusus untuk New Arrivals (5 produk terbaru)
+$query_new_arrivals = "SELECT * FROM products ORDER BY product_id DESC LIMIT 5";
+$new_arrivals = $conn->query($query_new_arrivals);
+
 // Fungsi untuk mendapatkan produk berdasarkan kategori
 function getProductsByCategory($conn, $category = null) {
     if ($category) {
@@ -154,19 +158,19 @@ $top_discounted = array_slice($all_products, 0, 10);
 						<nav class="navbar">
 							<ul class="navbar_menu">
 								<li><a href="dashboard.php">home</a></li>
-								<li><a href="shop.php">shop</a></li>															
-								<li><a href="contact.php">contact</a></li>
+                                <li><a href="shop.php">shop</a></li>
+                                <li><a href="contact.php">contact</a></li>
+                                <li><a href="order.php" class="active">my orders</a></li>
 							</ul>
                                 <ul class="navbar_user">
                                     <li class="account">
-                                        <a href="#">
+                                        <a href="profile.php">
                                             <i class="fa fa-user" aria-hidden="true"></i>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
                                         </a>
                                         <ul class="account_selection">
                                             <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
-                                                <li><a href="change-account.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
+                                                <li><a href="login-customer.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
                                                 <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                                             <?php else: ?>
                                                 <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
@@ -707,6 +711,7 @@ $top_discounted = array_slice($all_products, 0, 10);
 		</div>
 	</footer>
 </div>
+
 
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="styles/bootstrap4/popper.js"></script>

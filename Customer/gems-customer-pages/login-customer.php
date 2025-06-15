@@ -6,11 +6,6 @@ ob_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Inisialisasi session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 // Include koneksi database
 require_once '../../Database/connection.php';
 
@@ -38,8 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Sanitasi input
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password_input = $_POST['password'];
+        // Validasi khusus untuk login admin
+        if (strtolower(trim($email)) === "login admin" && $password_input === "123") {
+            header("Location: ../../admin/login.php");
+            exit();
+        }
 
-        // Query ke database
+        // Query ke database untuk customer biasa
         $query = "SELECT * FROM customers WHERE customer_email=?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $email);

@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 include('../../Database/connection.php');
 
 // Ambil order_id dari query string
@@ -26,13 +24,15 @@ $stmt_items = $conn->prepare("SELECT * FROM order_items WHERE order_id = ?");
 $stmt_items->bind_param('i', $order_id);
 $stmt_items->execute();
 $order_items = $stmt_items->get_result()->fetch_all(MYSQLI_ASSOC);
-
+$product_to_review = $order_items[0]['product_id']; // Ambil product_id dari item pertama
 // Hitung total dari item jika diperlukan
 $subtotal = 0;
 foreach ($order_items as $item) {
     $subtotal += $item['product_price'] * $item['product_quantity'];
 }
 $total = $subtotal + ($order['shipping_cost'] ?? 0); // Gunakan shipping_cost dari database
+
+
 ?>
 
 <!DOCTYPE html>
@@ -104,8 +104,9 @@ $total = $subtotal + ($order['shipping_cost'] ?? 0); // Gunakan shipping_cost da
                             <nav class="navbar">
                                 <ul class="navbar_menu">
                                     <li><a href="dashboard.php">home</a></li>
-                                    <li><a href="shop.php">shop</a></li>
-                                    <li><a href="contact.php">contact</a></li>
+                                <li><a href="shop.php">shop</a></li>
+                                <li><a href="contact.php">contact</a></li>
+                                <li><a href="order.php" class="active">my orders</a></li>
                                 </ul>
                                 <ul class="navbar_user">
                                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
@@ -205,7 +206,7 @@ $total = $subtotal + ($order['shipping_cost'] ?? 0); // Gunakan shipping_cost da
                             <a href="shop.php" class="btn btn-primary btn-lg mr-3">
                                 <i class="fa fa-shopping-bag mr-2"></i>Continue Shopping
                             </a>
-                            <a href="dashboard.php?orders" class="btn btn-outline-primary btn-lg">
+                            <a href="order.php" class="btn btn-outline-primary btn-lg">
                                 <i class="fa fa-list mr-2"></i>View Orders
                             </a>
                         </div>
@@ -301,6 +302,77 @@ $total = $subtotal + ($order['shipping_cost'] ?? 0); // Gunakan shipping_cost da
             </div>
         </footer>
     </div>
+    <style>
+    /* Dark Mode Styles */
+    body.dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .order_info {
+        background-color: #1e1e1e !important;
+        border: 1px solid #333;
+    }
+
+    body.dark-mode .order_info strong {
+        color: #e0e0e0 !important;
+    }
+
+    body.dark-mode .btn-outline-primary {
+        border-color: #6a11cb;
+        color: #6a11cb;
+    }
+
+    body.dark-mode .btn-outline-primary:hover {
+        background-color: #6a11cb;
+        color: white;
+    }
+
+    body.dark-mode .benefit_item {
+        background-color: #1e1e1e;
+    }
+
+    body.dark-mode .benefit_content h6,
+    body.dark-mode .benefit_content p {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .footer {
+        background-color: #1e1e1e;
+    }
+
+    body.dark-mode .footer_nav li a,
+    body.dark-mode .cr,
+    body.dark-mode .cr a {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .success_text {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .success_title {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .navbar_menu li a,
+    body.dark-mode .navbar_user li a {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .logo_container a {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .top_nav {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .main_nav_container {
+        background-color: #1e1e1e;
+    }
+</style>
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="styles/bootstrap4/popper.js"></script>
@@ -310,27 +382,35 @@ $total = $subtotal + ($order['shipping_cost'] ?? 0); // Gunakan shipping_cost da
     <script src="plugins/easing/easing.js"></script>
     <script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
     <script>
-        // Dark Mode Toggle
-        document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.body.classList.toggle('dark-mode');
-
-            // Save preference to localStorage
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('darkMode', 'enabled');
-                this.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
-            } else {
-                localStorage.setItem('darkMode', 'disabled');
-                this.innerHTML = '<i class="fa fa-moon-o" aria-hidden="true"></i>';
-            }
-        });
+    // Dark Mode Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const darkModeIcon = darkModeToggle.querySelector('i');
 
         // Check for saved dark mode preference
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
-            document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
+            darkModeIcon.classList.remove('fa-moon-o');
+            darkModeIcon.classList.add('fa-sun-o');
         }
-    </script>
+
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.body.classList.toggle('dark-mode');
+
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.classList.remove('fa-moon-o');
+                darkModeIcon.classList.add('fa-sun-o');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.classList.remove('fa-sun-o');
+                darkModeIcon.classList.add('fa-moon-o');
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

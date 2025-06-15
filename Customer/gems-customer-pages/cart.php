@@ -1,5 +1,4 @@
 <?php
-session_start();
 include('../../Database/connection.php');
 
 // Initialize cart if not exists
@@ -29,13 +28,15 @@ if (isset($_POST['update_quantity'])) {
 if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
     $product_id = (int)$_POST['product_id'];
     $quantity = isset($_POST['quantity']) ? max(1, (int)$_POST['quantity']) : 1;
+    $selected_color = isset($_POST['selected_color']) ? $_POST['selected_color'] : '';
 
     if (isset($_SESSION['cart'][$product_id])) {
         $_SESSION['cart'][$product_id]['quantity'] += $quantity;
     } else {
         $_SESSION['cart'][$product_id] = [
             'product_id' => $product_id,
-            'quantity' => $quantity
+            'quantity' => $quantity,
+            'selected_color' => $selected_color // Simpan warna yang dipilih
         ];
     }
 
@@ -139,19 +140,20 @@ $total = $subtotal + $shipping;
 						<nav class="navbar">
 							<ul class="navbar_menu">
 								<li><a href="dashboard.php">home</a></li>
-								<li><a href="shop.php">shop</a></li>															
-								<li><a href="contact.php">contact</a></li>
+                                <li><a href="shop.php">shop</a></li>
+                                <li><a href="contact.php">contact</a></li>
+                                <li><a href="order.php" class="active">my orders</a></li>
 							</ul>
                                 <ul class="navbar_user">
                                     <li class="account">
-                                        <a href="#">
+                                        <a href="profile.php">
                                             <i class="fa fa-user" aria-hidden="true"></i>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
                                         </a>
                                         <ul class="account_selection">
                                             <?php if (isset($_SESSION['customer_id'])): ?>
-                                                <li><a href="register-customer.php"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
-                                                <li><a href="change-account.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
+
+                                                <li><a href="login-customer.php"><i class="fa fa-cog" aria-hidden="true"></i> Change Account</a></li>
                                                 <li><a href="logout-customer.php"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
                                             <?php else: ?>
                                                 <li><a href="login-customer.php"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
@@ -219,6 +221,7 @@ $total = $subtotal + $shipping;
                         <div class="cart_container">
                             <div class="cart_title">Shopping Cart</div>
                             <form action="cart.php" method="post">
+                                <input type="hidden" name="update_quantity" value="1">
                                 <div class="cart_items">
                                     <ul class="cart_list">
                                         <?php if (!empty($cart_items)): ?>
@@ -231,6 +234,11 @@ $total = $subtotal + $shipping;
                                                         <div class="cart_item_name cart_info_col">
                                                             <div class="cart_item_title">Name</div>
                                                             <div class="cart_item_text"><?= htmlspecialchars($item['name']) ?></div>
+                                                            <?php if (!empty($_SESSION['cart'][$item['id']]['selected_color'])): ?>
+                                                                <div class="cart_item_text">
+                                                                    <small>Color: <?= htmlspecialchars($_SESSION['cart'][$item['id']]['selected_color']) ?></small>
+                                                                </div>
+                                                            <?php endif; ?>
                                                         </div>
                                                         <div class="cart_item_price cart_info_col">
                                                             <div class="cart_item_title">Price</div>
@@ -294,7 +302,6 @@ $total = $subtotal + $shipping;
                                     </div>
 
                                     <div class="cart_buttons">
-                                        <button type="submit" name="update_quantity" class="button cart_button_update">Update Cart</button>
                                         <a href="shop.php" class="button cart_button_checkout">Continue Shopping</a>
                                         <a href="checkout.php" class="button cart_button_checkout">Proceed to Checkout</a>
                                     </div>
@@ -351,61 +358,61 @@ $total = $subtotal + $shipping;
         </div>
 
         <!-- Newsletter -->
-        <div class="newsletter">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="newsletter_text d-flex flex-column justify-content-center align-items-lg-start align-items-md-center text-center">
-                            <h4>Newsletter</h4>
-                            <p>Subscribe to our newsletter and get 20% off your first purchase</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <form action="post">
-                            <div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
-                                <input id="newsletter_email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
-                                <button id="newsletter_submit" type="submit" class="newsletter_submit_btn trans_300" value="Submit">subscribe</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+	<div class="newsletter">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="newsletter_text d-flex flex-column justify-content-center align-items-lg-start align-items-md-center text-center">
+						<h4>Newsletter</h4>
+						<p>Subscribe to our newsletter and get 20% off your first purchase</p>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<form action="post">
+						<div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
+							<input id="newsletter_email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
+							<button id="newsletter_submit" type="submit" class="newsletter_submit_btn trans_300" value="Submit">subscribe</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
-                            <ul class="footer_nav">
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">FAQs</a></li>
-                                <li><a href="contact.html">Contact us</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
-                            <ul>
-                                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-skype" aria-hidden="true"></i></a></li>
-                                <li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="footer_nav_container">
-                            <div class="cr">©2025 All Rights Reserverd. by <a href="#">GadgetMs</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+	<!-- Footer -->
+	<footer class="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
+						<ul class="footer_nav">
+							<li><a href="#">Blog</a></li>
+							<li><a href="#">FAQs</a></li>
+							<li><a href="contact.php">Contact us</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
+						<ul>
+							<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-skype" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="footer_nav_container">
+						<div class="cr">©2025 All Rights Reserverd. by <a href="#">GadgetMs</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
     </div>
 
     <script src="js/jquery-3.2.1.min.js"></script>
@@ -417,6 +424,16 @@ $total = $subtotal + $shipping;
     <script src="plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
     <script src="js/cart_custom.js"></script>
     <script>
+        // Auto-update quantity when changed
+    document.querySelectorAll('.quantity_input').forEach(input => {
+        input.addEventListener('change', function() {
+            // Tambahkan sedikit delay untuk memastikan nilai sudah terupdate
+            setTimeout(() => {
+                this.form.submit();
+            }, 100);
+        });
+    });
+
         // Dark Mode Toggle
         document.getElementById('dark-mode-toggle').addEventListener('click', function(e) {
             e.preventDefault();
@@ -437,7 +454,9 @@ $total = $subtotal + $shipping;
             document.body.classList.add('dark-mode');
             document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa fa-sun-o" aria-hidden="true"></i>';
         }
+        
     </script>
+    
 </body>
 
 </html>

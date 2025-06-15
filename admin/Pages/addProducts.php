@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $product_sold = 0;
     $product_qty = 0;
 
-    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
     $upload_dir = '../../Customer/gems-customer-pages/images/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
@@ -288,7 +288,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php include '../Layout/footer.php'; ?>
         </div>
     </div>
-
+                    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/sidebar.js"></script>

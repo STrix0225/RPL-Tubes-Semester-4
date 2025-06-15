@@ -867,7 +867,16 @@ section
 	-o-transform: translateY(-50%);
 	transform: translateY(-50%);
 	left: 15px;
+	display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px; /* Jarak antara ikon dan teks */
+
 }
+.logo_container i{
+	color : #0C356A;
+}
+
 .logo_container a
 {
 	font-size: 24px;

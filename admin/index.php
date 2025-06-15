@@ -3,9 +3,6 @@ if (!isset($conn)) {
     require_once '../Database/connection.php';
 }
 
-if (!isAdminLoggedIn()) {
-    redirect('login.php');
-}
 
 // Statistik
 $stats = [
@@ -90,6 +87,7 @@ if ($result) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -161,7 +159,32 @@ if ($result) {
         <?php include 'Layout/footer.php'; ?>
     </div>
 </div>
-
+<!-- AI Chat Widget -->
+<div class="ai-chat-container">
+    <button id="aiChatToggle" class="btn btn-primary ai-chat-button">
+        <i class="fas fa-robot"></i> AI Assistant
+    </button>
+    
+    <div class="ai-chat-window">
+        <div class="ai-chat-header">
+            <h5>GEMS AI Assistant</h5>
+            <button class="btn-close btn-close-white"></button>
+        </div>
+        <div class="ai-chat-body" id="aiChatMessages">
+            <div class="ai-message ai-message-bot">
+                <div class="ai-message-content">
+                    Hello! I'm your GEMS AI assistant. How can I help you today?
+                </div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" class="form-control" placeholder="Type your question...">
+            <button id="aiChatSend" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -228,6 +251,107 @@ if ($result) {
             }
         }
     });
+    // AI Chat Functionality
+$(document).ready(function() {
+    const chatWindow = $('.ai-chat-window');
+    const chatToggle = $('#aiChatToggle');
+    const chatInput = $('#aiChatInput');
+    const chatSend = $('#aiChatSend');
+    const chatMessages = $('#aiChatMessages');
+    
+    // Toggle chat window
+    chatToggle.click(function() {
+        chatWindow.toggleClass('show');
+    });
+    
+    // Close chat window
+    $('.ai-chat-header .btn-close').click(function() {
+        chatWindow.removeClass('show');
+    });
+    
+    // Send message
+    function sendMessage() {
+        const message = chatInput.val().trim();
+        if (message === '') return;
+        
+        // Add user message
+        addMessage(message, 'user');
+        chatInput.val('');
+        
+        // Show typing indicator
+        const typingIndicator = addMessage('Typing...', 'bot', true);
+        
+        // Simulate AI response (in production, replace with actual API call)
+        setTimeout(() => {
+            typingIndicator.remove();
+            const aiResponse = generateAIResponse(message);
+            addMessage(aiResponse, 'bot');
+        }, 1000);
+    }
+    
+    // Add message to chat
+    function addMessage(text, sender, isTyping = false) {
+        const messageClass = sender === 'user' ? 'ai-message-user' : 'ai-message-bot';
+        const messageId = isTyping ? 'typing-indicator' : '';
+        
+        const messageElement = $(`
+            <div class="ai-message ${messageClass}" id="${messageId}">
+                <div class="ai-message-content">${text}</div>
+            </div>
+        `);
+        
+        chatMessages.append(messageElement);
+        chatMessages.scrollTop(chatMessages[0].scrollHeight);
+        
+        return isTyping ? messageElement : null;
+    }
+    
+    // Generate AI response (simplified - replace with actual API call)
+    // Replace generateAIResponse function with this for actual API integration
+async function generateAIResponse(message) {
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer YOUR_OPENAI_API_KEY'
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "system",
+                    content: "You are a helpful assistant for GEMS Admin Dashboard. " +
+                             "Provide concise answers about orders, products, customers and suppliers. " +
+                             "Current stats: " +
+                             `${<?= $stats['pending_orders'] ?>} pending orders, ` +
+                             `${<?= $stats['total_products'] ?>} products, ` +
+                             `${<?= $stats['total_customers'] ?>} customers, ` +
+                             `${<?= $stats['active_suppliers'] ?>} active suppliers.`
+                }, {
+                    role: "user",
+                    content: message
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        return data.choices[0].message.content;
+    } catch (error) {
+        console.error("AI Error:", error);
+        return "Sorry, I'm having trouble connecting to the AI service. Please try again later.";
+    }
+}
+    
+    // Send message on button click
+    chatSend.click(sendMessage);
+    
+    // Send message on Enter key
+    chatInput.keypress(function(e) {
+        if (e.which === 13) {
+            sendMessage();
+        }
+    });
+});
 </script>
 </body>
 </html>

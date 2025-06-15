@@ -651,7 +651,6 @@ section
     background: #f7f7f7;
     color: #0C356A;
 }
-
 .navbar_user li.account .account_selection li:last-child a {
     border-bottom: none;
 }
@@ -1254,54 +1253,125 @@ body, .cart_section, .cart_container, .cart_item {
 /*********************************
 9. Benefit
 *********************************/
+.benefit {
+    margin-top: 50px;
+	margin-right: 20px;
+	margin-left: 40px;
+    padding: 0;
+    width: 100%;
+    /*box-sizing: border-box;*/
+	overflow: hidden;
+}
 
-.benefit
-{
-	margin-top: 74px;
+.benefit .container {
+    max-width: 1200px;
+    margin:0;
+    padding: 0;
 }
-.benefit_row
-{
-	padding-left: 15px;
-	padding-right: 15px;
+
+.benefit_row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between; /* Lebih baik untuk responsivitas */
+    gap: 100px;
+    margin: 20px; /* Untuk mengimbangi margin kolom */
+	width: 100%;
 }
-.benefit_col
-{
-	padding-left: 0px;
-	padding-right: 0px;
+
+/* Menghapus dependency pada class Bootstrap */
+.benefit_col {
+    flex: 0 0 calc(25% - 20px); /* 4 kolom default */
+    min-width: 0;
+    padding: 0;
+    margin: 0 0.5px;
 }
-.benefit_item
-{
-	height: 100px;
-	background: #f3f3f3;
-	border-right: solid 1px #FFFFFF;
-	padding-left: 25px;
+
+.benefit_col:first-child {
+    margin-left: 0;
 }
-.benefit_col:last-child .benefit_item
-{
-	border-right: none;
+        
+.benefit_col:last-child {
+    margin-right: 0;
 }
-.benefit_icon i
-{
-	font-size: 30px;
-	color: #fe4c50;
+        
+.benefit_item {
+    height: 150px;
+    background: rgba(243, 243, 243, 0.2); /* Transparansi */
+	padding: 25px; /* PADDING DIPERBESAR */
+    display: flex;
+    align-items: center;
+    width: 350px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+	border-radius: 12px;
+	border: 2px solid #F6F4F0;
+    /*border: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Menggunakan lebar penuh kolom */
 }
-.benefit_content
-{
-	padding-left: 22px;
+
+.benefit_item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+	background: #ffffff;
 }
-.benefit_content h6
-{
-	text-transform: uppercase;
-	line-height: 18px;
+
+.benefit_icon i {
+    font-size: 30px;
+    color: #0C356A;
+    min-width: 40px; /* Memberikan ruang konsisten untuk ikon */
+    text-align: center;
+}
+
+.benefit_content {
+    padding-left: 22px;
+}
+
+.benefit_content h6 {
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px; /* Memberikan jarak dengan paragraf */
+    color: #0C356A;
+    font-size: 18px; /* Ukuran eksplisit */
+	letter-spacing: 1px;
+}
+
+.benefit_content p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #279EFF;
+    margin: 0;
 	font-weight: 500;
-	margin-bottom: 0px;
 }
-.benefit_content p
-{
-	font-size: 12px;
-	line-height: 18px;
-	margin-bottom: 0px;
-	color: #51545f;
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .benefit_col {
+        flex: 1 0 calc(50% - 20px); /* 2 kolom pada tablet */
+    }
+}
+
+@media (max-width: 576px) {
+    .benefit_col {
+        flex: 1 0 100%; /* 1 kolom pada mobile */
+    }
+    
+    .benefit_item {
+        height: auto;
+        min-height: 120px;
+        padding: 15px 10px;
+    }
+    
+    .benefit_icon i {
+        font-size: 24px;
+    }
+    
+    .benefit_content h6 {
+        font-size: 14px;
+    }
 }
 
 /*********************************
@@ -1311,7 +1381,7 @@ body, .cart_section, .cart_container, .cart_item {
 .newsletter
 {
 	width: 100%;
-	background: #f2f2f2;
+	background: rgba(243, 243, 243, 0.3); /* Transparansi */
 	margin-top: 81px;
 }
 .newsletter_text
@@ -1327,7 +1397,7 @@ body, .cart_section, .cart_container, .cart_item {
 {
 	margin-bottom: 0px;
 	line-height: 1.7;
-	color: #51545f;
+	color: #0C356A;
 }
 .newsletter_form
 {
@@ -1350,31 +1420,31 @@ body, .cart_section, .cart_container, .cart_item {
 {
 	outline: none !important;
 }
-::-webkit-input-placeholder
+#newsletter_email::-webkit-input-placeholder
 {
 	font-size: 14px !important;
 	font-weight: 400;
 	color: #b9b4c7 !important;
 }
-:-moz-placeholder /* older Firefox*/
+#newsletter_email:-moz-placeholder /* older Firefox*/
 {
 	font-size: 14px !important;
 	font-weight: 400;
 	color: #b9b4c7 !important;
 }
-::-moz-placeholder /* Firefox 19+ */
+#newsletter_email::-moz-placeholder /* Firefox 19+ */
 {
 	font-size: 14px !important;
 	font-weight: 400;
 	color: #b9b4c7 !important;
 }
-:-ms-input-placeholder
+#newsletter_email:-ms-input-placeholder
 {
 	font-size: 14px !important;
 	font-weight: 400;
 	color: #b9b4c7 !important;
 }
-::input-placeholder
+#newsletter_email::input-placeholder
 {
 	font-size: 14px !important;
 	font-weight: 400;
@@ -1385,7 +1455,7 @@ body, .cart_section, .cart_container, .cart_item {
 	width: 160px;
 	height: 46px;
 	border: none;
-	background: #fe4c50;
+	background: #0C356A;
 	color: #FFFFFF;
 	font-size: 14px;
 	font-weight: 500;
@@ -1394,7 +1464,7 @@ body, .cart_section, .cart_container, .cart_item {
 }
 .newsletter_submit_btn:hover
 {
-	background: #FE7C7F;
+	background: #279EFF;
 }
 
 /*********************************
@@ -1431,7 +1501,7 @@ body, .cart_section, .cart_container, .cart_item {
 }
 .footer_nav li a:hover, .cr a, .cr i
 {
-	color: #fe4c50;
+	color: #279EFF;
 }
 .footer_social
 {
@@ -1462,7 +1532,7 @@ body, .cart_section, .cart_container, .cart_item {
 }
 .footer_social ul li a:hover
 {
-	color: #fe4c50;
+	color: #0C356A;
 }
 
 .dark-mode .header,
@@ -1578,4 +1648,20 @@ body, .cart_section, .cart_container, .cart_item {
     .dark-mode .benefit_icon {
         margin-bottom: 10px;
     }
+}
+
+/* Tambahkan di bagian CSS */
+.cart_item_text small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+}
+
+.color-display {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
 }
